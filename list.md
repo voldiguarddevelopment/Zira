@@ -348,7 +348,7 @@ The runtime's owner of conversation state. Inputs: channel handles. Outputs: an 
 ### T-00.15  Build the event bus
 id: T-00.15
 phase: 0
-status: pending
+status: done
 depends_on: [T-00.02, T-00.08]
 stack: rust
 criteria:
@@ -357,8 +357,11 @@ criteria:
   - C3: a repo-root integration test `tests/event_bus.rs` (tokio) publishes an `Event` to two broadcast subscribers and asserts both receive it, and that a command sent on the mpsc channel is received once.
 not_doing:
   - No orchestrator wiring here (that is the run loop task).
-test_files: []
-criteria_map: {}
+test_files: [tests/event_bus.rs]
+criteria_map:
+  C1: [test_create_bus_returns_handles]
+  C2: [test_broadcast_fanout_two_subscribers, test_command_channel_single_consumer]
+  C3: [test_broadcast_fanout_two_subscribers, test_command_channel_single_consumer]
 attempts: 1
 last_failure: ""
 ---
