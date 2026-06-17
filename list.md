@@ -470,7 +470,7 @@ not_doing:
   - No real engines here — the real STT/TTS/wake/avatar impls are blocked-on-human (hardware/FFI/GPU).
 test_files: []
 criteria_map: {}
-attempts: 4
+attempts: 5
 last_failure: |
   frozen artifact modified: criteria_map:T-00.20
   frozen artifact modified: tests/stage_traits.rs
