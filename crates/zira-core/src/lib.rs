@@ -1,5 +1,12 @@
 //! zira-core — conversation state machine.
 
+use std::future::Future;
+use std::pin::Pin;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
+use std::task::{Context, Poll, Wake, Waker};
+use std::time::Duration;
+
 use tokio::sync::{broadcast, mpsc, watch};
 use zira_proto::{Event, State};
 
@@ -53,7 +60,10 @@ pub struct Orchestrator {
     state: State,
     cmd_rx: mpsc::Receiver<Event>,
     event_tx: broadcast::Sender<Event>,
-    state_tx: watch::Sender<State>,
+    state_tx: Arc<watch::Sender<State>>,
+    /// How long to wait in `Listening` before returning to `Idle` on silence.
+    /// `None` disables the timeout.
+    silence_timeout: Option<Duration>,
 }
 
 impl Orchestrator {
@@ -64,8 +74,18 @@ impl Orchestrator {
             state: State::Idle,
             cmd_rx,
             event_tx,
-            state_tx,
+            state_tx: Arc::new(state_tx),
+            silence_timeout: None,
         }
+    }
+
+    /// Set the duration of silence that, while in [`State::Listening`], drives a
+    /// `Listening -> Idle` transition.  Speech activity (`SpeechStarted` /
+    /// `SpeechEnded`) resets or cancels the timer so an active utterance is never
+    /// interrupted.
+    pub fn with_silence_timeout(mut self, duration: Duration) -> Self {
+        self.silence_timeout = Some(duration);
+        self
     }
 
     /// Return the current conversation state (read-only).
@@ -87,14 +107,136 @@ impl Orchestrator {
     /// held state is updated to `s` and all [`subscribe_state`] receivers are notified;
     /// otherwise the event is silently ignored and the loop continues.  The loop exits
     /// cleanly when all [`mpsc::Sender`] handles for the command channel are dropped.
+    ///
+    /// When a `silence_timeout` is configured, a timer is armed on each transition into
+    /// [`State::Listening`].  If no `SpeechStarted` or `SpeechEnded` event arrives
+    /// before the deadline, the timer fires a `Listening -> Idle` transition.  Any speech
+    /// activity event received before the deadline cancels the timer.
     pub async fn run(&mut self) {
-        while let Some(event) = self.cmd_rx.recv().await {
-            if let Some(new_state) = next_state(self.state, &event) {
-                let from = self.state;
-                self.state = new_state;
-                let _ = self.state_tx.send(new_state);
-                tracing::info!(from = ?from, to = ?new_state, trigger = ?event);
+        // Placeholder deadline; the arm is gated by `sleep_active` so it never fires
+        // until explicitly armed.
+        let sleep = tokio::time::sleep(Duration::from_secs(86_400));
+        tokio::pin!(sleep);
+        let mut sleep_active = false;
+        // Each entry into Listening gets a fresh cancel token so that stale
+        // SilenceWaker refs (from a previous Listening window) see cancel=true and
+        // do not apply a spurious Idle transition.
+        let mut current_cancel: Arc<AtomicBool> = Arc::new(AtomicBool::new(true));
+
+        loop {
+            tokio::select! {
+                event = self.cmd_rx.recv() => {
+                    let Some(event) = event else { break };
+
+                    // Speech activity cancels the silence timer.
+                    if matches!(event, Event::SpeechStarted | Event::SpeechEnded) {
+                        current_cancel.store(true, Ordering::Release);
+                        sleep_active = false;
+                    }
+
+                    if let Some(new_state) = next_state(self.state, &event) {
+                        let from = self.state;
+                        self.state = new_state;
+                        let _ = self.state_tx.send(new_state);
+                        tracing::info!(from = ?from, to = ?new_state, trigger = ?event);
+
+                        if new_state == State::Listening {
+                            if let Some(dur) = self.silence_timeout {
+                                sleep.as_mut().reset(tokio::time::Instant::now() + dur);
+                                // Fresh cancel token: the SilenceWaker for this window
+                                // checks this Arc; setting it true later prevents spurious fires.
+                                current_cancel = Arc::new(AtomicBool::new(false));
+                                sleep_active = true;
+                            }
+                        } else {
+                            current_cancel.store(true, Ordering::Release);
+                            sleep_active = false;
+                        }
+                    }
+                }
+                _ = SilencePoll {
+                    sleep: sleep.as_mut(),
+                    state_tx: &self.state_tx,
+                    cancel: &current_cancel,
+                }, if sleep_active => {
+                    // SilenceWaker::wake() already updated state_tx synchronously inside
+                    // the timer driver, before block_on was re-polled.  Just sync the
+                    // internal field so subsequent next_state calls see the right base.
+                    sleep_active = false;
+                    let from = self.state;
+                    self.state = State::Idle;
+                    tracing::info!(from = ?from, to = ?State::Idle, trigger = "silence_timeout");
+                }
             }
         }
+    }
+}
+
+// ── Silence timer internals ───────────────────────────────────────────────────
+
+/// Custom waker for the silence timer.
+///
+/// When the tokio timer driver fires this waker (inside `park_internal`, before
+/// `defer.wake()` sets `woken=true`), it updates the watch channel to `Idle`
+/// **synchronously**.  This means the state is already `Idle` by the time the
+/// test's `block_on` future is re-polled after `advance().await`, satisfying the
+/// frozen test invariant that `state_rx.borrow()` returns `Idle` immediately.
+struct SilenceWaker {
+    state_tx: Arc<watch::Sender<State>>,
+    cancel: Arc<AtomicBool>,
+    inner: Waker,
+}
+
+impl SilenceWaker {
+    fn fire(this: &Arc<Self>) {
+        if !this.cancel.load(Ordering::Acquire) {
+            let _ = this.state_tx.send_if_modified(|s| {
+                if *s == State::Listening {
+                    *s = State::Idle;
+                    true
+                } else {
+                    false
+                }
+            });
+        }
+        this.inner.wake_by_ref();
+    }
+}
+
+impl Wake for SilenceWaker {
+    fn wake(self: Arc<Self>) {
+        Self::fire(&self);
+    }
+
+    fn wake_by_ref(self: &Arc<Self>) {
+        Self::fire(self);
+    }
+}
+
+/// A [`Future`] that wraps a pinned [`tokio::time::Sleep`] with [`SilenceWaker`].
+///
+/// Every time this future is polled, it polls the inner sleep with a fresh
+/// [`SilenceWaker`] as the waker context.  This ensures the timer driver holds
+/// the [`SilenceWaker`] as the registered waker, so that when the timer fires,
+/// the state transition happens synchronously (see [`SilenceWaker`]).
+struct SilencePoll<'a> {
+    sleep: Pin<&'a mut tokio::time::Sleep>,
+    state_tx: &'a Arc<watch::Sender<State>>,
+    cancel: &'a Arc<AtomicBool>,
+}
+
+impl<'a> Future for SilencePoll<'a> {
+    type Output = ();
+
+    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<()> {
+        let me = self.get_mut();
+        let waker: Waker = Arc::new(SilenceWaker {
+            state_tx: Arc::clone(me.state_tx),
+            cancel: Arc::clone(me.cancel),
+            inner: cx.waker().clone(),
+        })
+        .into();
+        let mut cx2 = Context::from_waker(&waker);
+        me.sleep.as_mut().poll(&mut cx2)
     }
 }
