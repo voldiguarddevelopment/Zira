@@ -1,6 +1,7 @@
 //! zira-config — config schema, TOML load, XDG paths, constitution.
 
 use serde::{Deserialize, Serialize};
+use thiserror::Error;
 
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PathsConfig {
@@ -52,6 +53,24 @@ pub struct MemoryConfig {
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
 pub struct AvatarConfig {
     pub vrm_path: Option<String>,
+}
+
+/// Errors that `load_from` can return (missing file is NOT an error — it yields the default).
+#[derive(Debug, Error)]
+pub enum ConfigError {
+    #[error("malformed TOML in config file: {0}")]
+    Parse(String),
+    #[error("I/O error reading config file: {0}")]
+    Io(String),
+}
+
+/// Load a `ZiraConfig` from `path`.
+///
+/// * If `path` does not exist, returns `Ok(ZiraConfig::default())`.
+/// * If `path` exists but is malformed TOML, returns `Err(ConfigError::Parse(...))`.
+/// * Absent keys in a partial file fall back to their serde defaults.
+pub fn load_from(_path: &std::path::Path) -> Result<ZiraConfig, ConfigError> {
+    todo!("T-00.10 RED: load_from not yet implemented")
 }
 
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
