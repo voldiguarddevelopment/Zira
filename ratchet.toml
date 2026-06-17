@@ -7,8 +7,12 @@
 stack = "rust"
 root  = "."
 
+# Sonnet 4.6: the tasks are small + explicitly specified, and Ratchet's gates (frozen
+# tests + mutation) — not the model — decide correctness, so a cheaper/faster model
+# can't slip a fake green past them. Bump a specific stubborn task back to Opus if its
+# RED phase can't write mutant-killing tests on Sonnet.
 [claude]
-model      = "claude-opus-4-8"
+model      = "claude-sonnet-4-6"
 extra_args = ["--dangerously-skip-permissions"]
 
 [budget]
