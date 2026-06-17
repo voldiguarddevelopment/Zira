@@ -54,9 +54,8 @@ pub struct AvatarConfig {
     pub vrm_path: Option<String>,
 }
 
-// ZiraConfig fields are not yet marked #[serde(default)], so toml::from_str("") fails
-// with a missing-field error. Adding #[serde(default)] to each field is the GREEN task.
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
 pub struct ZiraConfig {
     pub paths: PathsConfig,
     pub model: ModelConfig,
