@@ -437,7 +437,7 @@ An auditable trail of the conversation flow. Inputs: applied transitions. Output
 ### T-00.19  Add the silence timeout
 id: T-00.19
 phase: 0
-status: pending
+status: done
 depends_on: [T-00.17]
 stack: rust
 criteria:
@@ -446,8 +446,11 @@ criteria:
   - C3: a repo-root integration test `tests/silence_timeout.rs` (tokio, with a paused/advanced clock) asserts the timeout fires `Listening -> Idle` on silence and does NOT fire when speech activity arrives first.
 not_doing:
   - No VAD here — the test injects activity events directly.
-test_files: []
-criteria_map: {}
+test_files: [tests/silence_timeout.rs]
+criteria_map:
+  C1: [c1_silence_timeout_elapses_drives_listening_to_idle]
+  C2: [c2_speech_started_cancels_silence_timeout]
+  C3: [c3_full_scenario_silence_fires_and_activity_prevents]
 attempts: 1
 last_failure: ""
 ---
