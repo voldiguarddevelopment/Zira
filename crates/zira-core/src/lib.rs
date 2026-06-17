@@ -25,6 +25,26 @@ pub fn create_bus() -> BusHandles {
     }
 }
 
+/// Return the next [`State`] for the given `(current, event)` pair, or `None` when no
+/// transition is defined for that pair (a pure, side-effect-free function).
+///
+/// Implements the PLAN.md §5 table. T-00.16.
+pub fn next_state(current: State, event: &Event) -> Option<State> {
+    match (current, event) {
+        (State::Idle,       Event::WakeDetected)     => Some(State::Listening),
+        (State::Listening,  Event::SpeechEnded)      => Some(State::Transcribing),
+        (State::Transcribing, Event::TranscriptReady(_)) => Some(State::Thinking),
+        (State::Thinking,   Event::SpeakRequest)     => Some(State::Speaking),
+        (State::Thinking,   Event::PlanReady)        => Some(State::PlanReview),
+        (State::Thinking,   Event::BargeIn)          => Some(State::Listening),
+        (State::PlanReview, Event::TurnStarted)      => Some(State::Thinking),
+        (State::PlanReview, Event::Error(_))         => Some(State::Idle),
+        (State::Speaking,   Event::TurnComplete(_))  => Some(State::Idle),
+        (State::Speaking,   Event::BargeIn)          => Some(State::Listening),
+        _                                            => None,
+    }
+}
+
 /// The runtime owner of conversation state.
 ///
 /// Holds the current [`State`] (initially [`State::Idle`]) and the channel handles for
