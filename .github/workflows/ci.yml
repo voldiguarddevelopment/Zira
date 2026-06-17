@@ -1,0 +1,66 @@
+# Continuous integration for Zira — armed ahead of the first code.
+#
+# Independent verification of every push on a clean GitHub runner. It is GUARDED:
+# while the repo has no buildable project (README only) it passes as a no-op, and it
+# auto-engages the Rust gates the moment a Cargo.toml lands — so main is never red just
+# because the scaffold hasn't arrived yet.
+#
+# Gate philosophy (same as the sibling projects): build + test are HARD gates (the real
+# proof main compiles and its tests pass); fmt + clippy are advisory (surfaced as
+# warnings, never blocking) since the test-first harness gates on tests, not style.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect project type
+        id: detect
+        run: |
+          if [ -f Cargo.toml ]; then
+            echo "kind=rust" >> "$GITHUB_OUTPUT"
+          else
+            echo "kind=none" >> "$GITHUB_OUTPUT"
+          fi
+
+      # --- Rust path (engages automatically once a Cargo.toml exists) ---
+      - name: Rust toolchain
+        if: steps.detect.outputs.kind == 'rust'
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - name: Cache
+        if: steps.detect.outputs.kind == 'rust'
+        uses: Swatinem/rust-cache@v2
+      - name: Format (advisory)
+        if: steps.detect.outputs.kind == 'rust'
+        continue-on-error: true
+        run: cargo fmt --all --check
+      - name: Build
+        if: steps.detect.outputs.kind == 'rust'
+        run: cargo build --workspace --all-targets
+      - name: Clippy (advisory)
+        if: steps.detect.outputs.kind == 'rust'
+        continue-on-error: true
+        run: cargo clippy --workspace --all-targets
+      - name: Test
+        if: steps.detect.outputs.kind == 'rust'
+        run: cargo test --workspace -- --test-threads=1
+
+      # --- No buildable project yet: pass, but say so ---
+      - name: Awaiting scaffold
+        if: steps.detect.outputs.kind == 'none'
+        run: echo "No Cargo.toml yet — CI is armed and will gate build + test once the workspace lands."
