@@ -6,7 +6,7 @@ are filled by the RED phase and frozen.
 ### T-00.01  Scaffold the Cargo workspace
 id: T-00.01
 phase: 0
-status: pending
+status: done
 depends_on: []
 stack: rust
 criteria:
@@ -16,8 +16,11 @@ criteria:
 not_doing:
   - No crate internals beyond an empty lib/bin target each.
   - No dependency wiring beyond what empty crates need to build.
-test_files: []
-criteria_map: {}
+test_files: [tests/workspace_scaffold.rs]
+criteria_map:
+  C1: [c1_root_is_hybrid_package_and_workspace, c1_workspace_sets_resolver_two]
+  C2: [c2_root_declares_workspace_members, c2_all_ten_member_crates_have_named_manifests]
+  C3: [c3_zira_is_a_binary_target, c3_other_nine_are_library_targets]
 attempts: 1
 last_failure: ""
 ---
