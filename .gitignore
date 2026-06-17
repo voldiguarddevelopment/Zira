@@ -1,0 +1,28 @@
+# Rust build artifacts
+/target
+**/target
+
+# Ratchet harness state (run-local; never committed). The frozen detectors under
+# .ratchet/detectors/ ARE committed (the trust spine); everything else is local.
+.ratchet/worktrees/
+.ratchet/runs/
+.ratchet/audit.key
+.ratchet/audit.log
+.ratchet/web-audit.log
+.ratchet/spend.json
+.ratchet/stats.jsonl
+.ratchet/reports/
+.ratchet/verified.json
+.ratchet/*.env
+
+# Local secrets / environment — NEVER commit
+.env
+.env*
+*.env
+
+# Trio generator (kept locally for regeneration; not part of the build)
+.ratchet-gen-trio.py
+
+# Scratch
+/scratch/
+*.tmp
