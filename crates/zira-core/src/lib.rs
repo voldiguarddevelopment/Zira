@@ -25,6 +25,14 @@ pub fn create_bus() -> BusHandles {
     }
 }
 
+/// Return the next [`State`] for the given `(current, event)` pair, or `None` when no
+/// transition is defined for that pair (a pure, side-effect-free function).
+///
+/// Implements the PLAN.md §5 table. T-00.16.
+pub fn next_state(_current: State, _event: &Event) -> Option<State> {
+    todo!("T-00.16 GREEN: implement the transition table")
+}
+
 /// The runtime owner of conversation state.
 ///
 /// Holds the current [`State`] (initially [`State::Idle`]) and the channel handles for
