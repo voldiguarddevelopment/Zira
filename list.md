@@ -161,7 +161,7 @@ The data carried between stages. Inputs: stage-produced values. Outputs: six ser
 ### T-00.08  Define the Event type
 id: T-00.08
 phase: 0
-status: pending
+status: done
 depends_on: [T-00.06, T-00.07]
 stack: rust
 criteria:
@@ -170,8 +170,11 @@ criteria:
   - C3: a repo-root integration test `tests/event_type.rs` round-trips a representative payload-bearing variant and a unit variant through serde unchanged.
 not_doing:
   - No bus or dispatch here (that is `zira-core`).
-test_files: []
-criteria_map: {}
+test_files: [tests/event_type.rs]
+criteria_map:
+  C1: [c1_all_fifteen_variants_exist]
+  C2: [c2_payload_bearing_variants_carry_typed_payloads, c2_event_derives_clone, c2_event_derives_serialize_deserialize]
+  C3: [c3_round_trip_payload_bearing_variant, c3_round_trip_unit_variant]
 attempts: 1
 last_failure: ""
 ---
