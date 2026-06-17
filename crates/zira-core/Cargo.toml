@@ -6,6 +6,7 @@ publish = false
 
 [dependencies]
 tokio = { workspace = true }
+tracing = { workspace = true }
 zira-proto = { path = "../zira-proto" }
 
 [lints]

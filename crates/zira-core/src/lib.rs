@@ -90,8 +90,10 @@ impl Orchestrator {
     pub async fn run(&mut self) {
         while let Some(event) = self.cmd_rx.recv().await {
             if let Some(new_state) = next_state(self.state, &event) {
+                let from = self.state;
                 self.state = new_state;
                 let _ = self.state_tx.send(new_state);
+                tracing::info!(from = ?from, to = ?new_state, trigger = ?event);
             }
         }
     }
