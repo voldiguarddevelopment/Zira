@@ -470,7 +470,7 @@ not_doing:
   - No real engines here — the real STT/TTS/wake/avatar impls are blocked-on-human (hardware/FFI/GPU).
 test_files: []
 criteria_map: {}
-attempts: 2
+attempts: 3
 last_failure: |
   tests/stage_traits.rs:52: stub (todo-macro) — /// Fails in RED because the mock body is todo!().
   tests/stage_traits.rs:104: stub (todo-macro) — /// data. Fails in RED because the method body is todo!().
