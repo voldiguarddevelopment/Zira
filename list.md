@@ -52,7 +52,7 @@ The shared dependency surface. Inputs: the root manifest. Outputs: `[workspace.d
 ### T-00.03  Configure the lint policy
 id: T-00.03
 phase: 0
-status: pending
+status: done
 depends_on: [T-00.01]
 stack: rust
 criteria:
@@ -62,10 +62,13 @@ criteria:
 not_doing:
   - No custom lint authoring beyond enabling the standard rustfmt + clippy gates.
   - No CI changes — the GitHub Actions workflow is maintained outside the loop.
-test_files: []
-criteria_map: {}
+test_files: [tests/lint_policy.rs]
+criteria_map:
+  C1: [c1_rust_toolchain_file_exists, c1_toolchain_pins_stable_channel, c1_toolchain_includes_rustfmt_component, c1_toolchain_includes_clippy_component]
+  C2: [c2_rustfmt_file_exists, c2_rustfmt_file_is_loadable]
+  C3: [c3_cargo_toml_has_workspace_lints_clippy_table]
 attempts: 3
-last_failure: tests pass in the red phase — a correct red must fail (missing implementation), this is vacuous
+last_failure: ""
 ---
 The style + lint floor. Inputs: the workspace root. Outputs: toolchain + fmt + clippy config that pass clean on the scaffold. Errors/edges: a malformed toml fails the respective tool. Invariant: fmt and clippy are green from here. Done-check: the three tool-observable criteria.
 
