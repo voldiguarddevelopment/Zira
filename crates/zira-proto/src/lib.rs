@@ -81,3 +81,22 @@ pub struct Usage {
     pub input_tokens: u64,
     pub output_tokens: u64,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum Event {
+    WakeDetected,
+    SpeechStarted,
+    SpeechEnded,
+    AudioChunk,
+    TranscriptReady(Transcript),
+    TurnStarted,
+    TextDelta,
+    EmotionSegment(Segment),
+    PlanReady,
+    SpeakRequest,
+    VisemeFrame(VisemeFrame),
+    ExpressionChange,
+    BargeIn,
+    TurnComplete(Usage),
+    Error(String),
+}
