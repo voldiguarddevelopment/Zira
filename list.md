@@ -229,7 +229,7 @@ Turning a file into config. Inputs: a filesystem path. Outputs: a `ZiraConfig` w
 ### T-00.11  Resolve the data paths
 id: T-00.11
 phase: 0
-status: pending
+status: blocked
 depends_on: [T-00.02]
 stack: rust
 criteria:
