@@ -52,7 +52,7 @@ The shared dependency surface. Inputs: the root manifest. Outputs: `[workspace.d
 ### T-00.03  Configure the lint policy
 id: T-00.03
 phase: 0
-status: blocked
+status: pending
 depends_on: [T-00.01]
 stack: rust
 criteria:
@@ -64,8 +64,8 @@ not_doing:
   - No CI changes — the GitHub Actions workflow is maintained outside the loop.
 test_files: []
 criteria_map: {}
-attempts: 3
-last_failure: red phase produced no test files under `tests/`
+attempts: 0
+last_failure: ""
 ---
 The style + lint floor. Inputs: the workspace root. Outputs: toolchain + fmt + clippy config that pass clean on the scaffold. Errors/edges: a malformed toml fails the respective tool. Invariant: fmt and clippy are green from here. Done-check: the three tool-observable criteria.
 
