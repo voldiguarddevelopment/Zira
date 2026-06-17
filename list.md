@@ -307,7 +307,7 @@ The immutable baseline policy compiled into Zira. Inputs: the embedded default t
 ### T-00.13  Validate the config
 id: T-00.13
 phase: 0
-status: pending
+status: blocked
 depends_on: [T-00.09]
 stack: rust
 criteria:
