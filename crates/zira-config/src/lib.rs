@@ -73,6 +73,41 @@ pub enum ConfigError {
     Io(String),
 }
 
+const DEFAULT_CONSTITUTION: &str = include_str!("constitution.txt");
+
+/// The immutable baseline policy compiled into the Zira binary.
+///
+/// Loaded from an embedded default via [`Constitution::load_default`]; the text is
+/// compiled in with `include_str!` so it is always present without a file on disk.
+/// Once loaded, the rule set cannot be mutated — all accessors take `&self`.
+#[derive(Debug, Clone)]
+pub struct Constitution {
+    rules: Vec<String>,
+}
+
+impl Constitution {
+    /// Return the embedded default constitution.
+    ///
+    /// This never fails at runtime: the embedded text is compiled in and is guaranteed
+    /// non-empty. A malformed embedded default would cause a compile-time panic (or a
+    /// panic at first call during testing).
+    pub fn load_default() -> Constitution {
+        let rules: Vec<String> = DEFAULT_CONSTITUTION
+            .lines()
+            .map(str::trim)
+            .filter(|l| !l.is_empty())
+            .map(String::from)
+            .collect();
+        assert!(!rules.is_empty(), "embedded constitution must not be empty");
+        Constitution { rules }
+    }
+
+    /// Return the loaded rule set as an immutable shared slice.
+    pub fn rules(&self) -> &[String] {
+        &self.rules
+    }
+}
+
 /// Load a `ZiraConfig` from `path`.
 ///
 /// * If `path` does not exist, returns `Ok(ZiraConfig::default())`.
