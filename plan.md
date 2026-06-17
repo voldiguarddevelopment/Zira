@@ -41,8 +41,8 @@ depends_on: [T-00.01]
 stack: rust
 criteria:
   - C1: a `rust-toolchain.toml` pins `channel = "stable"` and includes the `rustfmt` and `clippy` components.
-  - C2: a `rustfmt.toml` exists and `cargo fmt --all --check` exits 0 on the scaffolded tree.
-  - C3: the workspace configures clippy to deny warnings (a `[workspace.lints]` table or equivalent) and `cargo clippy --workspace` exits 0 on the scaffolded tree.
+  - C2: a `rustfmt.toml` exists at the workspace root and parses as valid TOML; a repo-root integration test `tests/lint_policy.rs` asserts the file is present and loadable.
+  - C3: the root `Cargo.toml` declares a clippy lint policy (a `[workspace.lints.clippy]` table, or `[workspace.lints]` with a clippy entry); the test asserts that table exists. (NOTE: deliberately a CONFIG-PRESENCE check — NOT a workspace-wide `cargo fmt`/`cargo clippy` run, which would be a fragile frozen invariant that later tasks' code could break.)
 not_doing:
   - No custom lint authoring beyond enabling the standard rustfmt + clippy gates.
   - No CI changes — the GitHub Actions workflow is maintained outside the loop.

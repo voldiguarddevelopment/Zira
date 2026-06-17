@@ -29,7 +29,11 @@ fn c1_all_ten_variants_exist() {
         Emotion::Playful,
         Emotion::Tired,
     ];
-    assert_eq!(variants.len(), 10, "exactly ten Emotion variants must exist");
+    assert_eq!(
+        variants.len(),
+        10,
+        "exactly ten Emotion variants must exist"
+    );
 }
 
 // ---- C2 -------------------------------------------------------------------------------
@@ -51,8 +55,8 @@ fn c2_serde_json_round_trip() {
     for variant in variants {
         let json = serde_json::to_string(&variant)
             .unwrap_or_else(|e| panic!("serialize {variant:?}: {e}"));
-        let back: Emotion = serde_json::from_str(&json)
-            .unwrap_or_else(|e| panic!("deserialize {json:?}: {e}"));
+        let back: Emotion =
+            serde_json::from_str(&json).unwrap_or_else(|e| panic!("deserialize {json:?}: {e}"));
         assert_eq!(
             variant, back,
             "serde round-trip must preserve variant identity"
