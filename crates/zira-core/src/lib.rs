@@ -70,4 +70,24 @@ impl Orchestrator {
     pub fn state(&self) -> State {
         self.state
     }
+
+    /// Return a receiver that is notified whenever the orchestrator's state changes.
+    ///
+    /// The initial value is [`State::Idle`]. Implemented in T-00.17.
+    pub fn subscribe_state(&self) -> tokio::sync::watch::Receiver<State> {
+        todo!("T-00.17: state watch channel not yet implemented")
+    }
+
+    /// Drive the orchestrator's select-loop until the command channel is closed.
+    ///
+    /// On each iteration, one [`Event`] is consumed from the command bus.  If
+    /// [`next_state`] returns `Some(s)` for the current `(state, event)` pair, the
+    /// held state is updated to `s`; otherwise the event is silently ignored and the
+    /// loop continues.  The loop exits cleanly when all [`mpsc::Sender`] handles for
+    /// the command channel are dropped (channel close = shutdown signal).
+    ///
+    /// Implemented in T-00.17.
+    pub async fn run(&mut self) {
+        todo!("T-00.17: orchestrator select-loop not yet implemented")
+    }
 }
