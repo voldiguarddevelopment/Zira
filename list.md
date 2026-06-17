@@ -284,7 +284,7 @@ Where Zira keeps its state on disk. Inputs: the XDG environment. Outputs: four r
 ### T-00.12  Embed the constitution
 id: T-00.12
 phase: 0
-status: pending
+status: done
 depends_on: [T-00.02]
 stack: rust
 criteria:
@@ -294,8 +294,11 @@ criteria:
 not_doing:
   - No enforcement logic here (that is the `zira-skills` safety gate, a later phase).
   - No on-disk override format yet.
-test_files: []
-criteria_map: {}
+test_files: [tests/constitution.rs]
+criteria_map:
+  C1: [c1_load_default_requires_no_file, c1_load_default_returns_constitution_directly]
+  C2: [c2_rules_readable_from_immutable_binding, c2_rules_returns_shared_slice]
+  C3: [c3_embedded_constitution_is_nonempty, c3_no_public_mutator_on_immutable_binding]
 attempts: 1
 last_failure: ""
 ---
