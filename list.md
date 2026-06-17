@@ -370,7 +370,7 @@ The fan-out spine. Inputs: events + commands. Outputs: a broadcast event channel
 ### T-00.16  Define the transition table
 id: T-00.16
 phase: 0
-status: pending
+status: done
 depends_on: [T-00.06, T-00.08]
 stack: rust
 criteria:
@@ -380,8 +380,11 @@ criteria:
 not_doing:
   - No side effects here — `next_state` is a pure function.
   - No timers (the silence timeout is a separate task).
-test_files: []
-criteria_map: {}
+test_files: [tests/transitions.rs]
+criteria_map:
+  C1: [test_idle_wake_detected_to_listening, test_listening_speech_ended_to_transcribing, test_transcribing_transcript_ready_to_thinking, test_thinking_speak_request_to_speaking, test_thinking_plan_ready_to_plan_review, test_plan_review_turn_started_to_thinking, test_plan_review_error_to_idle, test_speaking_turn_complete_to_idle, test_speaking_barge_in_to_listening, test_thinking_barge_in_to_listening]
+  C2: [test_undefined_idle_speech_ended_is_none, test_undefined_idle_barge_in_is_none, test_undefined_idle_turn_complete_is_none, test_undefined_listening_wake_detected_is_none, test_undefined_transcribing_barge_in_is_none, test_undefined_plan_review_speech_ended_is_none, test_undefined_speaking_plan_ready_is_none]
+  C3: [test_idle_wake_detected_to_listening, test_listening_speech_ended_to_transcribing, test_transcribing_transcript_ready_to_thinking, test_thinking_speak_request_to_speaking, test_thinking_plan_ready_to_plan_review, test_plan_review_turn_started_to_thinking, test_plan_review_error_to_idle, test_speaking_turn_complete_to_idle, test_speaking_barge_in_to_listening, test_thinking_barge_in_to_listening, test_undefined_idle_speech_ended_is_none, test_undefined_idle_barge_in_is_none, test_undefined_idle_turn_complete_is_none, test_undefined_listening_wake_detected_is_none, test_undefined_transcribing_barge_in_is_none, test_undefined_plan_review_speech_ended_is_none, test_undefined_speaking_plan_ready_is_none]
 attempts: 1
 last_failure: ""
 ---
