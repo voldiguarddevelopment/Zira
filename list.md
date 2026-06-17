@@ -459,7 +459,7 @@ Returning to rest after silence. Inputs: the Listening state + a clock. Outputs:
 ### T-00.20  Define the stage traits
 id: T-00.20
 phase: 0
-status: pending
+status: blocked
 depends_on: [T-00.08]
 stack: rust
 criteria:
