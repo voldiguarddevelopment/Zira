@@ -415,7 +415,7 @@ The live driver. Inputs: events from the bus. Outputs: an advancing `State` + cl
 ### T-00.18  Log the transitions
 id: T-00.18
 phase: 0
-status: pending
+status: done
 depends_on: [T-00.16]
 stack: rust
 criteria:
@@ -424,8 +424,11 @@ criteria:
   - C3: a repo-root integration test `tests/transition_log.rs` installs a capturing tracing subscriber, drives one valid and one invalid transition, and asserts exactly one state-change record with the correct from/to was emitted.
 not_doing:
   - No metrics or external telemetry — tracing only.
-test_files: []
-criteria_map: {}
+test_files: [tests/transition_log.rs]
+criteria_map:
+  C1: [test_valid_transition_emits_one_log_record, test_valid_transition_log_has_correct_from_to]
+  C2: [test_noop_transition_emits_no_log_record]
+  C3: [test_one_valid_one_noop_emits_exactly_one_record]
 attempts: 2
 last_failure: ""
 ---
