@@ -1,6 +1,6 @@
 //! zira-core — conversation state machine.
 
-use tokio::sync::{broadcast, mpsc};
+use tokio::sync::{broadcast, mpsc, watch};
 use zira_proto::{Event, State};
 
 /// Handles returned by [`create_bus`].
@@ -49,20 +49,22 @@ pub fn next_state(current: State, event: &Event) -> Option<State> {
 ///
 /// Holds the current [`State`] (initially [`State::Idle`]) and the channel handles for
 /// the command bus (mpsc receiver) and the event bus (broadcast sender).
-/// Transition logic and the run-loop are added in later tasks (T-00.16, T-00.17).
 pub struct Orchestrator {
     state: State,
     cmd_rx: mpsc::Receiver<Event>,
     event_tx: broadcast::Sender<Event>,
+    state_tx: watch::Sender<State>,
 }
 
 impl Orchestrator {
     /// Build a new `Orchestrator` in [`State::Idle`].
     pub fn new(cmd_rx: mpsc::Receiver<Event>, event_tx: broadcast::Sender<Event>) -> Self {
+        let (state_tx, _) = watch::channel(State::Idle);
         Self {
             state: State::Idle,
             cmd_rx,
             event_tx,
+            state_tx,
         }
     }
 
@@ -73,21 +75,24 @@ impl Orchestrator {
 
     /// Return a receiver that is notified whenever the orchestrator's state changes.
     ///
-    /// The initial value is [`State::Idle`]. Implemented in T-00.17.
-    pub fn subscribe_state(&self) -> tokio::sync::watch::Receiver<State> {
-        todo!("T-00.17: state watch channel not yet implemented")
+    /// The initial value is [`State::Idle`]; only sends after subscription are visible.
+    pub fn subscribe_state(&self) -> watch::Receiver<State> {
+        self.state_tx.subscribe()
     }
 
     /// Drive the orchestrator's select-loop until the command channel is closed.
     ///
     /// On each iteration, one [`Event`] is consumed from the command bus.  If
     /// [`next_state`] returns `Some(s)` for the current `(state, event)` pair, the
-    /// held state is updated to `s`; otherwise the event is silently ignored and the
-    /// loop continues.  The loop exits cleanly when all [`mpsc::Sender`] handles for
-    /// the command channel are dropped (channel close = shutdown signal).
-    ///
-    /// Implemented in T-00.17.
+    /// held state is updated to `s` and all [`subscribe_state`] receivers are notified;
+    /// otherwise the event is silently ignored and the loop continues.  The loop exits
+    /// cleanly when all [`mpsc::Sender`] handles for the command channel are dropped.
     pub async fn run(&mut self) {
-        todo!("T-00.17: orchestrator select-loop not yet implemented")
+        while let Some(event) = self.cmd_rx.recv().await {
+            if let Some(new_state) = next_state(self.state, &event) {
+                self.state = new_state;
+                let _ = self.state_tx.send(new_state);
+            }
+        }
     }
 }
