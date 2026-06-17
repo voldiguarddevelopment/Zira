@@ -471,9 +471,7 @@ not_doing:
 test_files: []
 criteria_map: {}
 attempts: 3
-last_failure: |
-  tests/stage_traits.rs:52: stub (todo-macro) — /// Fails in RED because the mock body is todo!().
-  tests/stage_traits.rs:104: stub (todo-macro) — /// data. Fails in RED because the method body is todo!().
+last_failure: "frozen artifact modified: tests/stage_traits.rs"
 ---
 The seam that lets devices be mocked. Inputs: the orchestrator's needs. Outputs: seven traits + a mock each. Errors/edges: mocks are deterministic. Invariant: the orchestrator depends on traits, never concrete engines. Done-check: the three criteria.
 
