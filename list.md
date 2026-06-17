@@ -206,7 +206,7 @@ The typed configuration surface. Inputs: a TOML document (possibly empty). Outpu
 ### T-00.10  Load the config file
 id: T-00.10
 phase: 0
-status: pending
+status: done
 depends_on: [T-00.09]
 stack: rust
 criteria:
@@ -216,8 +216,11 @@ criteria:
 not_doing:
   - No XDG path resolution here (the next task); the loader takes an explicit path.
   - No environment-variable overlay.
-test_files: []
-criteria_map: {}
+test_files: [tests/config_load.rs]
+criteria_map:
+  C1: [c1_load_from_reads_toml_file_into_zira_config, c1_load_from_applies_serde_defaults_for_absent_fields]
+  C2: [c2_missing_file_returns_default_not_error, c2_partial_file_overlays_only_set_fields]
+  C3: [c3_partial_fixture_overrides_set_field_while_keeping_defaults, c3_missing_path_yields_default_config]
 attempts: 2
 last_failure: ""
 ---
