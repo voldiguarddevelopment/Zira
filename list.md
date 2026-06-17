@@ -218,7 +218,7 @@ not_doing:
   - No environment-variable overlay.
 test_files: []
 criteria_map: {}
-attempts: 1
+attempts: 2
 last_failure: ""
 ---
 Turning a file into config. Inputs: a filesystem path. Outputs: a `ZiraConfig` with file values over defaults; default on absent file. Errors/edges: a malformed TOML is a typed error; an absent file is the default, not an error. Invariant: loading never panics. Done-check: the three criteria.
