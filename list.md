@@ -75,7 +75,7 @@ The style + lint floor. Inputs: the workspace root. Outputs: toolchain + fmt + c
 ### T-00.04  Initialize structured logging
 id: T-00.04
 phase: 0
-status: pending
+status: blocked
 depends_on: [T-00.02]
 stack: rust
 criteria:
