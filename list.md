@@ -242,31 +242,56 @@ test_files: []
 criteria_map: {}
 attempts: 2
 last_failure: |
+  
   running 8 tests
   test c1_config_dir_rooted_under_xdg_config_home ... ok
-  test c1_data_dir_rooted_under_xdg_data_home ... ok
   test c1_memory_dir_nested_under_data_dir ... ok
-  test c1_skills_dir_nested_under_data_dir ... ok
   test c1_zpaths_struct_has_four_path_fields ... ok
   test c2_ensure_dirs_creates_missing_directories ... FAILED
   test c2_ensure_dirs_is_idempotent ... FAILED
   test c3_xdg_env_vars_route_all_four_dirs_under_temp ... FAILED
+  test c1_data_dir_rooted_under_xdg_data_home ... FAILED
+  test c1_skills_dir_nested_under_data_dir ... FAILED
+  
   failures:
+  
   ---- c2_ensure_dirs_creates_missing_directories stdout ----
-  thread 'c2_ensure_dirs_creates_missing_directories' (259987) panicked at tests/config_paths.rs:139:9:
+  
+  thread 'c2_ensure_dirs_creates_missing_directories' (263602) panicked at tests/config_paths.rs:139:9:
   precondition: config_dir must not exist before ensure_dirs
   note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+  
   ---- c2_ensure_dirs_is_idempotent stdout ----
-  thread 'c2_ensure_dirs_is_idempotent' (259988) panicked at tests/config_paths.rs:173:33:
+  
+  thread 'c2_ensure_dirs_is_idempotent' (263603) panicked at tests/config_paths.rs:173:33:
   called `Result::unwrap()` on an `Err` value: PoisonError { .. }
+  
   ---- c3_xdg_env_vars_route_all_four_dirs_under_temp stdout ----
-  thread 'c3_xdg_env_vars_route_all_four_dirs_under_temp' (259989) panicked at tests/config_paths.rs:203:33:
+  
+  thread 'c3_xdg_env_vars_route_all_four_dirs_under_temp' (263604) panicked at tests/config_paths.rs:203:33:
   called `Result::unwrap()` on an `Err` value: PoisonError { .. }
+  
+  ---- c1_data_dir_rooted_under_xdg_data_home stdout ----
+  
+  thread 'c1_data_dir_rooted_under_xdg_data_home' (263598) panicked at tests/config_paths.rs:79:33:
+  called `Result::unwrap()` on an `Err` value: PoisonError { .. }
+  
+  ---- c1_skills_dir_nested_under_data_dir stdout ----
+  
+  thread 'c1_skills_dir_nested_under_data_dir' (263600) panicked at tests/config_paths.rs:113:33:
+  called `Result::unwrap()` on an `Err` value: PoisonError { .. }
+  
+  
   failures:
+      c1_data_dir_rooted_under_xdg_data_home
+      c1_skills_dir_nested_under_data_dir
       c2_ensure_dirs_creates_missing_directories
       c2_ensure_dirs_is_idempotent
       c3_xdg_env_vars_route_all_four_dirs_under_temp
-  test result: FAILED. 5 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+  
+  test result: FAILED. 3 passed; 5 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+  
+  
       Finished `test` profile [unoptimized + debuginfo] target(s) in 0.11s
        Running tests/config_paths.rs (target/debug/deps/config_paths-e7bfc52f35a8efc8)
   error: test failed, to rerun pass `--test config_paths`
