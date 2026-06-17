@@ -52,7 +52,7 @@ The shared dependency surface. Inputs: the root manifest. Outputs: `[workspace.d
 ### T-00.03  Configure the lint policy
 id: T-00.03
 phase: 0
-status: pending
+status: blocked
 depends_on: [T-00.01]
 stack: rust
 criteria:
