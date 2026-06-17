@@ -183,7 +183,7 @@ The single message type on the bus. Inputs: a stage emitting an event. Outputs: 
 ### T-00.09  Define the config schema
 id: T-00.09
 phase: 0
-status: pending
+status: done
 depends_on: [T-00.02]
 stack: rust
 criteria:
@@ -193,8 +193,11 @@ criteria:
 not_doing:
   - No file IO here (loading is the next task).
   - No validation logic here (a later task).
-test_files: []
-criteria_map: {}
+test_files: [tests/config_schema.rs]
+criteria_map:
+  C1: [c1_zira_config_has_nine_typed_subsections, c1_subsections_derive_serialize_deserialize]
+  C2: [c2_empty_toml_deserializes_to_complete_config]
+  C3: [c3_empty_doc_equals_default]
 attempts: 1
 last_failure: ""
 ---
