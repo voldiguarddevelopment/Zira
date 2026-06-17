@@ -75,7 +75,7 @@ The style + lint floor. Inputs: the workspace root. Outputs: toolchain + fmt + c
 ### T-00.04  Initialize structured logging
 id: T-00.04
 phase: 0
-status: blocked
+status: pending
 depends_on: [T-00.02]
 stack: rust
 criteria:
@@ -87,8 +87,8 @@ not_doing:
   - No per-crate log configuration beyond the global env filter.
 test_files: []
 criteria_map: {}
-attempts: 6
-last_failure: "tests/logging_init.rs:12: stub (todo-macro) — //! directly; the stub declares the symbol so the tests compile, but the `todo!()` body"
+attempts: 0
+last_failure: ""
 ---
 Observability from first boot. Inputs: the `RUST_LOG` env var. Outputs: an installed tracing subscriber + an idempotent init. Errors/edges: a malformed filter falls back to the default level, never a panic. Invariant: logging is safe to initialize once. Done-check: the three criteria.
 
@@ -229,7 +229,7 @@ Turning a file into config. Inputs: a filesystem path. Outputs: a `ZiraConfig` w
 ### T-00.11  Resolve the data paths
 id: T-00.11
 phase: 0
-status: blocked
+status: pending
 depends_on: [T-00.02]
 stack: rust
 criteria:
@@ -240,8 +240,8 @@ not_doing:
   - No file content management — directory resolution + creation only.
 test_files: []
 criteria_map: {}
-attempts: 6
-last_failure: |
+attempts: 0
+last_failure: ""
   running 8 tests
   test c1_config_dir_rooted_under_xdg_config_home ... ok
   test c1_memory_dir_nested_under_data_dir ... ok
@@ -307,7 +307,7 @@ The immutable baseline policy compiled into Zira. Inputs: the embedded default t
 ### T-00.13  Validate the config
 id: T-00.13
 phase: 0
-status: blocked
+status: pending
 depends_on: [T-00.09]
 stack: rust
 criteria:
@@ -318,8 +318,8 @@ not_doing:
   - No auto-repair — validation reports, it does not silently fix.
 test_files: []
 criteria_map: {}
-attempts: 3
-last_failure: "tests/config_validate.rs:52: stub (todo-macro) — // method so the `todo!()` body causes the test to fail in RED."
+attempts: 0
+last_failure: ""
 ---
 Catching bad config loudly. Inputs: a `ZiraConfig`. Outputs: Ok or a field-specific `ConfigError`. Errors/edges: each invalid field maps to a distinct typed error. Invariant: an invalid config never reaches the runtime silently. Done-check: the three criteria.
 
@@ -459,7 +459,7 @@ Returning to rest after silence. Inputs: the Listening state + a clock. Outputs:
 ### T-00.20  Define the stage traits
 id: T-00.20
 phase: 0
-status: blocked
+status: pending
 depends_on: [T-00.08]
 stack: rust
 criteria:
@@ -470,8 +470,8 @@ not_doing:
   - No real engines here — the real STT/TTS/wake/avatar impls are blocked-on-human (hardware/FFI/GPU).
 test_files: []
 criteria_map: {}
-attempts: 6
-last_failure: "frozen artifact modified: criteria_map:T-00.20"
+attempts: 0
+last_failure: ""
 ---
 The seam that lets devices be mocked. Inputs: the orchestrator's needs. Outputs: seven traits + a mock each. Errors/edges: mocks are deterministic. Invariant: the orchestrator depends on traits, never concrete engines. Done-check: the three criteria.
 
