@@ -87,7 +87,7 @@ not_doing:
   - No per-crate log configuration beyond the global env filter.
 test_files: []
 criteria_map: {}
-attempts: 3
+attempts: 4
 last_failure: ""
 ---
 Observability from first boot. Inputs: the `RUST_LOG` env var. Outputs: an installed tracing subscriber + an idempotent init. Errors/edges: a malformed filter falls back to the default level, never a panic. Invariant: logging is safe to initialize once. Done-check: the three criteria.
