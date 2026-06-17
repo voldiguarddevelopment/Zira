@@ -88,7 +88,10 @@ not_doing:
 test_files: []
 criteria_map: {}
 attempts: 1
-last_failure: ""
+last_failure: |
+  surviving mutant at crates/zira-core/src/lib.rs:204 (cmp-eq-to-ne) — frozen tests do not kill it
+  surviving mutant at crates/zira-core/src/lib.rs:206 (arith-add-to-sub) — frozen tests do not kill it
+  surviving mutant at crates/zira-core/src/lib.rs:255 (cmp-eq-to-ne) — frozen tests do not kill it
 ---
 Observability from first boot. Inputs: the `RUST_LOG` env var. Outputs: an installed tracing subscriber + an idempotent init. Errors/edges: a malformed filter falls back to the default level, never a panic. Invariant: logging is safe to initialize once. Done-check: the three criteria.
 
