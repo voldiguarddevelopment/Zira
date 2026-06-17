@@ -128,7 +128,7 @@ not_doing:
   - No transition logic here (that is the state machine in `zira-core`).
 test_files: []
 criteria_map: {}
-attempts: 1
+attempts: 2
 last_failure: ""
 ---
 The conversation-state alphabet. Inputs: a variant. Outputs: a serde-stable, copyable enum defaulting to Idle. Errors/edges: none beyond serde. Invariant: these six states are the only states. Done-check: the two criteria.
