@@ -34,3 +34,14 @@ impl Emotion {
         }
     }
 }
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum State {
+    #[default]
+    Idle,
+    Listening,
+    Transcribing,
+    Thinking,
+    PlanReview,
+    Speaking,
+}
