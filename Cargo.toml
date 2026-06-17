@@ -31,3 +31,12 @@ serde_json = "1"
 thiserror = "2"
 anyhow = "1"
 tracing = "0.1"
+
+# The lint floor: clippy denies warnings workspace-wide. Each member opts in with
+# `[lints] workspace = true`, so a clippy warning anywhere becomes a hard build error.
+[workspace.lints.clippy]
+all = "deny"
+
+# The root test-host package inherits the same gate.
+[lints]
+workspace = true
