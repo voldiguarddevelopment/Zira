@@ -52,7 +52,7 @@ The shared dependency surface. Inputs: the root manifest. Outputs: `[workspace.d
 ### T-00.03  Configure the lint policy
 id: T-00.03
 phase: 0
-status: pending
+status: done
 depends_on: [T-00.01]
 stack: rust
 criteria:
@@ -62,8 +62,11 @@ criteria:
 not_doing:
   - No custom lint authoring beyond enabling the standard rustfmt + clippy gates.
   - No CI changes — the GitHub Actions workflow is maintained outside the loop.
-test_files: []
-criteria_map: {}
+test_files: [tests/lint_policy.rs]
+criteria_map:
+  C1: [c1_toolchain_pins_stable_channel, c1_toolchain_includes_rustfmt_and_clippy]
+  C2: [c2_rustfmt_config_exists, c2_cargo_fmt_all_check_exits_zero]
+  C3: [c3_workspace_denies_clippy_warnings, c3_cargo_clippy_workspace_exits_zero]
 attempts: 1
 last_failure: ""
 ---
