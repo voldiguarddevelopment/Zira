@@ -45,3 +45,39 @@ pub enum State {
     PlanReview,
     Speaking,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Transcript {
+    pub text: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AudioChunk {
+    pub samples: Vec<f32>,
+    pub sample_rate: u32,
+    pub channels: u16,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Segment {
+    pub emotion: Emotion,
+    pub text: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct VisemeFrame {
+    pub viseme: String,
+    pub weight: f32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PlanSummary {
+    pub description: String,
+    pub steps: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Usage {
+    pub input_tokens: u64,
+    pub output_tokens: u64,
+}
