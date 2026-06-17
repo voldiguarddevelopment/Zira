@@ -16,7 +16,13 @@ pub struct BusHandles {
 /// Construct the event bus: one mpsc command channel and one broadcast event channel,
 /// both typed over [`Event`]. Returns all handles via [`BusHandles`].
 pub fn create_bus() -> BusHandles {
-    todo!("event bus construction not yet implemented")
+    let (cmd_tx, cmd_rx) = mpsc::channel(64);
+    let (event_tx, _) = broadcast::channel(64);
+    BusHandles {
+        cmd_tx,
+        cmd_rx,
+        event_tx,
+    }
 }
 
 /// The runtime owner of conversation state.
