@@ -3,5 +3,45 @@
 version = 4
 
 [[package]]
+name = "zira"
+version = "0.0.0"
+
+[[package]]
+name = "zira-avatar"
+version = "0.0.0"
+
+[[package]]
+name = "zira-bridge"
+version = "0.0.0"
+
+[[package]]
 name = "zira-build"
+version = "0.0.0"
+
+[[package]]
+name = "zira-config"
+version = "0.0.0"
+
+[[package]]
+name = "zira-core"
+version = "0.0.0"
+
+[[package]]
+name = "zira-emotion"
+version = "0.0.0"
+
+[[package]]
+name = "zira-memory"
+version = "0.0.0"
+
+[[package]]
+name = "zira-proto"
+version = "0.0.0"
+
+[[package]]
+name = "zira-skills"
+version = "0.0.0"
+
+[[package]]
+name = "zira-voice"
 version = "0.0.0"

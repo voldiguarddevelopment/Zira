@@ -1,11 +1,23 @@
-# RED-phase bootstrap manifest.
-#
-# At this point the root is ONLY a [package] — just enough to host and compile the
-# repo-root `tests/` so the scaffold tests can run and fail honestly. The GREEN phase
-# turns this into the hybrid [package] + [workspace] root that the tests demand
-# (resolver = "2", the ten members under crates/, and the per-crate bin/lib targets).
+# The repo root is a hybrid [package] + [workspace] root: the [package] hosts and
+# compiles the repo-root `tests/` (so `cargo test` at the root runs the scaffold
+# tests), and the [workspace] binds the ten member crates under `crates/`.
 [package]
 name = "zira-build"
 version = "0.0.0"
 edition = "2021"
 publish = false
+
+[workspace]
+resolver = "2"
+members = [
+    "crates/zira",
+    "crates/zira-core",
+    "crates/zira-bridge",
+    "crates/zira-voice",
+    "crates/zira-emotion",
+    "crates/zira-avatar",
+    "crates/zira-memory",
+    "crates/zira-skills",
+    "crates/zira-config",
+    "crates/zira-proto",
+]
