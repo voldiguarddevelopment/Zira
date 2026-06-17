@@ -29,7 +29,7 @@ The root surface every other task attaches to. Inputs: Cargo manifests only. Out
 ### T-00.02  Declare the shared dependencies
 id: T-00.02
 phase: 0
-status: pending
+status: done
 depends_on: [T-00.01]
 stack: rust
 criteria:
@@ -39,8 +39,11 @@ criteria:
 not_doing:
   - No feature-flag tuning beyond what the crates need to compile.
   - No FFI / audio / GPU dependencies — those belong to later, blocked tasks.
-test_files: []
-criteria_map: {}
+test_files: [tests/shared_dependencies.rs]
+criteria_map:
+  C1: [c1_workspace_dependencies_declares_six_core_deps, c1_each_shared_dep_has_a_pinned_version]
+  C2: [c2_a_member_inherits_a_shared_dep_via_workspace_true, c2_cargo_build_resolves_the_workspace]
+  C3: [c3_cargo_metadata_exits_zero, c3_each_shared_dep_appears_exactly_once_in_workspace_dependencies]
 attempts: 1
 last_failure: ""
 ---
