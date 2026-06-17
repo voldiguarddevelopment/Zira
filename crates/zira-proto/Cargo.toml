@@ -3,3 +3,8 @@ name = "zira-proto"
 version = "0.0.0"
 edition = "2021"
 publish = false
+
+# zira-proto is the shared-type crate; it inherits serde from the workspace so the
+# proto types (Emotion, State, Event, payloads) can derive Serialize/Deserialize.
+[dependencies]
+serde = { workspace = true }
