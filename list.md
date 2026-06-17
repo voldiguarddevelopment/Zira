@@ -426,7 +426,7 @@ not_doing:
   - No metrics or external telemetry — tracing only.
 test_files: []
 criteria_map: {}
-attempts: 1
+attempts: 2
 last_failure: ""
 ---
 An auditable trail of the conversation flow. Inputs: applied transitions. Outputs: one structured tracing record per real transition. Errors/edges: no-ops are silent. Invariant: every real state change is logged once. Done-check: the three criteria.
