@@ -471,9 +471,7 @@ not_doing:
 test_files: []
 criteria_map: {}
 attempts: 5
-last_failure: |
-  frozen artifact modified: criteria_map:T-00.20
-  frozen artifact modified: tests/stage_traits.rs
+last_failure: "frozen artifact modified: criteria_map:T-00.20"
 ---
 The seam that lets devices be mocked. Inputs: the orchestrator's needs. Outputs: seven traits + a mock each. Errors/edges: mocks are deterministic. Invariant: the orchestrator depends on traits, never concrete engines. Done-check: the three criteria.
 
