@@ -1,0 +1,6 @@
+# Pins the project to a single, reproducible toolchain so every pass — local or CI —
+# formats and lints against the same rustfmt + clippy. Stable channel only; the loop
+# builds the pure-Rust substrate and needs no nightly features.
+[toolchain]
+channel = "stable"
+components = ["rustfmt", "clippy"]

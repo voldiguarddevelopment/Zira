@@ -8,3 +8,6 @@ publish = false
 # proto types (Emotion, State, Event, payloads) can derive Serialize/Deserialize.
 [dependencies]
 serde = { workspace = true }
+
+[lints]
+workspace = true
