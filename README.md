@@ -159,6 +159,19 @@ FFI model runtimes, the GPU avatar) that need a human + real devices.
 > **Heads up:** the pure-Rust foundation builds and tests today; the end-to-end voice
 > loop awaits the device-bound layers above (and a one-time model/wakeword setup).
 
+### Install
+
+The [`install.sh`](install.sh) script checks prerequisites (Rust + `git` + the `claude`
+CLI), builds the workspace, installs the `zira` binary, and sets up the XDG config/data
+directories — idempotent and safe to re-run:
+
+```bash
+git clone https://github.com/voldiguarddevelopment/Zira.git
+cd Zira && ./install.sh
+```
+
+### Or build by hand
+
 ```bash
 # Build the whole workspace
 cargo build --workspace
