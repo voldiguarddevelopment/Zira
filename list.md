@@ -138,7 +138,7 @@ The conversation-state alphabet. Inputs: a variant. Outputs: a serde-stable, cop
 ### T-00.07  Define the payload types
 id: T-00.07
 phase: 0
-status: pending
+status: done
 depends_on: [T-00.02, T-00.05]
 stack: rust
 criteria:
@@ -148,8 +148,11 @@ criteria:
 not_doing:
   - No event wrapping here (the `Event` enum is the next task).
   - No audio decoding — `AudioChunk` is a typed PCM container only.
-test_files: []
-criteria_map: {}
+test_files: [tests/payload_types.rs]
+criteria_map:
+  C1: [c1_all_six_structs_derive_clone, c1_all_six_structs_derive_serialize_deserialize]
+  C2: [c2_segment_carries_emotion_and_text]
+  C3: [c3_round_trip_transcript, c3_round_trip_audio_chunk, c3_round_trip_segment, c3_round_trip_viseme_frame, c3_round_trip_plan_summary, c3_round_trip_usage]
 attempts: 1
 last_failure: ""
 ---
