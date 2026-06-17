@@ -37,6 +37,11 @@ tracing = "0.1"
 [workspace.lints.clippy]
 all = "deny"
 
+# Dev deps for repo-root integration tests.
+[dev-dependencies]
+zira-proto = { path = "crates/zira-proto" }
+serde_json = { workspace = true }
+
 # The root test-host package inherits the same gate.
 [lints]
 workspace = true
