@@ -41,7 +41,9 @@ all = "deny"
 [dev-dependencies]
 zira-proto = { path = "crates/zira-proto" }
 zira-config = { path = "crates/zira-config" }
+zira-core = { path = "crates/zira-core" }
 serde_json = { workspace = true }
+tokio = { workspace = true }
 toml = "0.8"
 
 # The root test-host package inherits the same gate.
