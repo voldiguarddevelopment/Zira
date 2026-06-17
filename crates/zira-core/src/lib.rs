@@ -17,11 +17,15 @@ pub struct Orchestrator {
 impl Orchestrator {
     /// Build a new `Orchestrator` in [`State::Idle`].
     pub fn new(cmd_rx: mpsc::Receiver<Event>, event_tx: broadcast::Sender<Event>) -> Self {
-        todo!("T-00.14 GREEN: implement Orchestrator::new")
+        Self {
+            state: State::Idle,
+            cmd_rx,
+            event_tx,
+        }
     }
 
     /// Return the current conversation state (read-only).
     pub fn state(&self) -> State {
-        todo!("T-00.14 GREEN: implement Orchestrator::state")
+        self.state
     }
 }
