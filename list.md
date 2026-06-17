@@ -118,7 +118,7 @@ The fixed emotion vocabulary shared across TTS and the avatar. Inputs: a variant
 ### T-00.06  Define the State type
 id: T-00.06
 phase: 0
-status: pending
+status: done
 depends_on: [T-00.02]
 stack: rust
 criteria:
@@ -126,8 +126,10 @@ criteria:
   - C2: a repo-root integration test `tests/state_type.rs` round-trips every variant through serde and asserts `State::default() == State::Idle`.
 not_doing:
   - No transition logic here (that is the state machine in `zira-core`).
-test_files: []
-criteria_map: {}
+test_files: [tests/state_type.rs]
+criteria_map:
+  C1: [c1_default_is_idle, c1_all_six_variants_exist, c1_copy_semantics, c1_partial_eq]
+  C2: [c2_serde_json_round_trip, c2_default_is_idle_serde_context]
 attempts: 2
 last_failure: ""
 ---
