@@ -88,7 +88,7 @@ not_doing:
 test_files: []
 criteria_map: {}
 attempts: 4
-last_failure: ""
+last_failure: "tests/logging_init.rs:12: stub (todo-macro) — //! directly; the stub declares the symbol so the tests compile, but the `todo!()` body"
 ---
 Observability from first boot. Inputs: the `RUST_LOG` env var. Outputs: an installed tracing subscriber + an idempotent init. Errors/edges: a malformed filter falls back to the default level, never a panic. Invariant: logging is safe to initialize once. Done-check: the three criteria.
 
