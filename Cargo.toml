@@ -40,7 +40,9 @@ all = "deny"
 # Dev deps for repo-root integration tests.
 [dev-dependencies]
 zira-proto = { path = "crates/zira-proto" }
+zira-config = { path = "crates/zira-config" }
 serde_json = { workspace = true }
+toml = "0.8"
 
 # The root test-host package inherits the same gate.
 [lints]
