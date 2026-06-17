@@ -95,7 +95,7 @@ Observability from first boot. Inputs: the `RUST_LOG` env var. Outputs: an insta
 ### T-00.05  Define the Emotion type
 id: T-00.05
 phase: 0
-status: pending
+status: done
 depends_on: [T-00.02]
 stack: rust
 criteria:
@@ -105,8 +105,11 @@ criteria:
 not_doing:
   - No prosody or expression tables here (those are `zira-emotion`, a later task).
   - No streaming tag parser here (that is `zira-emotion`).
-test_files: []
-criteria_map: {}
+test_files: [tests/emotion_type.rs]
+criteria_map:
+  C1: [c1_default_is_neutral, c1_all_ten_variants_exist]
+  C2: [c2_serde_json_round_trip]
+  C3: [c3_from_tag_unknown_maps_to_neutral, c3_from_tag_case_insensitive]
 attempts: 1
 last_failure: ""
 ---
