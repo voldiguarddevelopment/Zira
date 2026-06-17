@@ -240,7 +240,7 @@ not_doing:
   - No file content management — directory resolution + creation only.
 test_files: []
 criteria_map: {}
-attempts: 5
+attempts: 6
 last_failure: |
   running 8 tests
   test c1_config_dir_rooted_under_xdg_config_home ... ok
