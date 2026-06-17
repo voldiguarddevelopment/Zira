@@ -470,7 +470,7 @@ not_doing:
   - No real engines here — the real STT/TTS/wake/avatar impls are blocked-on-human (hardware/FFI/GPU).
 test_files: []
 criteria_map: {}
-attempts: 5
+attempts: 6
 last_failure: "frozen artifact modified: criteria_map:T-00.20"
 ---
 The seam that lets devices be mocked. Inputs: the orchestrator's needs. Outputs: seven traits + a mock each. Errors/edges: mocks are deterministic. Invariant: the orchestrator depends on traits, never concrete engines. Done-check: the three criteria.
