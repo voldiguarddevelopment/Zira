@@ -326,7 +326,7 @@ Catching bad config loudly. Inputs: a `ZiraConfig`. Outputs: Ok or a field-speci
 ### T-00.14  Define the Orchestrator
 id: T-00.14
 phase: 0
-status: pending
+status: done
 depends_on: [T-00.06, T-00.08]
 stack: rust
 criteria:
@@ -335,8 +335,11 @@ criteria:
   - C3: a repo-root integration test `tests/orchestrator_new.rs` constructs an `Orchestrator` and asserts its initial `state()` is `State::Idle`.
 not_doing:
   - No transition or run-loop logic here (later tasks).
-test_files: []
-criteria_map: {}
+test_files: [tests/orchestrator_new.rs]
+criteria_map:
+  C1: [c1_orchestrator_accepts_channel_handles]
+  C2: [c2_new_builds_orchestrator_in_idle, c2_state_accessor_is_read_only]
+  C3: [c3_initial_state_is_idle]
 attempts: 1
 last_failure: ""
 ---
