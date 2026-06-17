@@ -319,7 +319,7 @@ not_doing:
 test_files: []
 criteria_map: {}
 attempts: 1
-last_failure: ""
+last_failure: "tests/config_validate.rs:52: stub (todo-macro) — // method so the `todo!()` body causes the test to fail in RED."
 ---
 Catching bad config loudly. Inputs: a `ZiraConfig`. Outputs: Ok or a field-specific `ConfigError`. Errors/edges: each invalid field maps to a distinct typed error. Invariant: an invalid config never reaches the runtime silently. Done-check: the three criteria.
 
