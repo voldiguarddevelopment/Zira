@@ -65,7 +65,7 @@ not_doing:
 test_files: []
 criteria_map: {}
 attempts: 1
-last_failure: ""
+last_failure: tests pass in the red phase — a correct red must fail (missing implementation), this is vacuous
 ---
 The style + lint floor. Inputs: the workspace root. Outputs: toolchain + fmt + clippy config that pass clean on the scaffold. Errors/edges: a malformed toml fails the respective tool. Invariant: fmt and clippy are green from here. Done-check: the three tool-observable criteria.
 
