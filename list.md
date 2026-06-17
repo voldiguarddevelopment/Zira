@@ -393,7 +393,7 @@ The pure heart of the state machine. Inputs: the current state + an event. Outpu
 ### T-00.17  Run the orchestrator loop
 id: T-00.17
 phase: 0
-status: pending
+status: done
 depends_on: [T-00.14, T-00.15, T-00.16]
 stack: rust
 criteria:
@@ -402,8 +402,11 @@ criteria:
   - C3: a repo-root integration test `tests/orchestrator_run.rs` (tokio) feeds a scripted event sequence and asserts the orchestrator's `state()` advances through the expected states, then exits on shutdown.
 not_doing:
   - No real stages here — events are injected directly in the test.
-test_files: []
-criteria_map: {}
+test_files: [tests/orchestrator_run.rs]
+criteria_map:
+  C1: [c1_run_advances_state_on_defined_transition]
+  C2: [c2_undefined_transition_leaves_state_unchanged, c2_channel_close_exits_loop_cleanly]
+  C3: [c3_scripted_sequence_advances_through_expected_states]
 attempts: 1
 last_failure: ""
 ---
