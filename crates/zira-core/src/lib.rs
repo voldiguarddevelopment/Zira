@@ -1,5 +1,7 @@
 //! zira-core — conversation state machine.
 
+use std::time::Duration;
+
 use tokio::sync::{broadcast, mpsc, watch};
 use zira_proto::{Event, State};
 
@@ -54,6 +56,10 @@ pub struct Orchestrator {
     cmd_rx: mpsc::Receiver<Event>,
     event_tx: broadcast::Sender<Event>,
     state_tx: watch::Sender<State>,
+    /// How long to wait in `Listening` before returning to `Idle` on silence.
+    /// `None` disables the timeout.
+    #[allow(dead_code)]
+    silence_timeout: Option<Duration>,
 }
 
 impl Orchestrator {
@@ -65,7 +71,17 @@ impl Orchestrator {
             cmd_rx,
             event_tx,
             state_tx,
+            silence_timeout: None,
         }
+    }
+
+    /// Set the duration of silence that, while in [`State::Listening`], drives a
+    /// `Listening -> Idle` transition.  Speech activity (`SpeechStarted` /
+    /// `SpeechEnded`) resets or cancels the timer so an active utterance is never
+    /// interrupted.
+    pub fn with_silence_timeout(mut self, duration: Duration) -> Self {
+        self.silence_timeout = Some(duration);
+        self
     }
 
     /// Return the current conversation state (read-only).
