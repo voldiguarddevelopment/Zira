@@ -2162,7 +2162,7 @@ not_doing:
   - No runtime configurability — the version is compiled in.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 Embeds the build version for packaging. Inputs: none (compile-time `CARGO_PKG_VERSION`). Outputs: a non-empty `&'static str` version, in the `zira-config` library crate. Edge: the string is always present and shaped `X.Y.Z`. Invariant: the reported version tracks the crate manifest with no drift. Done-check: the two criteria — non-empty and semver-shaped.
