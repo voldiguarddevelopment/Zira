@@ -1128,7 +1128,7 @@ not_doing:
   - No on-disk persistence — the index is rebuilt from the store/episodes.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The pure-Rust vector index's insertion primitive. Inputs: an id and its vector. Outputs: a growing in-memory index. Edge: adding to an empty index yields len 1. Invariant: len equals the number of add calls with distinct ids. Done-check: the add-three-then-len criterion.
