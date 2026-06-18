@@ -1786,7 +1786,7 @@ not_doing:
   - No serde derive required on the decision.
 test_files: []
 criteria_map: {}
-attempts: 1
+attempts: 2
 last_failure: |
   wrong red: tests fail to compile for a reason other than a missing symbol (test-authoring error):
   warning: field `event_tx` is never read
@@ -1799,7 +1799,6 @@ last_failure: |
       |     ^^^^^^^^
       |
       = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
-  
   warning: `zira-core` (lib) generated 1 warning
      Compiling zira-build v0.0.0 (/home/floofy/development/zira-build/.ratchet/worktrees/T-04.10)
   error[E0599]: no method named `is_allowed` found for enum `GateDecision` in the current scope
@@ -1807,7 +1806,6 @@ last_failure: |
      |
   22 |         allow.is_allowed(),
      |               ^^^^^^^^^^ method not found in `GateDecision`
-  
   error[E0559]: variant `GateDecision::Deny` has no field named `reason`
     --> tests/gate_decision_type.rs:28:9
      |
@@ -1815,13 +1813,11 @@ last_failure: |
      |         ^^^^^^ `GateDecision::Deny` does not have this field
      |
      = note: all struct fields are already assigned
-  
   error[E0599]: no method named `is_allowed` found for enum `GateDecision` in the current scope
     --> tests/gate_decision_type.rs:31:15
      |
   31 |         !deny.is_allowed(),
      |               ^^^^^^^^^^ method not found in `GateDecision`
-  
   error[E0559]: variant `GateDecision::Deny` has no field named `reason`
     --> tests/gate_decision_type.rs:56:9
      |
@@ -1829,25 +1825,21 @@ last_failure: |
      |         ^^^^^^ `GateDecision::Deny` does not have this field
      |
      = note: all struct fields are already assigned
-  
   error[E0599]: no method named `is_allowed` found for enum `GateDecision` in the current scope
     --> tests/gate_decision_type.rs:60:23
      |
   60 |     assert!(!decision.is_allowed(), "Deny must not be allowed");
      |                       ^^^^^^^^^^ method not found in `GateDecision`
-  
   error[E0026]: variant `Deny` does not have a field named `reason`
     --> tests/gate_decision_type.rs:64:42
      |
   64 |         GateDecision::Deny { capability, reason } => {
      |                                          ^^^^^^ variant `Deny` does not have this field
-  
   error[E0599]: no method named `is_allowed` found for enum `GateDecision` in the current scope
     --> tests/gate_decision_type.rs:72:33
      |
   72 |     assert!(GateDecision::Allow.is_allowed());
      |                                 ^^^^^^^^^^ method not found in `GateDecision`
-  
   error[E0559]: variant `GateDecision::Deny` has no field named `reason`
     --> tests/gate_decision_type.rs:90:9
      |
@@ -1855,7 +1847,6 @@ last_failure: |
      |         ^^^^^^ `GateDecision::Deny` does not have this field
      |
      = note: all struct fields are already assigned
-  
   error[E0277]: `GateDecision` doesn't implement `std::fmt::Display`
     --> tests/gate_decision_type.rs:94:22
      |
@@ -1869,7 +1860,6 @@ last_failure: |
      |
   85 |     fn requires_display<T: Display>(_: &T) {}
      |                            ^^^^^^^ required by this bound in `requires_display`
-  
   error[E0277]: `GateDecision` doesn't implement `std::fmt::Display`
     --> tests/gate_decision_type.rs:95:22
      |
@@ -1883,7 +1873,6 @@ last_failure: |
      |
   85 |     fn requires_display<T: Display>(_: &T) {}
      |                            ^^^^^^^ required by this bound in `requires_display`
-  
   error[E0599]: `GateDecision` doesn't implement `std::fmt::Display`
     --> tests/gate_decision_type.rs:97:27
      |
@@ -1900,7 +1889,6 @@ last_failure: |
              which is required by `GateDecision: ToString`
   note: the method `to_string` exists on the type `String`
     --> library/alloc/src/string.rs:2880:4
-  
   error[E0599]: `GateDecision` doesn't implement `std::fmt::Display`
     --> tests/gate_decision_type.rs:98:25
      |
@@ -1917,7 +1905,6 @@ last_failure: |
              which is required by `GateDecision: ToString`
   note: the method `to_string` exists on the type `String`
     --> library/alloc/src/string.rs:2880:4
-  
   Some errors have detailed explanations: E0026, E0277, E0559, E0599.
   For more information about an error, try `rustc --explain E0026`.
   error: could not compile `zira-build` (test "gate_decision_type") due to 12 previous errors
