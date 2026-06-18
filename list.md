@@ -87,7 +87,7 @@ not_doing:
   - No per-crate log configuration beyond the global env filter.
 test_files: []
 criteria_map: {}
-attempts: 3
+attempts: 4
 last_failure: |
   tests/logging_init.rs:29: stub (todo-macro) — /// RED: `init()` is `todo!()` → panics → test FAILS.
   tests/logging_init.rs:49: stub (todo-macro) — /// RED: first call panics via `todo!()` → test FAILS.
