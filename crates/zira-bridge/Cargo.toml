@@ -6,6 +6,7 @@ publish = false
 
 [dependencies]
 zira-config = { path = "../zira-config" }
+zira-proto = { path = "../zira-proto" }
 
 [lints]
 workspace = true
