@@ -99,6 +99,41 @@ pub fn scan_injection(text: &str) -> Vec<Finding> {
         .collect()
 }
 
+/// Check whether `candidate` is lexically contained within at least one of the
+/// manifest's `allowed_roots`.
+///
+/// The check is purely lexical: `..` components are resolved without touching
+/// the filesystem (no `canonicalize`), and a candidate is allowed only when its
+/// normalized form starts with a normalized root as a path-component prefix.
+pub fn path_allowed(m: &SkillManifest, candidate: &std::path::Path) -> bool {
+    let normalized = normalize_lexical(candidate);
+    m.allowed_roots.iter().any(|root| {
+        let root_path = normalize_lexical(std::path::Path::new(root));
+        normalized.starts_with(&root_path)
+    })
+}
+
+/// Resolve `.` and `..` components in `path` without any filesystem access.
+fn normalize_lexical(path: &std::path::Path) -> std::path::PathBuf {
+    use std::path::Component;
+    let mut components: Vec<Component<'_>> = Vec::new();
+    for component in path.components() {
+        match component {
+            Component::CurDir => {}
+            Component::ParentDir => match components.last() {
+                Some(Component::Normal(_)) => {
+                    components.pop();
+                }
+                _ => {
+                    components.push(component);
+                }
+            },
+            _ => components.push(component),
+        }
+    }
+    components.iter().collect()
+}
+
 use hmac::{Hmac, Mac};
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
