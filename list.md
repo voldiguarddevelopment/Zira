@@ -945,7 +945,7 @@ The laziness-breaking bound on episodic growth, fed by `zira_config::MemoryConfi
 ### T-02.06  Type the fact-store errors
 id: T-02.06
 phase: 2
-status: pending
+status: done
 depends_on: [T-02.01]
 stack: rust
 criteria:
@@ -954,8 +954,10 @@ criteria:
 not_doing:
   - No retry or recovery policy.
   - No variant for a missing key — a missing get returns `Ok(None)`, not an error.
-test_files: []
-criteria_map: {}
+test_files: [tests/fact_store_error.rs]
+criteria_map:
+  C1: [c1_fact_store_error_implements_error_and_display]
+  C2: [c2_display_messages_are_nonempty_named_and_distinct]
 attempts: 1
 last_failure: ""
 ---
