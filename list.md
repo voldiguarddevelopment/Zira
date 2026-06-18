@@ -1527,7 +1527,7 @@ The data record every later safety check reads. Inputs: the five field values. O
 ### T-04.02  Parse the manifest
 id: T-04.02
 phase: 4
-status: pending
+status: done
 depends_on: [T-04.01]
 stack: rust
 criteria:
@@ -1537,8 +1537,11 @@ criteria:
 not_doing:
   - No reading from disk — both parsers take an in-memory `&str`.
   - No semantic validation of capabilities here (that is the gate task).
-test_files: []
-criteria_map: {}
+test_files: [tests/parse_manifest.rs]
+criteria_map:
+  C1: [c1_parse_manifest_toml_valid_fixture]
+  C2: [c2_parse_manifest_json_valid_fixture, c2_toml_and_json_parse_to_equal_values]
+  C3: [c3_malformed_toml_returns_parse_error, c3_malformed_json_returns_parse_error]
 attempts: 1
 last_failure: ""
 ---
