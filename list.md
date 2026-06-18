@@ -1562,7 +1562,7 @@ not_doing:
   - No conversion `From` impls beyond what `thiserror` derives.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The typed failure surface for manifest handling. Inputs: a constructed variant. Outputs: a distinct, non-empty `Display` string per variant and an `Error` impl. Edge: every variant's `Display` must be exercised so no format operator survives mutation. Invariant: each manifest failure maps to exactly one variant. Done-check: per-variant Display distinctness plus the `Error` trait object binding.
