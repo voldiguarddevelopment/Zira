@@ -567,7 +567,7 @@ The synthesis-facing table. Inputs: an emotion. Outputs: prosody multipliers. In
 ### T-01.05  Build the claude invocation
 id: T-01.05
 phase: 1
-status: pending
+status: done
 depends_on: [T-00.10]
 stack: rust
 criteria:
@@ -576,8 +576,10 @@ criteria:
 not_doing:
   - Spawning the process.
   - Environment or credential handling.
-test_files: []
-criteria_map: {}
+test_files: [tests/build_argv.rs]
+criteria_map:
+  C1: [c1_argv_starts_with_binary_path, c1_argv_contains_non_interactive_flag, c1_argv_contains_stream_json_output_format]
+  C2: [c2_model_id_follows_model_flag]
 attempts: 1
 last_failure: ""
 ---
