@@ -3,6 +3,35 @@
 use zira_config::AvatarConfig;
 use zira_proto::{Emotion, Event};
 
+/// Typed errors for the avatar subsystem's gateable path.
+#[derive(Debug)]
+pub enum AvatarError {
+    /// The VRM renderer was selected but no VRM path was configured.
+    MissingVrmPath,
+    /// The model file at the given path could not be read or is absent.
+    ModelUnreadable(String),
+    /// A viseme label was not recognized by the avatar subsystem.
+    UnsupportedViseme(String),
+}
+
+impl std::fmt::Display for AvatarError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            AvatarError::MissingVrmPath => {
+                write!(f, "missing VRM path: no vrm_path configured for VRM renderer")
+            }
+            AvatarError::ModelUnreadable(path) => {
+                write!(f, "model file unreadable or absent: {path}")
+            }
+            AvatarError::UnsupportedViseme(label) => {
+                write!(f, "unsupported viseme label: {label}")
+            }
+        }
+    }
+}
+
+impl std::error::Error for AvatarError {}
+
 /// Which renderer the avatar subsystem should use.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum RendererKind {
