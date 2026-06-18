@@ -2151,7 +2151,7 @@ Checks a configured resource budget against sane bounds. Inputs: a `&MemoryConfi
 ### T-05.11  Expose the build version
 id: T-05.11
 phase: 5
-status: pending
+status: done
 depends_on: [T-00.01]
 stack: rust
 criteria:
@@ -2160,8 +2160,10 @@ criteria:
 not_doing:
   - No git-hash embedding here — the release manifest task may add metadata; this exposes only the package version.
   - No runtime configurability — the version is compiled in.
-test_files: []
-criteria_map: {}
+test_files: [tests/build_version.rs]
+criteria_map:
+  C1: [build_version_is_non_empty, build_version_is_static_str]
+  C2: [build_version_is_semver_shaped]
 attempts: 1
 last_failure: ""
 ---
