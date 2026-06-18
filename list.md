@@ -742,7 +742,7 @@ not_doing:
 test_files: []
 criteria_map: {}
 attempts: 1
-last_failure: ""
+last_failure: tests pass in the red phase — a correct red must fail (missing implementation), this is vacuous
 ---
 The failure path of the Thinking stage. Inputs: a failing ask. Outputs: a single Error event. Invariant: no panic on bridge failure. Done-check: the one criterion.
 
