@@ -6,6 +6,7 @@ publish = false
 
 [dependencies]
 serde_json = { workspace = true }
+thiserror = { workspace = true }
 zira-config = { path = "../zira-config" }
 zira-proto = { path = "../zira-proto" }
 

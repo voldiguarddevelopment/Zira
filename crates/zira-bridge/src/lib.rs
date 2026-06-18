@@ -3,6 +3,20 @@
 use std::io::Write;
 use std::process::{Command, Stdio};
 
+/// Typed failures from the bridge layer.
+#[derive(Debug, thiserror::Error)]
+pub enum BridgeError {
+    /// The subprocess could not be spawned.
+    #[error("failed to spawn claude process: {0}")]
+    SpawnFailed(String),
+    /// The subprocess exited with a non-zero status code.
+    #[error("claude process exited with non-zero exit code: {0}")]
+    NonZeroExit(i32),
+    /// The subprocess output contained no terminal result event.
+    #[error("claude output is missing the terminal result event")]
+    MissingResult,
+}
+
 use zira_config::ZiraConfig;
 use zira_proto::Transcript;
 
