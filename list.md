@@ -1677,7 +1677,7 @@ not_doing:
   - No remediation suggestions attached to a finding.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The unit of evidence the injection scan emits. Inputs: a matched pattern and an excerpt. Outputs: a comparable `Finding` record. Edge: equality must distinguish differing patterns so dedup/assertion logic is sound. Invariant: a finding always carries which pattern matched. Done-check: field read-back plus the equal/unequal `PartialEq` checks.
