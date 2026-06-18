@@ -956,7 +956,7 @@ not_doing:
   - No variant for a missing key — a missing get returns `Ok(None)`, not an error.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The fact store's typed failure surface, declared before the store so its operations can return it. NOTE: C2 deliberately exercises every Display arm so no arm is an unexercised mutation survivor (the T-01.10 lesson). Inputs: none — constructed in tests. Outputs: distinct, non-empty, failure-naming messages. Invariant: each variant has its own message. Done-check: the two criteria.
