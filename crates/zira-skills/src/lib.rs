@@ -3,11 +3,28 @@
 /// The verdict returned by [`gate_capabilities`].
 ///
 /// `Allow` means every declared capability passed the constitution gate.
-/// `Deny` carries the first offending capability name.
+/// `Deny` carries the first offending capability name and the denial reason.
 #[derive(Debug, Clone, PartialEq)]
 pub enum GateDecision {
     Allow,
-    Deny { capability: String },
+    Deny { capability: String, reason: String },
+}
+
+impl GateDecision {
+    pub fn is_allowed(&self) -> bool {
+        matches!(self, GateDecision::Allow)
+    }
+}
+
+impl std::fmt::Display for GateDecision {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            GateDecision::Allow => write!(f, "allowed"),
+            GateDecision::Deny { capability, reason } => {
+                write!(f, "denied capability `{capability}`: {reason}")
+            }
+        }
+    }
 }
 
 /// Gate a skill manifest's declared capabilities against the immutable constitution.
@@ -35,6 +52,7 @@ pub fn gate_capabilities(
         if !sanctioned {
             return GateDecision::Deny {
                 capability: cap.clone(),
+                reason: "not sanctioned by the Zira constitution".to_string(),
             };
         }
     }
