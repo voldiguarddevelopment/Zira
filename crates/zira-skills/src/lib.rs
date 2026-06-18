@@ -1,5 +1,28 @@
 //! zira-skills — skill/MCP staging, signing, audit log.
 
+/// The verdict returned by [`gate_capabilities`].
+///
+/// `Allow` means every declared capability passed the constitution gate.
+/// `Deny` carries the first offending capability name.
+#[derive(Debug, Clone, PartialEq)]
+pub enum GateDecision {
+    Allow,
+    Deny { capability: String },
+}
+
+/// Gate a skill manifest's declared capabilities against the immutable constitution.
+///
+/// Returns [`GateDecision::Allow`] when every capability is affirmatively matched by a
+/// non-prohibitive constitution rule.  Returns [`GateDecision::Deny`] — naming the first
+/// offending capability — when any capability matches only prohibitive rules (forbidden)
+/// or matches no rule at all (unknown; default-deny).
+pub fn gate_capabilities(
+    _c: &zira_config::Constitution,
+    _m: &SkillManifest,
+) -> GateDecision {
+    unimplemented!("gate_capabilities not yet implemented")
+}
+
 /// A single match reported by [`scan_injection`].
 #[derive(Debug, Clone, PartialEq)]
 pub struct Finding {
