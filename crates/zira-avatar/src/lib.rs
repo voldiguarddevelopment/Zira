@@ -2,6 +2,39 @@
 
 use zira_proto::Emotion;
 
+/// Mouth-shape variants for lip-sync.
+///
+/// Stub: derives are correct; Default and as_label are intentionally wrong so
+/// the frozen RED tests fail until the real implementation lands.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum Viseme {
+    Sil,
+    A,
+    I,
+    U,
+    E,
+    O,
+}
+
+impl Default for Viseme {
+    fn default() -> Self {
+        Viseme::Sil
+    }
+}
+
+impl Viseme {
+    pub fn as_label(self) -> &'static str {
+        match self {
+            Viseme::Sil => "sil",
+            Viseme::A => "a",
+            Viseme::I => "i",
+            Viseme::U => "u",
+            Viseme::E => "e",
+            Viseme::O => "o",
+        }
+    }
+}
+
 /// Blendshape weight preset for a single VRM expression.
 #[derive(Debug, Clone, PartialEq)]
 pub struct ExpressionPreset {
