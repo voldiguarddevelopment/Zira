@@ -977,7 +977,7 @@ not_doing:
   - No schema migration handling.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The redb-backed semantic store's lifecycle entry point. Inputs: a database path. Outputs: an open FactStore handle, or a typed FactStoreError. Edge: a missing database file is created; a second open of the same path reuses it. Invariant: opening then re-opening a path yields a working handle over the same data. Done-check: the open-and-reopen criterion.
