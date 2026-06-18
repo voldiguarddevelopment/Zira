@@ -285,6 +285,31 @@ pub fn resolve_default_emotion(config: &EmotionConfig) -> zira_proto::Emotion {
     zira_proto::Emotion::from_tag(&config.default_emotion)
 }
 
+/// Validate a slice of emotion-tag strings against the ten known `Emotion` variants.
+///
+/// Each tag is matched case-insensitively. Returns the resolved `Vec<Emotion>` on
+/// success, or `Err(VocabError::UnknownTag)` naming the first tag that matches no
+/// variant. An empty slice is valid and yields an empty `Vec`.
+pub fn validate_vocab(tags: &[String]) -> Result<Vec<zira_proto::Emotion>, VocabError> {
+    tags.iter()
+        .map(|tag| {
+            match tag.to_ascii_lowercase().as_str() {
+                "neutral" => Ok(zira_proto::Emotion::Neutral),
+                "happy" => Ok(zira_proto::Emotion::Happy),
+                "sad" => Ok(zira_proto::Emotion::Sad),
+                "angry" => Ok(zira_proto::Emotion::Angry),
+                "excited" => Ok(zira_proto::Emotion::Excited),
+                "calm" => Ok(zira_proto::Emotion::Calm),
+                "curious" => Ok(zira_proto::Emotion::Curious),
+                "concerned" => Ok(zira_proto::Emotion::Concerned),
+                "playful" => Ok(zira_proto::Emotion::Playful),
+                "tired" => Ok(zira_proto::Emotion::Tired),
+                _ => Err(VocabError::UnknownTag { tag: tag.clone() }),
+            }
+        })
+        .collect()
+}
+
 /// Range-check a probability threshold, which must lie within `[0.0, 1.0]`.
 fn check_threshold(field: &'static str, value: f32) -> Result<(), ConfigError> {
     if !(0.0..=1.0).contains(&value) {
