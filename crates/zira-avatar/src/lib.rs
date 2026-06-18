@@ -17,17 +17,21 @@ pub enum Viseme {
 }
 
 impl Default for Viseme {
-    /// Stub — returns A so that `c1_default_is_sil` fails in RED.
     fn default() -> Self {
-        Viseme::A
+        Viseme::Sil
     }
 }
 
 impl Viseme {
-    /// Stub — returns the same string for every variant so that every
-    /// `c2_*_label` test fails and the distinct-labels test also fails in RED.
     pub fn as_label(self) -> &'static str {
-        "x"
+        match self {
+            Viseme::Sil => "sil",
+            Viseme::A => "a",
+            Viseme::I => "i",
+            Viseme::U => "u",
+            Viseme::E => "e",
+            Viseme::O => "o",
+        }
     }
 }
 
