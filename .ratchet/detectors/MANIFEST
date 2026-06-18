@@ -1,2 +1,2 @@
-526833d1047319ec95ea52eae3233a5e2974d184d999cef0baaec6a172c6c454  criteria_map:T-00.04
-4dcf3a769ffa6cdf48d00b4f5d5fd8404fcdae64a56f8a0d92cc67657d6abb6f  tests/logging_init.rs
+944cf8e46d7efcd207b23c8b242b8ada0a4ebfee366ebab78df25ca829bdff33  criteria_map:T-01.01
+dc2cb0fc710f1054315e48860d46f1aaafcdc3b575e8111f56bb8e52877e3737  tests/parse_tag.rs
