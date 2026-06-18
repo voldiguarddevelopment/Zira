@@ -481,7 +481,7 @@ The Phase-0 acceptance: the whole loop cycles on mocks. Inputs: the mock stages 
 ### T-01.01  Parse the emotion tag
 id: T-01.01
 phase: 1
-status: pending
+status: done
 depends_on: [T-00.05]
 stack: rust
 criteria:
@@ -490,8 +490,10 @@ criteria:
 not_doing:
   - Markers anywhere but the start of the string.
   - Handling more than one marker — that is the segmenter.
-test_files: []
-criteria_map: {}
+test_files: [tests/parse_tag.rs]
+criteria_map:
+  C1: [c1_leading_marker_extracts_emotion, c1_leading_whitespace_trimmed, c1_case_insensitive_name, c1_unknown_name_resolves_to_neutral, c1_all_known_variants_parseable]
+  C2: [c2_no_marker_returns_neutral_and_input, c2_empty_input_returns_neutral_and_empty, c2_no_leading_marker_slice_is_same_bytes, c2_marker_not_at_start_is_no_op]
 attempts: 1
 last_failure: ""
 ---
