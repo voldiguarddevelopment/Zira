@@ -105,4 +105,12 @@ impl FactStore {
             .map_err(|e| FactStoreError::TransactionFailed(e.to_string()))?;
         Ok(())
     }
+
+    /// Returns the value for `key`, or `Ok(None)` if the key is absent.
+    /// A missing key is never an error variant.
+    pub fn get(&self, _key: &str) -> Result<Option<String>, FactStoreError> {
+        Err(FactStoreError::TransactionFailed(
+            "get not yet implemented".into(),
+        ))
+    }
 }
