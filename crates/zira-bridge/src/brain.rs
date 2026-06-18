@@ -39,9 +39,7 @@ impl Brain for ClaudeBrain {
                 events.push(Event::TurnComplete(answer.usage));
                 events
             }
-            Err(e) => {
-                vec![Event::Error(e.to_string())]
-            }
+            Err(e) => vec![Event::Error(e.to_string())],
         }
     }
 }
