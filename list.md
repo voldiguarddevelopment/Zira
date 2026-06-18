@@ -1720,7 +1720,7 @@ not_doing:
   - No serde derive required on the decision.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The verdict type the constitution gate returns. Inputs: a constructed variant. Outputs: an `is_allowed` boolean plus a distinct `Display` per variant. Edge: every variant's `Display` is exercised so no format operator survives mutation. Invariant: `is_allowed` is true iff `Allow`. Done-check: the boolean per-variant plus the distinct-Display check.
