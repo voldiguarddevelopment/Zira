@@ -365,6 +365,11 @@ pub fn audit_memory_budget(config: &MemoryConfig, ceiling: usize) -> Result<(), 
     Ok(())
 }
 
+/// The crate's version, compiled in from `CARGO_PKG_VERSION`.
+pub fn build_version() -> &'static str {
+    env!("CARGO_PKG_VERSION")
+}
+
 /// Range-check a probability threshold, which must lie within `[0.0, 1.0]`.
 fn check_threshold(field: &'static str, value: f32) -> Result<(), ConfigError> {
     if !(0.0..=1.0).contains(&value) {
