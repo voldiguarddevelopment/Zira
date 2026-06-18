@@ -1832,7 +1832,7 @@ not_doing:
   - No on-disk persistence of entries.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The link record of the HMAC audit chain. Inputs: the entry fields, plus key/name/action/prev for the hash helper. Outputs: a serde-stable entry and a deterministic, input-sensitive `entry_hash`. Edge: changing any hashed input changes the hash so tampering is detectable downstream. Invariant: an entry binds its content to the previous hash. Done-check: field read-back, serde round-trip, and hash determinism/sensitivity.
