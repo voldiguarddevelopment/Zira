@@ -1092,21 +1092,20 @@ not_doing:
 ---
 Zira's prompt-injection grep over externally-sourced skill text. Inputs: a `&str` of skill prompt/description. Outputs: a `Vec<Finding>`, one per matched danger pattern. Edge: a planted-bad string yields findings; a clean string yields an empty vec. Invariant: the pattern table is the single source of injection signatures and matching is case-insensitive. Done-check: the planted-bad and clean cases both pinned.
 
-### T-04.08  Define the Finding type
+### T-04.08  Construct a finding
 id: T-04.08
 phase: 4
 depends_on: [T-04.07]
 stack: rust
 criteria:
-  - C1: `zira_skills::Finding` is a struct with public fields `pattern: String` and `excerpt: String` deriving `Debug, Clone, PartialEq`, naming the injection pattern that matched and the surrounding text.
-  - C2: A repo-root integration test `tests/finding_type.rs` constructs a `Finding` and asserts both fields read back the stored values.
-  - C3: The test asserts two `Finding`s with the same pattern and excerpt compare equal and two with differing patterns compare unequal (the `PartialEq` derive is exercised).
+  - C1: `zira_skills::Finding::new(pattern: impl Into<String>) -> Finding` builds a `Finding` whose `pattern` field equals the argument, asserted by readback in `tests/finding_type.rs`.
+  - C2: `Finding` implements `std::fmt::Display`, rendering a non-empty string that contains the finding's `pattern`, exercised by the test.
+  - C3: two `Finding`s built from the same pattern compare equal and two from different patterns compare unequal, exercising the `PartialEq` derive.
 not_doing:
-  - No severity scoring — a finding is a flat (pattern, excerpt) record.
-  - No remediation suggestions attached to a finding.
+  - No severity scoring — a finding stays a flat record keyed by its matched pattern.
+  - No change to the `scan_injection` danger table or its return type.
 ---
-The unit of evidence the injection scan emits. Inputs: a matched pattern and an excerpt. Outputs: a comparable `Finding` record. Edge: equality must distinguish differing patterns so dedup/assertion logic is sound. Invariant: a finding always carries which pattern matched. Done-check: field read-back plus the equal/unequal `PartialEq` checks.
-
+BUILD NOTE: `Finding` already exists from T-04.07 (its consumer was authored first — an ordering inversion), so this task does NOT redefine the struct; it ADDS the ergonomic `Finding::new` constructor and a `Display` impl that `tests/finding_type.rs` exercises. RED therefore fails cleanly on the missing `new`/`Display` symbols, not on a struct field. Inputs: a matched pattern. Outputs: a constructed, printable finding. Invariant: Display always names the pattern (C2 pins it so no format arm survives mutation). Done-check: the three criteria.
 ### T-04.09  Gate capabilities against the constitution
 id: T-04.09
 phase: 4
