@@ -1751,7 +1751,7 @@ The unit of evidence the injection scan emits. Inputs: a matched pattern and an 
 ### T-04.09  Gate capabilities against the constitution
 id: T-04.09
 phase: 4
-status: pending
+status: done
 depends_on: [T-00.12, T-04.01]
 stack: rust
 criteria:
@@ -1761,8 +1761,11 @@ criteria:
 not_doing:
   - No mutation of the constitution — it is read-only via `rules()`.
   - No path/sandbox checks here (separate capability-sandbox task).
-test_files: []
-criteria_map: {}
+test_files: [tests/gate_capabilities.rs]
+criteria_map:
+  C1: [c1_allow_when_all_capabilities_sanctioned]
+  C2: [c2_deny_forbidden_capability]
+  C3: [c3_deny_unknown_capability]
 attempts: 1
 last_failure: ""
 ---
