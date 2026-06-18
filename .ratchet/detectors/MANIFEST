@@ -1,2 +1,2 @@
-98481715b8b0c92526fb2c5360fea8df03cad303a59140673f0ec8515822fe37  criteria_map:T-02.10
-2ae5a9c8f0049a82edc60be10fb39f9ed7182ec0fd86816c6030032ca0ca649d  tests/fact_store_delete.rs
+dec5a79cc90c67d130648736f98a66cbcca81fe68da249768899c023cc46112e  criteria_map:T-02.11
+187da4bfc52a218ffbdff679f5a0de55fea4393a31ad6b7dd56ac90f70b16f6c  tests/embedder_trait.rs
