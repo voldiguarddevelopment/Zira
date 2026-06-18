@@ -1573,7 +1573,7 @@ The typed failure surface for manifest handling. Inputs: a constructed variant. 
 ### T-04.04  Define the Signature type
 id: T-04.04
 phase: 4
-status: pending
+status: done
 depends_on: [T-04.01]
 stack: rust
 criteria:
@@ -1583,8 +1583,11 @@ criteria:
 not_doing:
   - No HMAC computation here — this is the carrier type only.
   - No base64 form; hex is the single serialized representation.
-test_files: []
-criteria_map: {}
+test_files: [tests/signature_type.rs]
+criteria_map:
+  C1: [c1_signature_struct_exists_with_to_hex, c1_from_hex_returns_manifest_error_on_failure]
+  C2: [c2_signature_hex_round_trip]
+  C3: [c3_from_hex_non_hex_string_returns_err]
 attempts: 1
 last_failure: ""
 ---
