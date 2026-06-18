@@ -1106,7 +1106,7 @@ not_doing:
   - No SIMD or perf tuning.
 test_files: []
 criteria_map: {}
-attempts: 3
+attempts: 4
 last_failure: |
   surviving mutant at crates/zira-memory/src/lib.rs:141 (arith-mul-to-div) — frozen tests do not kill it
   surviving mutant at crates/zira-memory/src/lib.rs:145 (arith-div-to-mul) — frozen tests do not kill it
