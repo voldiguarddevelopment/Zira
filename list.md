@@ -1787,7 +1787,141 @@ not_doing:
 test_files: []
 criteria_map: {}
 attempts: 1
-last_failure: ""
+last_failure: |
+  wrong red: tests fail to compile for a reason other than a missing symbol (test-authoring error):
+  warning: field `event_tx` is never read
+     --> crates/zira-core/src/lib.rs:137:5
+      |
+  134 | pub struct Orchestrator {
+      |            ------------ field in this struct
+  ...
+  137 |     event_tx: broadcast::Sender<Event>,
+      |     ^^^^^^^^
+      |
+      = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+  
+  warning: `zira-core` (lib) generated 1 warning
+     Compiling zira-build v0.0.0 (/home/floofy/development/zira-build/.ratchet/worktrees/T-04.10)
+  error[E0599]: no method named `is_allowed` found for enum `GateDecision` in the current scope
+    --> tests/gate_decision_type.rs:22:15
+     |
+  22 |         allow.is_allowed(),
+     |               ^^^^^^^^^^ method not found in `GateDecision`
+  
+  error[E0559]: variant `GateDecision::Deny` has no field named `reason`
+    --> tests/gate_decision_type.rs:28:9
+     |
+  28 |         reason: "constitution prohibits arbitrary shell execution".to_string(),
+     |         ^^^^^^ `GateDecision::Deny` does not have this field
+     |
+     = note: all struct fields are already assigned
+  
+  error[E0599]: no method named `is_allowed` found for enum `GateDecision` in the current scope
+    --> tests/gate_decision_type.rs:31:15
+     |
+  31 |         !deny.is_allowed(),
+     |               ^^^^^^^^^^ method not found in `GateDecision`
+  
+  error[E0559]: variant `GateDecision::Deny` has no field named `reason`
+    --> tests/gate_decision_type.rs:56:9
+     |
+  56 |         reason: rsn.to_string(),
+     |         ^^^^^^ `GateDecision::Deny` does not have this field
+     |
+     = note: all struct fields are already assigned
+  
+  error[E0599]: no method named `is_allowed` found for enum `GateDecision` in the current scope
+    --> tests/gate_decision_type.rs:60:23
+     |
+  60 |     assert!(!decision.is_allowed(), "Deny must not be allowed");
+     |                       ^^^^^^^^^^ method not found in `GateDecision`
+  
+  error[E0026]: variant `Deny` does not have a field named `reason`
+    --> tests/gate_decision_type.rs:64:42
+     |
+  64 |         GateDecision::Deny { capability, reason } => {
+     |                                          ^^^^^^ variant `Deny` does not have this field
+  
+  error[E0599]: no method named `is_allowed` found for enum `GateDecision` in the current scope
+    --> tests/gate_decision_type.rs:72:33
+     |
+  72 |     assert!(GateDecision::Allow.is_allowed());
+     |                                 ^^^^^^^^^^ method not found in `GateDecision`
+  
+  error[E0559]: variant `GateDecision::Deny` has no field named `reason`
+    --> tests/gate_decision_type.rs:90:9
+     |
+  90 |         reason: "constitution limits writable paths".to_string(),
+     |         ^^^^^^ `GateDecision::Deny` does not have this field
+     |
+     = note: all struct fields are already assigned
+  
+  error[E0277]: `GateDecision` doesn't implement `std::fmt::Display`
+    --> tests/gate_decision_type.rs:94:22
+     |
+  94 |     requires_display(&allow);
+     |     ---------------- ^^^^^^ the trait `std::fmt::Display` is not implemented for `GateDecision`
+     |     |
+     |     required by a bound introduced by this call
+     |
+  note: required by a bound in `requires_display`
+    --> tests/gate_decision_type.rs:85:28
+     |
+  85 |     fn requires_display<T: Display>(_: &T) {}
+     |                            ^^^^^^^ required by this bound in `requires_display`
+  
+  error[E0277]: `GateDecision` doesn't implement `std::fmt::Display`
+    --> tests/gate_decision_type.rs:95:22
+     |
+  95 |     requires_display(&deny);
+     |     ---------------- ^^^^^ the trait `std::fmt::Display` is not implemented for `GateDecision`
+     |     |
+     |     required by a bound introduced by this call
+     |
+  note: required by a bound in `requires_display`
+    --> tests/gate_decision_type.rs:85:28
+     |
+  85 |     fn requires_display<T: Display>(_: &T) {}
+     |                            ^^^^^^^ required by this bound in `requires_display`
+  
+  error[E0599]: `GateDecision` doesn't implement `std::fmt::Display`
+    --> tests/gate_decision_type.rs:97:27
+     |
+  97 |     let allow_str = allow.to_string();
+     |                           ^^^^^^^^^ method cannot be called on `GateDecision` due to unsatisfied trait bounds
+     |
+    ::: crates/zira-skills/src/lib.rs:8:1
+     |
+   8 | pub enum GateDecision {
+     | --------------------- doesn't satisfy `GateDecision: ToString` or `GateDecision: std::fmt::Display`
+     |
+     = note: the following trait bounds were not satisfied:
+             `GateDecision: std::fmt::Display`
+             which is required by `GateDecision: ToString`
+  note: the method `to_string` exists on the type `String`
+    --> library/alloc/src/string.rs:2880:4
+  
+  error[E0599]: `GateDecision` doesn't implement `std::fmt::Display`
+    --> tests/gate_decision_type.rs:98:25
+     |
+  98 |     let deny_str = deny.to_string();
+     |                         ^^^^^^^^^ method cannot be called on `GateDecision` due to unsatisfied trait bounds
+     |
+    ::: crates/zira-skills/src/lib.rs:8:1
+     |
+   8 | pub enum GateDecision {
+     | --------------------- doesn't satisfy `GateDecision: ToString` or `GateDecision: std::fmt::Display`
+     |
+     = note: the following trait bounds were not satisfied:
+             `GateDecision: std::fmt::Display`
+             which is required by `GateDecision: ToString`
+  note: the method `to_string` exists on the type `String`
+    --> library/alloc/src/string.rs:2880:4
+  
+  Some errors have detailed explanations: E0026, E0277, E0559, E0599.
+  For more information about an error, try `rustc --explain E0026`.
+  error: could not compile `zira-build` (test "gate_decision_type") due to 12 previous errors
+  warning: build failed, waiting for other jobs to finish...
 ---
 The verdict type the constitution gate returns. Inputs: a constructed variant. Outputs: an `is_allowed` boolean plus a distinct `Display` per variant. Edge: every variant's `Display` is exercised so no format operator survives mutation. Invariant: `is_allowed` is true iff `Allow`. Done-check: the boolean per-variant plus the distinct-Display check.
 
