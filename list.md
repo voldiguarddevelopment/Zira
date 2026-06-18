@@ -1476,7 +1476,7 @@ not_doing:
   - No GPU/device errors here — those belong to the blocked render-loop task.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The avatar subsystem's typed failure surface for the gateable path, with every `Display` arm exercised so none survives mutation (the T-01.10 lesson). Inputs: a failed precondition. Outputs: a distinct, named error. Edge: each failure maps to its own variant. Invariant: every variant's message is non-empty and unique. Done-check: the two criteria.
