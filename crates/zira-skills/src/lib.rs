@@ -47,8 +47,11 @@ pub fn parse_manifest_json(text: &str) -> Result<SkillManifest, ManifestError> {
 /// Returns `true` iff the candidate signature matches one freshly computed over
 /// the same key and manifest; `false` for any tampered bytes, altered manifest,
 /// or wrong key.
-pub fn verify_manifest(_key: &[u8], _m: &SkillManifest, _sig: &Signature) -> bool {
-    todo!("T-04.06")
+pub fn verify_manifest(key: &[u8], m: &SkillManifest, sig: &Signature) -> bool {
+    let payload = serde_json::to_vec(m).expect("SkillManifest is always serializable");
+    let mut mac = HmacSha256::new_from_slice(key).expect("HMAC accepts any key length");
+    mac.update(&payload);
+    mac.verify_slice(sig.as_bytes()).is_ok()
 }
 
 /// Compute an HMAC-SHA256 over a deterministic serialization of `m` keyed by `key`.
