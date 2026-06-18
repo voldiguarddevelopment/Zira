@@ -1,2 +1,2 @@
-91a7fe2c0c433d7eb5b2ea1f28b838cf37a9d0d55b55a371ea47923ac27068ca  criteria_map:T-00.11
-d91d92114e871569aa4d9eb4576d0736cb44f0cd89edafd60abaed58c0f9ff1b  tests/config_paths.rs
+3fa2a86fde2cfa6cec9766f2b4c3787059b5fef9e8c8060175ec8172794895b6  criteria_map:T-00.13
+9b7017fb687721edadbf3d529b32b56e9b7da84f24046f4874fc024eefc3bb20  tests/config_validate.rs

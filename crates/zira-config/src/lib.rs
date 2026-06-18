@@ -140,13 +140,37 @@ pub struct AvatarConfig {
     pub vrm_path: Option<String>,
 }
 
-/// Errors that `load_from` can return (missing file is NOT an error — it yields the default).
+/// Errors surfaced by config handling: loading (a missing file is NOT an error — it
+/// yields the default) and validation (each invalid field maps to a distinct variant
+/// naming the offending field and the reason it was rejected).
 #[derive(Debug, Error)]
 pub enum ConfigError {
     #[error("malformed TOML in config file: {0}")]
     Parse(String),
     #[error("I/O error reading config file: {0}")]
     Io(String),
+    /// A sample rate that must be a positive number of Hz was non-positive (zero).
+    #[error("invalid sample rate for `{field}`: {value} Hz (must be a positive number of Hz)")]
+    InvalidSampleRate {
+        /// The dotted name of the offending field, e.g. `tts.sample_rate`.
+        field: &'static str,
+        /// The rejected value.
+        value: u32,
+    },
+    /// A path that is required in the current configuration was empty.
+    #[error("required path `{field}` is empty (a non-empty value is required here)")]
+    EmptyPath {
+        /// The dotted name of the offending field, e.g. `model.binary_path`.
+        field: &'static str,
+    },
+    /// A threshold fell outside the permitted `[0.0, 1.0]` range.
+    #[error("threshold `{field}` = {value} is out of range (must be within [0.0, 1.0])")]
+    ThresholdOutOfRange {
+        /// The dotted name of the offending field, e.g. `wakeword.threshold`.
+        field: &'static str,
+        /// The rejected value.
+        value: f32,
+    },
 }
 
 const DEFAULT_CONSTITUTION: &str = include_str!("constitution.txt");
@@ -209,4 +233,49 @@ pub struct ZiraConfig {
     pub emotion: EmotionConfig,
     pub memory: MemoryConfig,
     pub avatar: AvatarConfig,
+}
+
+impl ZiraConfig {
+    /// Validate the config, reporting (never repairing) the first invalid field.
+    ///
+    /// The shipped default is the *unconfigured* state — a fully-empty TOML document
+    /// deserializes to it — and must validate `Ok`. Requirements that depend on a
+    /// subsystem being in use are therefore gated on that subsystem being configured:
+    ///
+    /// * Thresholds are always range-checked against `[0.0, 1.0]`; the default `0.0`
+    ///   is in range, so an unconfigured config still passes.
+    /// * Once a model is named (`model.model_id` is non-empty), the brain is in use, so
+    ///   `model.binary_path` must be a non-empty path and the TTS `sample_rate` must be
+    ///   a positive number of Hz.
+    ///
+    /// Each rejection maps to a distinct [`ConfigError`] variant naming the offending
+    /// field and the reason.
+    pub fn validate(&self) -> Result<(), ConfigError> {
+        check_threshold("wakeword.threshold", self.wakeword.threshold)?;
+        check_threshold("vad.threshold", self.vad.threshold)?;
+
+        if !self.model.model_id.is_empty() {
+            if self.model.binary_path.is_empty() {
+                return Err(ConfigError::EmptyPath {
+                    field: "model.binary_path",
+                });
+            }
+            if self.tts.sample_rate == 0 {
+                return Err(ConfigError::InvalidSampleRate {
+                    field: "tts.sample_rate",
+                    value: self.tts.sample_rate,
+                });
+            }
+        }
+
+        Ok(())
+    }
+}
+
+/// Range-check a probability threshold, which must lie within `[0.0, 1.0]`.
+fn check_threshold(field: &'static str, value: f32) -> Result<(), ConfigError> {
+    if !(0.0..=1.0).contains(&value) {
+        return Err(ConfigError::ThresholdOutOfRange { field, value });
+    }
+    Ok(())
 }
