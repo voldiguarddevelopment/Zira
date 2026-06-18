@@ -1108,8 +1108,8 @@ test_files: []
 criteria_map: {}
 attempts: 3
 last_failure: |
-  surviving mutant at crates/zira-memory/src/lib.rs:140 (arith-mul-to-div) — frozen tests do not kill it
-  surviving mutant at crates/zira-memory/src/lib.rs:144 (arith-div-to-mul) — frozen tests do not kill it
+  surviving mutant at crates/zira-memory/src/lib.rs:141 (arith-mul-to-div) — frozen tests do not kill it
+  surviving mutant at crates/zira-memory/src/lib.rs:145 (arith-div-to-mul) — frozen tests do not kill it
 ---
 The vector-math kernel of the index. Inputs: two equal-length f32 slices. Outputs: a similarity in [-1, 1]. Edge: a zero-magnitude vector yields 0.0, never NaN. Invariant: self-similarity is 1.0, opposite is -1.0. Done-check: the identity/orthogonal/opposite and zero-guard criteria.
 
