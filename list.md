@@ -1333,7 +1333,7 @@ The character-to-mouth-shape rule the frame builder calls per character. Inputs:
 ### T-03.05  Clamp the viseme weight
 id: T-03.05
 phase: 3
-status: pending
+status: done
 depends_on: [T-00.07]
 stack: rust
 criteria:
@@ -1342,8 +1342,10 @@ criteria:
 not_doing:
   - No frame construction here — this is the scalar clamp the builder reuses.
   - No interpolation between weights.
-test_files: []
-criteria_map: {}
+test_files: [tests/clamp_weight.rs]
+criteria_map:
+  C1: [c1_below_zero_returns_zero, c1_above_one_returns_one, c1_in_range_returns_unchanged, c1_exactly_zero_returns_zero, c1_exactly_one_returns_one]
+  C2: [c2_nan_returns_zero]
 attempts: 1
 last_failure: ""
 ---
