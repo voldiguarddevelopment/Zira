@@ -1924,7 +1924,7 @@ not_doing:
   - No writing the file to disk; the factory returns the JSON value.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The MCP factory that turns an admitted skill manifest into an MCP server config skeleton. Inputs: a `SkillManifest`. Outputs: an `.mcp.json`-shaped `serde_json::Value`. Edge: the generated config must round-trip through string serialization unchanged so it is a valid, stable skeleton. Invariant: the server is keyed by the manifest name with its command taken from the manifest entry. Done-check: the shape/key checks plus the serialize-reparse equality.
