@@ -149,24 +149,31 @@ pub fn cosine_similarity(a: &[f32], b: &[f32]) -> f32 {
 /// In-memory vector index: stores (id, vector) pairs and reports their count.
 ///
 /// Insertion-only; the index is rebuilt from the episode/fact store on each run.
-pub struct VectorIndex;
+pub struct VectorIndex {
+    entries: Vec<(usize, Vec<f32>)>,
+}
 
-#[allow(clippy::new_without_default)]
+impl Default for VectorIndex {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl VectorIndex {
     pub fn new() -> Self {
-        unimplemented!("T-02.14: VectorIndex::new not yet implemented")
+        Self { entries: Vec::new() }
     }
 
-    pub fn add(&mut self, _id: usize, _vector: Vec<f32>) {
-        unimplemented!("T-02.14: VectorIndex::add not yet implemented")
+    pub fn add(&mut self, id: usize, vector: Vec<f32>) {
+        self.entries.push((id, vector));
     }
 
     pub fn len(&self) -> usize {
-        unimplemented!("T-02.14: VectorIndex::len not yet implemented")
+        self.entries.len()
     }
 
     pub fn is_empty(&self) -> bool {
-        unimplemented!("T-02.14: VectorIndex::is_empty not yet implemented")
+        self.entries.is_empty()
     }
 }
 
