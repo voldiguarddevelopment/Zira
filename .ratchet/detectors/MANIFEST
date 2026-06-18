@@ -1,2 +1,2 @@
-95d0131a35443f573fbc0a58036c75cfc6eb9df46598ea2ab362ac73d59f85c4  criteria_map:T-02.14
-2d0c3ba31e532c81c2cb33054e154f21b108dd2b7bab6517052aaaf30f478496  tests/vector_index.rs
+fe6774f463e08e693d76ff9a5b22f444f7dcea5a4f38d789d75b193d63fc9e9e  criteria_map:T-02.15
+39efa6973eac8339cbd828aaba409bb7e9c1da32e40690fedaa63f86877e7fbc  tests/search_top_k.rs
