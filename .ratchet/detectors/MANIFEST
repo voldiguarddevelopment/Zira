@@ -1,2 +1,2 @@
-3fa2a86fde2cfa6cec9766f2b4c3787059b5fef9e8c8060175ec8172794895b6  criteria_map:T-00.13
-9b7017fb687721edadbf3d529b32b56e9b7da84f24046f4874fc024eefc3bb20  tests/config_validate.rs
+864b88fbc59f32a7ef228da817ed95c3bfbddfb270158e09ba5a588ee5ff6200  criteria_map:T-00.20
+4f34dd687f4b3e2df25ecfb6a194f499e463b375fbcc371c611e9e1fcf94d1a0  tests/stage_traits.rs
