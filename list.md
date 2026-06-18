@@ -1585,7 +1585,7 @@ not_doing:
   - No base64 form; hex is the single serialized representation.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The serialized form of an HMAC tag, shared by sign and verify. Inputs: raw bytes or a hex string. Outputs: a `Signature` plus a hex string. Edge: a non-hex string is a recoverable error. Invariant: `from_hex(to_hex(s)) == s` for any signature. Done-check: the hex round-trip and the non-hex rejection.
