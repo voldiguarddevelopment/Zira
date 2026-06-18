@@ -849,7 +849,7 @@ not_doing:
   - No FFI / GPU / model-download dependencies; those belong to the blocked embedder task.
 test_files: []
 criteria_map: {}
-attempts: 1
+attempts: 2
 last_failure: "no COVERAGE line found in the red agent reply. Emit, as the FINAL line of your reply, a coverage line of the form: COVERAGE: C1=test_a,test_b; C2=test_c"
 ---
 The dependency surface Phase-2 builds on. Inputs: the workspace and zira-memory manifests. Outputs: redb declared once at the root and inherited into zira-memory alongside the serde/proto wiring, proven by a green build. Edge: a version that fails to resolve fails cargo build. Invariant: redb is declared exactly once at the root. Done-check: the two cargo-observable criteria.
