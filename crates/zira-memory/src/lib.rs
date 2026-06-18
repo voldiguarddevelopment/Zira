@@ -14,6 +14,51 @@ pub trait Embedder {
     fn embed(&self, text: &str) -> Vec<f32>;
 }
 
+/// Deterministic hash-based embedder for use in tests and offline tooling.
+///
+/// Produces reproducible vectors without external model weights or downloads.
+/// Same input always yields the same vector; distinct inputs yield distinct vectors.
+pub struct HashEmbedder {
+    dim: usize,
+}
+
+impl HashEmbedder {
+    pub fn new(dim: usize) -> Self {
+        Self { dim }
+    }
+}
+
+impl Embedder for HashEmbedder {
+    fn dim(&self) -> usize {
+        self.dim
+    }
+
+    fn embed(&self, text: &str) -> Vec<f32> {
+        (0..self.dim)
+            .map(|i| {
+                let h = hash_slot(i as u64, text.as_bytes());
+                h as f32
+            })
+            .collect()
+    }
+}
+
+/// FNV-1a 64-bit hash with a per-slot seed mixed in first.
+fn hash_slot(slot: u64, data: &[u8]) -> u64 {
+    const OFFSET: u64 = 14695981039346656037;
+    const PRIME: u64 = 1099511628211;
+    let mut h = OFFSET;
+    for byte in slot.to_le_bytes() {
+        h ^= byte as u64;
+        h = h.wrapping_mul(PRIME);
+    }
+    for &byte in data {
+        h ^= byte as u64;
+        h = h.wrapping_mul(PRIME);
+    }
+    h
+}
+
 /// Typed errors for the fact store.
 #[derive(thiserror::Error, Debug)]
 pub enum FactStoreError {
