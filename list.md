@@ -440,7 +440,7 @@ not_doing:
   - No real engines here — the real STT/TTS/wake/avatar impls are blocked-on-human (hardware/FFI/GPU).
 test_files: []
 criteria_map: {}
-attempts: 2
+attempts: 3
 last_failure: |
   surviving mutant at crates/zira-core/src/lib.rs:216 (cmp-eq-to-ne) — frozen tests do not kill it
   surviving mutant at crates/zira-core/src/lib.rs:218 (arith-add-to-sub) — frozen tests do not kill it
