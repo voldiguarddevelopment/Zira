@@ -1539,7 +1539,7 @@ not_doing:
   - No semantic validation of capabilities here (that is the gate task).
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 Turns serialized manifest text into the typed record. Inputs: a TOML or JSON `&str`. Outputs: a `SkillManifest` or a typed `ManifestError`. Edge: malformed text is a recoverable `Parse` error, never a panic; the two formats must agree on a shared fixture. Invariant: parsing is total over arbitrary input. Done-check: valid-parse for both formats, format-equality, and malformed-rejection for both.
