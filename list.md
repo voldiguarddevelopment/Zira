@@ -1708,7 +1708,7 @@ BUILD NOTE: `GateDecision` is the canonical TWO-field type from T-04.10 (`Deny {
 ### T-04.10  Define the GateDecision type
 id: T-04.10
 phase: 4
-status: pending
+status: done
 depends_on: [T-04.01]
 stack: rust
 criteria:
@@ -1718,8 +1718,11 @@ criteria:
 not_doing:
   - No multi-finding aggregation — a decision reports the first denial.
   - No serde derive required on the decision.
-test_files: []
-criteria_map: {}
+test_files: [tests/gate_decision_type.rs]
+criteria_map:
+  C1: [test_allow_is_allowed, test_deny_is_not_allowed, test_clone_and_partial_eq]
+  C2: [test_allow_is_allowed, test_deny_is_not_allowed, test_deny_carries_capability_and_reason]
+  C3: [test_display_non_empty_and_distinct, test_deny_display_contains_fields]
 attempts: 1
 last_failure: ""
 ---
