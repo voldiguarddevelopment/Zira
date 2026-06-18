@@ -1855,7 +1855,7 @@ not_doing:
   - No I/O — the chain is an in-memory slice.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 Extends the audit chain by one HMAC-linked entry. Inputs: the key, the existing chain, and the skill name + action. Outputs: a new `AuditEntry` chained to the prior hash. Edge: an empty chain links to a fixed genesis constant rather than panicking. Invariant: each appended entry's `prev_hash` is the predecessor's `entry_hash`. Done-check: the genesis link and the two-entry chaining check.
