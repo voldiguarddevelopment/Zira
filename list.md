@@ -629,7 +629,7 @@ The subprocess boundary, proven against a stub `claude`. Inputs: argv + prompt. 
 ### T-01.08  Extract the answer text
 id: T-01.08
 phase: 1
-status: pending
+status: done
 depends_on: [T-01.07]
 stack: rust
 criteria:
@@ -637,8 +637,10 @@ criteria:
   - C2: stdout containing no assistant/result text yields an empty `String`.
 not_doing:
   - Usage or plan parsing.
-test_files: []
-criteria_map: {}
+test_files: [tests/parse_answer.rs]
+criteria_map:
+  C1: [c1_result_event_text_returned, c1_result_event_in_multiline_stream, c1_result_event_with_empty_text_returns_empty]
+  C2: [c2_empty_stdout_returns_empty, c2_no_result_type_line_returns_empty, c2_only_assistant_lines_returns_empty]
 attempts: 1
 last_failure: ""
 ---
