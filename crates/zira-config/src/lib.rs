@@ -173,6 +173,14 @@ pub enum ConfigError {
     },
 }
 
+/// Errors surfaced by emotion-vocabulary validation.
+#[derive(Debug, Error)]
+pub enum VocabError {
+    /// A tag matched no known `Emotion` variant.
+    #[error("unknown emotion tag: {tag}")]
+    UnknownTag { tag: String },
+}
+
 const DEFAULT_CONSTITUTION: &str = include_str!("constitution.txt");
 
 /// The immutable baseline policy compiled into the Zira binary.
