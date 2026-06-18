@@ -2172,7 +2172,7 @@ Embeds the build version for packaging. Inputs: none (compile-time `CARGO_PKG_VE
 ### T-05.12  Generate the install manifest
 id: T-05.12
 phase: 5
-status: pending
+status: done
 depends_on: [T-05.11]
 stack: rust
 criteria:
@@ -2181,8 +2181,10 @@ criteria:
 not_doing:
   - No filesystem writes — the generator returns the manifest text; persisting it is a caller concern.
   - No package-format coupling — the manifest is plain text, not tied to one distro packager.
-test_files: []
-criteria_map: {}
+test_files: [tests/install_manifest.rs]
+criteria_map:
+  C1: [install_manifest_contains_build_version, install_manifest_is_non_empty]
+  C2: [install_manifest_contains_app_dir_name]
 attempts: 1
 last_failure: ""
 ---
