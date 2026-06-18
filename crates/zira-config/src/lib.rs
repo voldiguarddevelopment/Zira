@@ -173,6 +173,22 @@ pub enum ConfigError {
     },
 }
 
+/// Errors surfaced by the resource-budget audit.
+#[derive(Debug, Error)]
+pub enum BudgetError {
+    /// The episode count exceeds the maximum permitted value.
+    #[error("episode count {value} exceeds maximum {max}")]
+    EpisodesTooHigh {
+        /// The supplied (over-limit) value.
+        value: usize,
+        /// The maximum permitted value.
+        max: usize,
+    },
+    /// The episode count is zero, which is not permitted.
+    #[error("episode count must not be zero")]
+    EpisodesZero,
+}
+
 /// Errors surfaced by emotion-vocabulary validation.
 #[derive(Debug, Error)]
 pub enum VocabError {
