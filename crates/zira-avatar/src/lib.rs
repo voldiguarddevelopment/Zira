@@ -63,10 +63,9 @@ impl ExpressionPreset {
 
 /// Clamp a raw blendshape weight to the renderable range `[0.0, 1.0]`.
 ///
-/// Stub: intentionally returns `w` unchanged (no clamping, no NaN guard) so the
-/// frozen RED tests fail until the real implementation lands.
+/// NaN collapses to the rest weight `0.0` rather than propagating.
 pub fn clamp_weight(w: f32) -> f32 {
-    w
+    if w.is_nan() { 0.0 } else { w.clamp(0.0, 1.0) }
 }
 
 /// Map one character to its mouth-shape `Viseme`.
