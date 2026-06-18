@@ -1677,7 +1677,7 @@ not_doing:
   - No remediation suggestions attached to a finding.
 test_files: []
 criteria_map: {}
-attempts: 4
+attempts: 5
 last_failure: |
   wrong red: tests fail to compile for a reason other than a missing symbol (test-authoring error):
      Compiling zira-build v0.0.0 (/home/floofy/development/zira-build/.ratchet/worktrees/T-04.08)
@@ -1688,7 +1688,6 @@ last_failure: |
     |         ^^^^^^^ `Finding` does not have this field
     |
     = note: all struct fields are already assigned
-  
   error[E0609]: no field `excerpt` on type `Finding`
     --> tests/finding_type.rs:11:18
      |
@@ -1696,7 +1695,6 @@ last_failure: |
      |                  ^^^^^^^ unknown field
      |
      = note: available field is: `pattern`
-  
   error[E0560]: struct `Finding` has no field named `excerpt`
     --> tests/finding_type.rs:19:9
      |
@@ -1704,7 +1702,6 @@ last_failure: |
      |         ^^^^^^^ `Finding` does not have this field
      |
      = note: all struct fields are already assigned
-  
   error[E0560]: struct `Finding` has no field named `excerpt`
     --> tests/finding_type.rs:23:9
      |
@@ -1712,7 +1709,6 @@ last_failure: |
      |         ^^^^^^^ `Finding` does not have this field
      |
      = note: all struct fields are already assigned
-  
   error[E0560]: struct `Finding` has no field named `excerpt`
     --> tests/finding_type.rs:33:9
      |
@@ -1720,7 +1716,6 @@ last_failure: |
      |         ^^^^^^^ `Finding` does not have this field
      |
      = note: all struct fields are already assigned
-  
   error[E0560]: struct `Finding` has no field named `excerpt`
     --> tests/finding_type.rs:37:9
      |
@@ -1728,7 +1723,6 @@ last_failure: |
      |         ^^^^^^^ `Finding` does not have this field
      |
      = note: all struct fields are already assigned
-  
   Some errors have detailed explanations: E0560, E0609.
   For more information about an error, try `rustc --explain E0560`.
   error: could not compile `zira-build` (test "finding_type") due to 6 previous errors
