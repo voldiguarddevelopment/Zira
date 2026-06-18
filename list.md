@@ -1596,7 +1596,7 @@ The serialized form of an HMAC tag, shared by sign and verify. Inputs: raw bytes
 ### T-04.05  Sign the manifest
 id: T-04.05
 phase: 4
-status: pending
+status: done
 depends_on: [T-04.01, T-04.04]
 stack: rust
 criteria:
@@ -1606,8 +1606,11 @@ criteria:
 not_doing:
   - No verification here (the next task).
   - No key management/derivation — the caller supplies the key bytes.
-test_files: []
-criteria_map: {}
+test_files: [tests/sign_manifest.rs]
+criteria_map:
+  C1: [test_sign_manifest_is_deterministic, test_sign_manifest_output_is_hmac_sha256_length]
+  C2: [test_sign_manifest_is_deterministic]
+  C3: [test_sign_manifest_key_sensitivity, test_sign_manifest_content_sensitivity]
 attempts: 1
 last_failure: ""
 ---
