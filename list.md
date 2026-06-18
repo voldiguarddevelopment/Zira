@@ -1935,7 +1935,7 @@ The MCP factory that turns an admitted skill manifest into an MCP server config 
 ### T-05.01  Define the plan decision
 id: T-05.01
 phase: 5
-status: pending
+status: done
 depends_on: [T-00.08]
 stack: rust
 criteria:
@@ -1944,8 +1944,10 @@ criteria:
 not_doing:
   - No transition logic here — that is the next task.
   - No serde derive — the decision is an in-process value, never persisted.
-test_files: []
-criteria_map: {}
+test_files: [tests/plan_decision.rs]
+criteria_map:
+  C1: [test_plan_decision_derives]
+  C2: [test_plan_decision_distinguishable]
 attempts: 1
 last_failure: ""
 ---
