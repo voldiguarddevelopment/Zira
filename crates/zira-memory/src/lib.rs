@@ -106,6 +106,26 @@ impl FactStore {
         Ok(())
     }
 
+    /// Removes the entry for `key`; deleting an absent key is `Ok(())` (idempotent).
+    pub fn delete(&self, key: &str) -> Result<(), FactStoreError> {
+        let write_txn = self
+            .db
+            .begin_write()
+            .map_err(|e| FactStoreError::TransactionFailed(e.to_string()))?;
+        {
+            let mut table = write_txn
+                .open_table(FACTS_TABLE)
+                .map_err(|e| FactStoreError::TransactionFailed(e.to_string()))?;
+            table
+                .remove(key)
+                .map_err(|e| FactStoreError::TransactionFailed(e.to_string()))?;
+        }
+        write_txn
+            .commit()
+            .map_err(|e| FactStoreError::TransactionFailed(e.to_string()))?;
+        Ok(())
+    }
+
     /// Returns the value for `key`, or `Ok(None)` if the key is absent.
     /// A missing key is never an error variant.
     pub fn get(&self, key: &str) -> Result<Option<String>, FactStoreError> {
