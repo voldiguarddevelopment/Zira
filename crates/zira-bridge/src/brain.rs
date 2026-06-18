@@ -29,6 +29,19 @@ impl ClaudeBrain {
 
 impl Brain for ClaudeBrain {
     async fn respond(&mut self) -> Vec<Event> {
-        todo!("T-01.12 GREEN: call ask(), segment the answer, emit EmotionSegments + TurnComplete")
+        match crate::ask(&self.cfg, &self.constitution, &self.transcript) {
+            Ok(answer) => {
+                let segments = zira_emotion::segment(&answer.text);
+                let mut events: Vec<Event> = segments
+                    .into_iter()
+                    .map(Event::EmotionSegment)
+                    .collect();
+                events.push(Event::TurnComplete(answer.usage));
+                events
+            }
+            Err(e) => {
+                vec![Event::Error(e.to_string())]
+            }
+        }
     }
 }
