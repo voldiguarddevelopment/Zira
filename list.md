@@ -732,17 +732,18 @@ The real Thinking stage, replacing MockBrain. Inputs: a transcript turn. Outputs
 ### T-01.13  Emit the bridge error event
 id: T-01.13
 phase: 1
-status: pending
+status: done
 depends_on: [T-01.12]
 stack: rust
 criteria:
   - C1: when `zira_bridge::ask` returns `Err`, `ClaudeBrain::respond()` returns exactly one `Event::Error(String)` carrying the error's `Display` message and never panics.
 not_doing:
   - Retry or backoff — the orchestrator decides recovery.
-test_files: []
-criteria_map: {}
-attempts: 2
-last_failure: tests pass in the red phase — a correct red must fail (missing implementation), this is vacuous
+test_files: [tests/bridge_error_event.rs]
+criteria_map:
+  C1: [c1_spawn_failed_emits_single_error_event, c1_non_zero_exit_emits_single_error_event, c1_missing_result_emits_single_error_event, c1_error_carries_display_message]
+attempts: 3
+last_failure: ""
 ---
 The failure path of the Thinking stage. Inputs: a failing ask. Outputs: a single Error event. Invariant: no panic on bridge failure. Done-check: the one criterion.
 
