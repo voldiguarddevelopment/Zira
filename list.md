@@ -429,7 +429,7 @@ Returning to rest after silence. Inputs: the Listening state + a clock. Outputs:
 ### T-00.20  Define the stage traits
 id: T-00.20
 phase: 0
-status: pending
+status: done
 depends_on: [T-00.08]
 stack: rust
 criteria:
@@ -438,13 +438,13 @@ criteria:
   - C3: a repo-root integration test `tests/stage_traits.rs` drives each mock through its trait method and asserts it produces the expected scripted `Event`(s).
 not_doing:
   - No real engines here — the real STT/TTS/wake/avatar impls are blocked-on-human (hardware/FFI/GPU).
-test_files: []
-criteria_map: {}
+test_files: [tests/stage_traits.rs]
+criteria_map:
+  C1: [c1_wake_source_trait_drives_mock, c1_vad_gate_trait_emits_speech_boundaries, c1_stt_engine_trait_emits_transcript, c1_brain_trait_emits_response_stream, c1_tts_engine_trait_emits_visemes, c1_avatar_sink_trait_emits_expression_change, c1_memory_store_trait_round_trips_event]
+  C2: [c2_mock_stt_is_deterministic, c2_mock_brain_is_deterministic, c1_wake_source_trait_drives_mock, c1_vad_gate_trait_emits_speech_boundaries, c1_stt_engine_trait_emits_transcript, c1_brain_trait_emits_response_stream, c1_tts_engine_trait_emits_visemes, c1_avatar_sink_trait_emits_expression_change, c1_memory_store_trait_round_trips_event]
+  C3: [c1_wake_source_trait_drives_mock, c1_vad_gate_trait_emits_speech_boundaries, c1_stt_engine_trait_emits_transcript, c1_brain_trait_emits_response_stream, c1_tts_engine_trait_emits_visemes, c1_avatar_sink_trait_emits_expression_change, c1_memory_store_trait_round_trips_event, c2_mock_stt_is_deterministic, c2_mock_brain_is_deterministic]
 attempts: 3
-last_failure: |
-  surviving mutant at crates/zira-core/src/lib.rs:216 (cmp-eq-to-ne) — frozen tests do not kill it
-  surviving mutant at crates/zira-core/src/lib.rs:218 (arith-add-to-sub) — frozen tests do not kill it
-  surviving mutant at crates/zira-core/src/lib.rs:267 (cmp-eq-to-ne) — frozen tests do not kill it
+last_failure: ""
 ---
 The seam that lets devices be mocked. Inputs: the orchestrator's needs. Outputs: seven traits + a mock each. Errors/edges: mocks are deterministic. Invariant: the orchestrator depends on traits, never concrete engines. Done-check: the three criteria.
 
