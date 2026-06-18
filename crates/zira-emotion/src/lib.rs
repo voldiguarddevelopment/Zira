@@ -18,8 +18,19 @@ pub struct Prosody {
 ///
 /// The function is total: every `Emotion` variant maps to a `Prosody`.
 /// Invariant: all three fields lie within `0.5..=2.0`.
-pub fn prosody(_e: Emotion) -> Prosody {
-    todo!("T-01.04: prosody mapping not yet implemented")
+pub fn prosody(e: Emotion) -> Prosody {
+    match e {
+        Emotion::Neutral   => Prosody { rate: 1.00, pitch: 1.00, volume: 1.00 },
+        Emotion::Happy     => Prosody { rate: 1.15, pitch: 1.10, volume: 1.10 },
+        Emotion::Sad       => Prosody { rate: 0.85, pitch: 0.90, volume: 0.85 },
+        Emotion::Angry     => Prosody { rate: 1.20, pitch: 1.15, volume: 1.30 },
+        Emotion::Excited   => Prosody { rate: 1.30, pitch: 1.20, volume: 1.20 },
+        Emotion::Calm      => Prosody { rate: 0.90, pitch: 0.95, volume: 1.00 },
+        Emotion::Curious   => Prosody { rate: 1.05, pitch: 1.05, volume: 1.00 },
+        Emotion::Concerned => Prosody { rate: 0.95, pitch: 0.95, volume: 0.95 },
+        Emotion::Playful   => Prosody { rate: 1.10, pitch: 1.10, volume: 1.05 },
+        Emotion::Tired     => Prosody { rate: 0.75, pitch: 0.85, volume: 0.80 },
+    }
 }
 
 /// Split `s` into ordered `Segment`s at each `[emotion:...]` marker.
