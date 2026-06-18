@@ -315,6 +315,36 @@ impl Signature {
     }
 }
 
+/// The verdict returned by the constitution gate for a requested capability.
+#[derive(Debug, Clone, PartialEq)]
+pub enum GateDecision {
+    /// The capability is permitted.
+    Allow,
+    /// The capability is denied; carries the offending capability and reason.
+    Deny {
+        capability: String,
+        reason: String,
+    },
+}
+
+impl GateDecision {
+    /// Returns `true` iff this decision is [`Allow`](GateDecision::Allow).
+    pub fn is_allowed(&self) -> bool {
+        matches!(self, GateDecision::Allow)
+    }
+}
+
+impl std::fmt::Display for GateDecision {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            GateDecision::Allow => write!(f, "allowed"),
+            GateDecision::Deny { capability, reason } => {
+                write!(f, "denied: capability={capability} reason={reason}")
+            }
+        }
+    }
+}
+
 /// Produce an `.mcp.json`-shaped `serde_json::Value` from a [`SkillManifest`].
 ///
 /// The returned object has a single top-level key `"mcpServers"` whose value is
