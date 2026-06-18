@@ -870,7 +870,7 @@ not_doing:
   - No embedding vector field — retrieval stores vectors in the index, not the episode.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The episodic memory unit. Inputs: constructed in-memory. Outputs: a serde-round-trippable record. Edge: an empty-string field is still a valid episode. Invariant: an episode serialized then deserialized is unchanged. Done-check: the struct shape and the round-trip criterion.
