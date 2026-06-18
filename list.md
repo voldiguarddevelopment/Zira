@@ -1700,7 +1700,7 @@ not_doing:
   - No path/sandbox checks here (the capability sandbox is a separate task).
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 BUILD NOTE: `GateDecision` is the canonical TWO-field type from T-04.10 (`Deny { capability: String, reason: String }`); tests MUST destructure it as `Deny { capability, .. }`. This task was reset because its original frozen test (written before T-04.10 existed) assumed a one-field `Deny` and was edited afterwards — an ordering inversion now corrected by depending on T-04.10. The `gate_capabilities` function was removed so RED fails cleanly on the missing function, not on a struct field. Default-deny: a capability is sanctioned only when a non-prohibitive constitution rule names it. Done-check: one allow + two deny criteria.
