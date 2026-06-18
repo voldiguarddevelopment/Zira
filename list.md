@@ -669,7 +669,7 @@ Read token accounting from the stream. Inputs: raw output. Outputs: a Usage. Edg
 ### T-01.10  Type the bridge errors
 id: T-01.10
 phase: 1
-status: pending
+status: done
 depends_on: [T-01.07]
 stack: rust
 criteria:
@@ -677,8 +677,10 @@ criteria:
   - C2: a unit test asserts the `Display` text of every variant is non-empty and names its failure — every variant's message is exercised.
 not_doing:
   - Recovery or retry policy.
-test_files: []
-criteria_map: {}
+test_files: [tests/bridge_errors.rs]
+criteria_map:
+  C1: [test_bridge_error_spawn_failed_variant_exists, test_bridge_error_non_zero_exit_variant_exists, test_bridge_error_missing_result_variant_exists, test_bridge_error_implements_error_trait, test_bridge_error_implements_display]
+  C2: [test_display_spawn_failed_non_empty_names_failure, test_display_non_zero_exit_non_empty_names_failure, test_display_missing_result_non_empty_names_failure, test_display_all_variants_produce_distinct_messages]
 attempts: 1
 last_failure: ""
 ---
