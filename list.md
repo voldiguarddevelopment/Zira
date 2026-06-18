@@ -2032,7 +2032,7 @@ not_doing:
   - No `panic!`-based reporting — failures are typed `Result` errors.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The typed failure for emotion-vocabulary review. Inputs: an offending tag string. Outputs: a `VocabError` enum (in `zira-config`) whose `UnknownTag` variant carries the rejected tag. Edge: the `Display` of EVERY variant is exercised by a test criterion so no message operator survives mutation. Invariant: an unknown tag is a typed error, never a silent coercion in this strict path. Done-check: the two criteria — the variant exists and its Display is asserted to name the tag.
