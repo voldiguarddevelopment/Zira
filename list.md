@@ -1409,7 +1409,7 @@ not_doing:
   - No GPU — the fallback is explicitly the non-GPU path.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The pure 2D-fallback projection of an `AvatarState`: which static face sprite and mouth shape a GPU-less box should show. Inputs: an avatar state. Outputs: a sprite name + mouth shape. Edge: an all-zero expression names the neutral sprite. Invariant: the mouth shape passes through unchanged; the sprite is chosen deterministically from the dominant weight. Done-check: the two criteria.
