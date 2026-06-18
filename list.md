@@ -2086,7 +2086,7 @@ Decides whether first-run setup is needed. Inputs: a config-file path. Outputs: 
 ### T-05.08  Write the default config
 id: T-05.08
 phase: 5
-status: pending
+status: done
 depends_on: [T-05.07]
 stack: rust
 criteria:
@@ -2095,8 +2095,10 @@ criteria:
 not_doing:
   - No interactive prompting — the default file is written non-interactively.
   - No overwrite of a user-edited config beyond re-emitting the serializable defaults.
-test_files: []
-criteria_map: {}
+test_files: [tests/write_default_config.rs]
+criteria_map:
+  C1: [c1_creates_parent_dirs_and_round_trips_default, c1_file_exists_after_write, c1_loaded_config_equals_default]
+  C2: [c2_second_call_succeeds, c2_second_call_leaves_config_unchanged]
 attempts: 1
 last_failure: ""
 ---
