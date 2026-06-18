@@ -441,7 +441,10 @@ not_doing:
 test_files: []
 criteria_map: {}
 attempts: 2
-last_failure: ""
+last_failure: |
+  surviving mutant at crates/zira-core/src/lib.rs:216 (cmp-eq-to-ne) — frozen tests do not kill it
+  surviving mutant at crates/zira-core/src/lib.rs:218 (arith-add-to-sub) — frozen tests do not kill it
+  surviving mutant at crates/zira-core/src/lib.rs:267 (cmp-eq-to-ne) — frozen tests do not kill it
 ---
 The seam that lets devices be mocked. Inputs: the orchestrator's needs. Outputs: seven traits + a mock each. Errors/edges: mocks are deterministic. Invariant: the orchestrator depends on traits, never concrete engines. Done-check: the three criteria.
 
