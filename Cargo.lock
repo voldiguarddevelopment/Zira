@@ -545,6 +545,7 @@ dependencies = [
 name = "zira-build"
 version = "0.0.0"
 dependencies = [
+ "redb",
  "serde_json",
  "tempfile",
  "tokio",

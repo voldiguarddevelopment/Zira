@@ -52,6 +52,7 @@ tracing = { workspace = true }
 tracing-subscriber = "0.3"
 toml = "0.8"
 tempfile = "3"
+redb = { workspace = true }
 
 # The root test-host package inherits the same gate.
 [lints]
