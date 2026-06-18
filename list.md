@@ -1956,7 +1956,7 @@ The user's verdict on a narrated plan. Inputs: a caller in PlanReview UX. Output
 ### T-05.02  Map a plan decision to an event
 id: T-05.02
 phase: 5
-status: pending
+status: done
 depends_on: [T-05.01]
 stack: rust
 criteria:
@@ -1966,8 +1966,11 @@ criteria:
 not_doing:
   - No state mutation here — `review_plan` is a pure function returning the event the caller feeds to the bus.
   - No re-implementation of the transition table — that lives in `next_state`.
-test_files: []
-criteria_map: {}
+test_files: [tests/review_plan.rs]
+criteria_map:
+  C1: [accept_returns_turn_started]
+  C2: [reject_returns_error]
+  C3: [decision_independent_of_plan_content]
 attempts: 1
 last_failure: ""
 ---
