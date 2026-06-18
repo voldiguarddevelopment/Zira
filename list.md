@@ -891,7 +891,7 @@ not_doing:
   - No locking or concurrent-writer coordination.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The episodic write primitive. Inputs: a path and an episode. Outputs: one appended JSONL line; the io::Result surfaces any filesystem error verbatim (reusing std::io::Error so no custom Display needs exercising). Edge: a missing file is created, not an error. Invariant: each call adds exactly one line and never rewrites prior lines. Done-check: the append-and-read-back criterion.
