@@ -7,6 +7,20 @@ pub struct Finding {
     pub pattern: String,
 }
 
+impl Finding {
+    pub fn new(pattern: impl Into<String>) -> Self {
+        Self {
+            pattern: pattern.into(),
+        }
+    }
+}
+
+impl std::fmt::Display for Finding {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Finding({})", self.pattern)
+    }
+}
+
 /// The fixed table of prompt-injection danger patterns (lowercase for matching).
 static INJECTION_PATTERNS: &[&str] = &[
     "ignore previous instructions",
