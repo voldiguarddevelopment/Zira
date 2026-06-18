@@ -108,9 +108,19 @@ impl FactStore {
 
     /// Returns the value for `key`, or `Ok(None)` if the key is absent.
     /// A missing key is never an error variant.
-    pub fn get(&self, _key: &str) -> Result<Option<String>, FactStoreError> {
-        Err(FactStoreError::TransactionFailed(
-            "get not yet implemented".into(),
-        ))
+    pub fn get(&self, key: &str) -> Result<Option<String>, FactStoreError> {
+        let read_txn = self
+            .db
+            .begin_read()
+            .map_err(|e| FactStoreError::TransactionFailed(e.to_string()))?;
+        let table = match read_txn.open_table(FACTS_TABLE) {
+            Ok(t) => t,
+            Err(redb::TableError::TableDoesNotExist(_)) => return Ok(None),
+            Err(e) => return Err(FactStoreError::TransactionFailed(e.to_string())),
+        };
+        match table.get(key).map_err(|e| FactStoreError::TransactionFailed(e.to_string()))? {
+            Some(guard) => Ok(Some(guard.value().to_owned())),
+            None => Ok(None),
+        }
     }
 }
