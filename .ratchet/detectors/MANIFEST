@@ -1,2 +1,2 @@
-7a26a28676ec96a705f62329b4895cad9ff8bbd3598aeeb1e69cc20d5a00fb64  criteria_map:T-02.12
-452935786a20842bcbea105ab496d966fd0b01047461197421b5e5d04afbb574  tests/hash_embedder.rs
+93b48e297e9fde249ab4bc2af3298b0dbdb0aba4b184a097935ddb01cfdb07fe  criteria_map:T-02.13
+c0bf7296e7484c7b514a328b1dec735ffcf10a8c026acc6381083c38ccf04cf8  tests/cosine_similarity.rs
