@@ -464,6 +464,7 @@ name = "zira-bridge"
 version = "0.0.0"
 dependencies = [
  "zira-config",
+ "zira-proto",
 ]
 
 [[package]]
