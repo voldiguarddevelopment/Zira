@@ -42,6 +42,18 @@ pub fn parse_manifest_json(text: &str) -> Result<SkillManifest, ManifestError> {
     serde_json::from_str(text).map_err(|e| ManifestError::Parse(e.to_string()))
 }
 
+/// Verify that `sig` is a valid HMAC-SHA256 signature of `m` under `key`.
+///
+/// Returns `true` iff the candidate signature matches one freshly computed over
+/// the same key and manifest; `false` for any tampered bytes, altered manifest,
+/// or wrong key.
+pub fn verify_manifest(key: &[u8], m: &SkillManifest, sig: &Signature) -> bool {
+    let payload = serde_json::to_vec(m).expect("SkillManifest is always serializable");
+    let mut mac = HmacSha256::new_from_slice(key).expect("HMAC accepts any key length");
+    mac.update(&payload);
+    mac.verify_slice(sig.as_bytes()).is_ok()
+}
+
 /// Compute an HMAC-SHA256 over a deterministic serialization of `m` keyed by `key`.
 pub fn sign_manifest(key: &[u8], m: &SkillManifest) -> Signature {
     let payload = serde_json::to_vec(m).expect("SkillManifest is always serializable");
@@ -63,6 +75,11 @@ impl Signature {
     /// Encode the raw bytes as a lowercase hex string.
     pub fn to_hex(&self) -> String {
         self.0.iter().map(|b| format!("{b:02x}")).collect()
+    }
+
+    /// Borrow the raw bytes of this signature.
+    pub fn as_bytes(&self) -> &[u8] {
+        &self.0
     }
 
     /// Decode a lowercase hex string into a [`Signature`].
