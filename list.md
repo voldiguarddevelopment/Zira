@@ -987,7 +987,7 @@ The redb-backed semantic store's lifecycle entry point. Inputs: a database path.
 ### T-02.08  Put a fact
 id: T-02.08
 phase: 2
-status: pending
+status: done
 depends_on: [T-02.07]
 stack: rust
 criteria:
@@ -996,8 +996,10 @@ criteria:
 not_doing:
   - No batch puts or transactions spanning multiple keys.
   - No value typing beyond `&str` — facts are stored as text.
-test_files: []
-criteria_map: {}
+test_files: [tests/fact_store_put.rs]
+criteria_map:
+  C1: [c1_put_returns_ok, c1_put_overwrite_returns_ok]
+  C2: [c2_put_persists_across_reopen]
 attempts: 1
 last_failure: ""
 ---
