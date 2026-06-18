@@ -741,7 +741,7 @@ not_doing:
   - Retry or backoff — the orchestrator decides recovery.
 test_files: []
 criteria_map: {}
-attempts: 1
+attempts: 2
 last_failure: tests pass in the red phase — a correct red must fail (missing implementation), this is vacuous
 ---
 The failure path of the Thinking stage. Inputs: a failing ask. Outputs: a single Error event. Invariant: no panic on bridge failure. Done-check: the one criterion.
