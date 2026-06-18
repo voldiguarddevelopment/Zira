@@ -38,6 +38,11 @@ pub fn parse_manifest_json(text: &str) -> Result<SkillManifest, ManifestError> {
     serde_json::from_str(text).map_err(|e| ManifestError::Parse(e.to_string()))
 }
 
+/// Compute an HMAC-SHA256 over a deterministic serialization of `m` keyed by `key`.
+pub fn sign_manifest(_key: &[u8], _m: &SkillManifest) -> Signature {
+    todo!("T-04.05 GREEN: implement HMAC-SHA256 signing")
+}
+
 /// The serialized form of an HMAC tag — a carrier for raw bytes with hex I/O.
 #[derive(Debug, Clone, PartialEq)]
 pub struct Signature(Vec<u8>);
