@@ -1,2 +1,2 @@
-289d48543d16e6ad60d03b748fa602290ae06b036b1a80fc614e7a5c100e4aaf  criteria_map:T-03.07
-5900871bccfee75fef1e108b2a47fad22d59ac605f5ecc1aefc7c8cc68f35003  tests/avatar_state.rs
+5b967d98686491e58765b50d2ad6bdb95ed19f7efe7a2511bdd6fcca7582a4df  criteria_map:T-03.08
+315fc39cb04007fb3812cb4b981fdb2ec45e94c894f0324aceb86fa858f134d0  tests/fallback_frame.rs
