@@ -760,7 +760,7 @@ not_doing:
   - Audio stages — those stay mocked / blocked-on-human.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 Phase-1 acceptance for the gateable half: transcript -> claude -> emotion-segmented events. Done-check: the two criteria.
