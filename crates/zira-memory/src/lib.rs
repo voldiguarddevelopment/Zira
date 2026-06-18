@@ -196,6 +196,33 @@ impl VectorIndex {
     }
 }
 
+/// Loads the episodes at `path`, embeds each one plus the `query` via `embedder`,
+/// and returns the top-`k` episodes sorted by descending cosine similarity to the query.
+///
+/// A missing or empty file returns `Ok(vec![])`.  The index is ephemeral — computed
+/// per call; nothing is persisted.
+pub fn retrieve(
+    path: &std::path::Path,
+    embedder: &impl Embedder,
+    query: &str,
+    k: usize,
+) -> std::io::Result<Vec<Episode>> {
+    let episodes = load_episodes(path)?;
+    if episodes.is_empty() || k == 0 {
+        return Ok(vec![]);
+    }
+
+    let query_vec = embedder.embed(query);
+
+    let mut index = VectorIndex::new();
+    for (i, ep) in episodes.iter().enumerate() {
+        index.add(i, embedder.embed(&ep.text));
+    }
+
+    let hits = index.search(&query_vec, k);
+    Ok(hits.into_iter().map(|(id, _score)| episodes[id].clone()).collect())
+}
+
 const FACTS_TABLE: redb::TableDefinition<&str, &str> = redb::TableDefinition::new("facts");
 
 /// A handle to the redb-backed fact store.
