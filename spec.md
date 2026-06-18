@@ -1107,22 +1107,21 @@ BUILD NOTE: `Finding` already exists from T-04.07 (its consumer was authored fir
 ### T-04.09  Gate capabilities against the constitution
 id: T-04.09
 phase: 4
-depends_on: [T-00.12, T-04.01]
+depends_on: [T-00.12, T-04.10]
 stack: rust
 criteria:
-  - C1: `zira_skills::gate_capabilities(c: &zira_config::Constitution, m: &SkillManifest) -> GateDecision` returns `GateDecision::Allow` when every declared capability is permitted by the constitution rules, pinned by a test on a manifest whose capabilities are all constitution-sanctioned (the ALLOW path).
-  - C2: A repo-root integration test `tests/gate_capabilities.rs` asserts a manifest declaring a capability the constitution forbids (e.g. one matching a harm/secret-exposure rule) returns `GateDecision::Deny` naming the offending capability — the DENY path.
-  - C3: The test asserts a manifest declaring an unknown capability not matched by any constitution rule returns `GateDecision::Deny` (default-deny on unknown), never `Allow`.
+  - C1: `zira_skills::gate_capabilities(c: &zira_config::Constitution, m: &SkillManifest) -> GateDecision` returns `GateDecision::Allow` when every declared capability is sanctioned by the constitution rules, pinned by `tests/gate_capabilities.rs` (the ALLOW path).
+  - C2: a manifest declaring a constitution-forbidden capability returns `GateDecision::Deny { capability, .. }` naming the offending capability — the DENY path.
+  - C3: a manifest declaring an unknown capability matched by no rule returns `GateDecision::Deny { .. }` (default-deny), never `Allow`.
 not_doing:
   - No mutation of the constitution — it is read-only via `rules()`.
-  - No path/sandbox checks here (separate capability-sandbox task).
+  - No path/sandbox checks here (the capability sandbox is a separate task).
 ---
-The constitution gate that decides if a skill's declared capabilities are admissible. Inputs: the immutable `Constitution` and a manifest. Outputs: an `Allow` or a `Deny` naming the first offending capability. Edge: a fully-sanctioned manifest is allowed; a forbidden capability AND an unknown/unmatched capability are both denied (default-deny). Invariant: a capability is allowed only if affirmatively matched by a constitution rule. Done-check: one allow and two deny criteria covering both forbidden and unknown.
-
+BUILD NOTE: `GateDecision` is the canonical TWO-field type from T-04.10 (`Deny { capability: String, reason: String }`); tests MUST destructure it as `Deny { capability, .. }`. This task was reset because its original frozen test (written before T-04.10 existed) assumed a one-field `Deny` and was edited afterwards — an ordering inversion now corrected by depending on T-04.10. The `gate_capabilities` function was removed so RED fails cleanly on the missing function, not on a struct field. Default-deny: a capability is sanctioned only when a non-prohibitive constitution rule names it. Done-check: one allow + two deny criteria.
 ### T-04.10  Define the GateDecision type
 id: T-04.10
 phase: 4
-depends_on: [T-04.09]
+depends_on: [T-04.01]
 stack: rust
 criteria:
   - C1: `zira_skills::GateDecision` is an enum with variants `Allow` and `Deny { capability: String, reason: String }`, deriving `Debug, Clone, PartialEq`, and exposes an `is_allowed(&self) -> bool` accessor.

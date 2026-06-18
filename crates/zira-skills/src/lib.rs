@@ -1,6 +1,6 @@
 //! zira-skills — skill/MCP staging, signing, audit log.
 
-/// The verdict returned by [`gate_capabilities`].
+/// The verdict of gating a skill manifest's capabilities against the constitution.
 ///
 /// `Allow` means every declared capability passed the constitution gate.
 /// `Deny` carries the first offending capability name and the denial reason.
@@ -25,38 +25,6 @@ impl std::fmt::Display for GateDecision {
             }
         }
     }
-}
-
-/// Gate a skill manifest's declared capabilities against the immutable constitution.
-///
-/// Returns [`GateDecision::Allow`] when every capability is affirmatively matched by a
-/// non-prohibitive constitution rule.  Returns [`GateDecision::Deny`] — naming the first
-/// offending capability — when any capability matches only prohibitive rules (forbidden)
-/// or matches no rule at all (unknown; default-deny).
-///
-/// A rule is **prohibitive** when it contains "refuse" or "never" — those are the two
-/// markers used in the embedded constitution to forbid categories of behaviour.  A
-/// capability is sanctioned only when at least one non-prohibitive rule contains the
-/// capability name as a case-insensitive substring.
-pub fn gate_capabilities(
-    c: &zira_config::Constitution,
-    m: &SkillManifest,
-) -> GateDecision {
-    for cap in &m.capabilities {
-        let lower_cap = cap.to_lowercase();
-        let sanctioned = c.rules().iter().any(|rule| {
-            let lower_rule = rule.to_lowercase();
-            let prohibitive = lower_rule.contains("refuse") || lower_rule.contains("never");
-            !prohibitive && lower_rule.contains(lower_cap.as_str())
-        });
-        if !sanctioned {
-            return GateDecision::Deny {
-                capability: cap.clone(),
-                reason: "not sanctioned by the Zira constitution".to_string(),
-            };
-        }
-    }
-    GateDecision::Allow
 }
 
 /// A single match reported by [`scan_injection`].
