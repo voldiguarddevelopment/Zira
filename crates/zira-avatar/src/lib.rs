@@ -61,6 +61,13 @@ impl ExpressionPreset {
     }
 }
 
+/// Clamp a raw blendshape weight to the renderable range `[0.0, 1.0]`.
+///
+/// NaN collapses to the rest weight `0.0` rather than propagating.
+pub fn clamp_weight(w: f32) -> f32 {
+    if w.is_nan() { 0.0 } else { w.clamp(0.0, 1.0) }
+}
+
 /// Map one character to its mouth-shape `Viseme`.
 ///
 /// Vowels `a/e/i/o/u` (case-insensitive) map to their named shape; everything
