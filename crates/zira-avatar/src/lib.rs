@@ -1,6 +1,22 @@
 //! zira-avatar — VRM avatar renderer.
 
+use zira_config::AvatarConfig;
 use zira_proto::Emotion;
+
+/// Which renderer the avatar subsystem should use.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum RendererKind {
+    Vrm,
+    Fallback2d,
+}
+
+/// Choose the renderer based on `cfg`.
+///
+/// Returns `RendererKind::Vrm` when a non-empty VRM path is configured; falls
+/// back to `RendererKind::Fallback2d` when the path is absent or empty.
+pub fn select_renderer(_cfg: &AvatarConfig) -> RendererKind {
+    todo!("T-03.09 green phase: implement select_renderer")
+}
 
 /// Mouth-shape variants for lip-sync.
 ///
