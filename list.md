@@ -1809,7 +1809,7 @@ not_doing:
   - No symlink resolution (declared as out of scope; lexical containment only).
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The capability sandbox restricting a skill to its declared path roots. Inputs: a manifest and a candidate path. Outputs: a boolean allowed/denied. Edge: an in-root path is allowed; an out-of-root path AND a `../` traversal escape are both denied. Invariant: a path is allowed only if it lexically resolves under a declared root with no upward escape. Done-check: the in-root allow plus the out-of-root and traversal denies.
