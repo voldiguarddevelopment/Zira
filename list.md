@@ -1388,7 +1388,7 @@ not_doing:
   - No transition logic — the sink owns advancing this state.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The renderer-agnostic snapshot both the 3D avatar and the 2D fallback consume: the active expression preset plus the current mouth shape. Inputs: an emotion (and later a viseme). Outputs: a comparable state with a defined resting value. Edge: a fresh state rests with a neutral face and a closed mouth. Invariant: the expression always tracks the emotion map. Done-check: the two criteria.
