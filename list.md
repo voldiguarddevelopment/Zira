@@ -1878,7 +1878,7 @@ not_doing:
   - No I/O; verification runs over an in-memory slice.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 Proves the audit log was not tampered with. Inputs: the key and a chain slice. Outputs: a boolean intact/broken. Edge: BOTH an intact chain (accept) and a content-tampered AND a link-broken chain (reject) are pinned so no branch survives mutation. Invariant: a chain verifies iff every entry's recomputed hash matches and each `prev_hash` equals its predecessor's `entry_hash`. Done-check: one accept and two reject criteria.
