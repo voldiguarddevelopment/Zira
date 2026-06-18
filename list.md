@@ -922,7 +922,7 @@ The episodic read primitive, the inverse of append. Inputs: a path. Outputs: the
 ### T-02.05  Enforce the episode cap
 id: T-02.05
 phase: 2
-status: pending
+status: done
 depends_on: [T-02.04]
 stack: rust
 criteria:
@@ -932,10 +932,13 @@ criteria:
 not_doing:
   - No reading of the cap from config — the caller passes `MemoryConfig::max_episodes`.
   - No time-based or size-based eviction; count-based only.
-test_files: []
-criteria_map: {}
+test_files: [tests/cap_episodes.rs]
+criteria_map:
+  C1: [c1_under_cap_file_is_unchanged, c2_cap_five_to_three_retains_last_three]
+  C2: [c2_cap_five_to_three_retains_last_three]
+  C3: [c3_cap_zero_empties_the_file]
 attempts: 2
-last_failure: surviving mutant at crates/zira-memory/src/lib.rs:35 (cmp-le-to-lt) — frozen tests do not kill it
+last_failure: ""
 ---
 The laziness-breaking bound on episodic growth, fed by `zira_config::MemoryConfig::max_episodes`. Inputs: a path and a max count. Outputs: a truncated-from-the-front file. Edge: a cap of 0 empties the file; an under-cap file is untouched. Invariant: after capping, the file holds at most `max_episodes` most-recent episodes in order. Done-check: the truncate-to-three and cap-zero criteria.
 
