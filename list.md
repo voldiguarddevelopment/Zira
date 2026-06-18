@@ -849,7 +849,7 @@ not_doing:
   - No FFI / GPU / model-download dependencies; those belong to the blocked embedder task.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The dependency surface Phase-2 builds on. Inputs: the workspace and zira-memory manifests. Outputs: redb declared once at the root and inherited into zira-memory alongside the serde/proto wiring, proven by a green build. Edge: a version that fails to resolve fails cargo build. Invariant: redb is declared exactly once at the root. Done-check: the two cargo-observable criteria.
@@ -1198,7 +1198,7 @@ not_doing:
 test_files: []
 criteria_map: {}
 attempts: 0
-last_failure: "Loading/downloading the real Candle CPU embedding-model weights is a human prerequisite — the model asset must be fetched and placed before this task is gateable."
+last_failure: Loading/downloading the real Candle CPU embedding-model weights is a human prerequisite — the model asset must be fetched and placed before this task is gateable.
 ---
 The one human-gated task: the real Candle CPU embedder behind the same `Embedder` trait the hash embedder satisfies, so retrieval/consolidation already pass against the stub and only the model swap is blocked. Inputs: the on-disk model asset path. Outputs: a loaded embedder producing real semantic vectors. Edge: a missing/invalid asset surfaces a typed EmbedderError whose Display arms are exercised by the test. Invariant: a loaded embedder's vectors match its declared dim. Done-check: the real-weights embedding-length criterion, unblocked once the model asset is present.
 
