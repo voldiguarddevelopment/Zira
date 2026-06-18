@@ -4,6 +4,12 @@ version = "0.0.0"
 edition = "2021"
 publish = false
 
+[features]
+# Compiles the deterministic, hardware-free `mock` module that implements every stage
+# trait. Off by default so the production library never ships the mocks; enabled by the
+# repo-root integration tests that drive the orchestrator seam offline.
+mock = []
+
 [dependencies]
 tokio = { workspace = true }
 tracing = { workspace = true }
