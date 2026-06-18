@@ -1797,7 +1797,7 @@ The verdict type the constitution gate returns. Inputs: a constructed variant. O
 ### T-04.11  Check a path against the sandbox
 id: T-04.11
 phase: 4
-status: pending
+status: done
 depends_on: [T-04.01]
 stack: rust
 criteria:
@@ -1807,8 +1807,11 @@ criteria:
 not_doing:
   - No filesystem access — the check is purely lexical over normalized path components.
   - No symlink resolution (declared as out of scope; lexical containment only).
-test_files: []
-criteria_map: {}
+test_files: [tests/path_sandbox.rs]
+criteria_map:
+  C1: [c1_path_inside_declared_root_is_allowed, c1_path_equal_to_declared_root_is_allowed, c1_path_under_second_of_two_roots_is_allowed]
+  C2: [c2_path_outside_all_roots_is_denied, c2_path_with_matching_prefix_but_not_child_is_denied, c2_empty_roots_denies_any_candidate]
+  C3: [c3_traversal_escape_is_denied, c3_traversal_escape_at_root_boundary_is_denied]
 attempts: 1
 last_failure: ""
 ---
