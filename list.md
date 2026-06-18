@@ -1398,7 +1398,7 @@ The renderer-agnostic snapshot both the 3D avatar and the 2D fallback consume: t
 ### T-03.08  Describe the fallback frame
 id: T-03.08
 phase: 3
-status: pending
+status: done
 depends_on: [T-03.07]
 stack: rust
 criteria:
@@ -1407,8 +1407,10 @@ criteria:
 not_doing:
   - No image loading or drawing — this is a pure description of which 2D sprite + mouth is active.
   - No GPU — the fallback is explicitly the non-GPU path.
-test_files: []
-criteria_map: {}
+test_files: [tests/fallback_frame.rs]
+criteria_map:
+  C1: [c1_fallback_frame_derives_debug, c1_fallback_frame_derives_clone, c1_fallback_frame_derives_partial_eq, c1_mouth_passthrough_sil, c1_mouth_passthrough_non_sil]
+  C2: [c2_neutral_expression_yields_neutral_sprite, c2_joy_dominant_yields_happy_sprite]
 attempts: 1
 last_failure: ""
 ---
