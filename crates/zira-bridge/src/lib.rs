@@ -132,3 +132,23 @@ pub fn build_argv(cfg: &ZiraConfig) -> Vec<String> {
         cfg.model.model_id.clone(),
     ]
 }
+
+/// The final answer returned by a successful [`ask`] invocation.
+#[derive(Debug)]
+pub struct Answer {
+    pub text: String,
+    pub usage: zira_proto::Usage,
+}
+
+/// Compose the prompt, invoke the `claude` CLI, and return the answer or a typed error.
+///
+/// Combines `constitution` and `transcript` into a prompt via [`compose_prompt`],
+/// builds the argv via [`build_argv`], runs the subprocess via [`invoke`], and
+/// returns `Ok(Answer { text, usage })` on success.
+pub fn ask(
+    _cfg: &ZiraConfig,
+    _constitution: &str,
+    _transcript: &Transcript,
+) -> Result<Answer, BridgeError> {
+    unimplemented!("T-01.11 green phase: implement ask()")
+}
