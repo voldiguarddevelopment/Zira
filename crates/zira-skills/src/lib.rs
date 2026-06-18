@@ -25,11 +25,11 @@ pub enum ManifestError {
 }
 
 /// Parse a TOML-encoded manifest string into a [`SkillManifest`].
-pub fn parse_manifest_toml(_text: &str) -> Result<SkillManifest, ManifestError> {
-    unimplemented!()
+pub fn parse_manifest_toml(text: &str) -> Result<SkillManifest, ManifestError> {
+    toml::from_str(text).map_err(|e| ManifestError::Parse(e.to_string()))
 }
 
 /// Parse a JSON-encoded manifest string into a [`SkillManifest`].
-pub fn parse_manifest_json(_text: &str) -> Result<SkillManifest, ManifestError> {
-    unimplemented!()
+pub fn parse_manifest_json(text: &str) -> Result<SkillManifest, ManifestError> {
+    serde_json::from_str(text).map_err(|e| ManifestError::Parse(e.to_string()))
 }
