@@ -1029,7 +1029,7 @@ The semantic read primitive. Inputs: a key. Outputs: the stored value or None. E
 ### T-02.10  Delete a fact
 id: T-02.10
 phase: 2
-status: pending
+status: done
 depends_on: [T-02.09]
 stack: rust
 criteria:
@@ -1038,8 +1038,10 @@ criteria:
 not_doing:
   - No bulk or prefix deletes.
   - No tombstone or soft-delete semantics.
-test_files: []
-criteria_map: {}
+test_files: [tests/fact_store_delete.rs]
+criteria_map:
+  C1: [test_delete_present_returns_ok, test_delete_absent_returns_ok]
+  C2: [test_delete_then_get_returns_none, test_delete_absent_is_idempotent]
 attempts: 1
 last_failure: ""
 ---
