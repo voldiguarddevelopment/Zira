@@ -318,6 +318,20 @@ pub fn is_first_run(path: &std::path::Path) -> bool {
     !path.exists()
 }
 
+/// Write `ZiraConfig::default()` as TOML to `path`, creating parent directories as needed.
+///
+/// Calling this function twice on the same path succeeds both times and leaves an
+/// identical file on disk — the operation is idempotent. A path whose parent directory
+/// cannot be created, or a path that cannot be written, surfaces a [`ConfigError::Io`].
+pub fn write_default_config(path: &std::path::Path) -> Result<(), ConfigError> {
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent).map_err(|e| ConfigError::Io(e.to_string()))?;
+    }
+    let content = toml::to_string(&ZiraConfig::default()).map_err(|e| ConfigError::Io(e.to_string()))?;
+    std::fs::write(path, content).map_err(|e| ConfigError::Io(e.to_string()))?;
+    Ok(())
+}
+
 /// Range-check a probability threshold, which must lie within `[0.0, 1.0]`.
 fn check_threshold(field: &'static str, value: f32) -> Result<(), ConfigError> {
     if !(0.0..=1.0).contains(&value) {
