@@ -223,6 +223,41 @@ pub fn compute_entry_hash(
     result.iter().map(|b| format!("{b:02x}")).collect()
 }
 
+/// In-memory catalog of admitted skills, keyed by manifest name.
+pub struct SkillRegistry {
+    entries: std::collections::HashMap<String, SkillManifest>,
+}
+
+impl SkillRegistry {
+    pub fn new() -> Self {
+        Self {
+            entries: std::collections::HashMap::new(),
+        }
+    }
+
+    pub fn register(&mut self, m: SkillManifest) {
+        self.entries.insert(m.name.clone(), m);
+    }
+
+    pub fn lookup(&self, name: &str) -> Option<&SkillManifest> {
+        self.entries.get(name)
+    }
+
+    pub fn list(&self) -> Vec<&SkillManifest> {
+        self.entries.values().collect()
+    }
+
+    pub fn remove(&mut self, name: &str) -> bool {
+        self.entries.remove(name).is_some()
+    }
+}
+
+impl Default for SkillRegistry {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 use hmac::{Hmac, Mac};
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
