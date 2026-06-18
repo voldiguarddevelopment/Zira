@@ -1889,7 +1889,7 @@ Proves the audit log was not tampered with. Inputs: the key and a chain slice. O
 ### T-04.15  Register a skill
 id: T-04.15
 phase: 4
-status: pending
+status: done
 depends_on: [T-04.01]
 stack: rust
 criteria:
@@ -1899,8 +1899,11 @@ criteria:
 not_doing:
   - No persistence to disk — an in-memory registry only.
   - No gate invocation inside register; the gate is applied by the caller before registration.
-test_files: []
-criteria_map: {}
+test_files: [tests/skill_registry.rs]
+criteria_map:
+  C1: [c1_register_then_lookup_returns_manifest, c1_register_then_list_includes_manifest]
+  C2: [c2_remove_present_returns_true_and_clears_lookup, c2_remove_absent_returns_false]
+  C3: [c3_reregister_same_name_replaces_not_duplicates]
 attempts: 1
 last_failure: ""
 ---
