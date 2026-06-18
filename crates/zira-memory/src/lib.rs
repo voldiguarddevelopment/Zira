@@ -223,6 +223,21 @@ pub fn retrieve(
     Ok(hits.into_iter().map(|(id, _score)| episodes[id].clone()).collect())
 }
 
+/// Renders a slice of retrieved episodes into a single prompt-preamble string.
+///
+/// An empty slice returns an empty string so no noise is injected when there is
+/// nothing to recall.
+pub fn format_preamble(episodes: &[Episode]) -> String {
+    if episodes.is_empty() {
+        return String::new();
+    }
+    let mut out = String::new();
+    for ep in episodes {
+        out.push_str(&format!("[{}] {}\n", ep.role, ep.text));
+    }
+    out
+}
+
 const FACTS_TABLE: redb::TableDefinition<&str, &str> = redb::TableDefinition::new("facts");
 
 /// A handle to the redb-backed fact store.
