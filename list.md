@@ -1291,7 +1291,7 @@ The avatar-facing twin of the prosody table: the single total function from the 
 ### T-03.03  Define the viseme vocabulary
 id: T-03.03
 phase: 3
-status: pending
+status: done
 depends_on: [T-00.02]
 stack: rust
 criteria:
@@ -1300,8 +1300,10 @@ criteria:
 not_doing:
   - No phoneme/char selection here (the next task).
   - No timing — frames are ordered in a later task.
-test_files: []
-criteria_map: {}
+test_files: [tests/viseme_type.rs]
+criteria_map:
+  C1: [c1_variants_exist, c1_derives_debug, c1_derives_clone, c1_derives_copy, c1_derives_partial_eq, c1_default_is_sil]
+  C2: [c2_sil_label, c2_a_label, c2_i_label, c2_u_label, c2_e_label, c2_o_label, c2_all_labels_nonempty_and_distinct]
 attempts: 1
 last_failure: ""
 ---
