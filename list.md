@@ -1820,7 +1820,7 @@ The capability sandbox restricting a skill to its declared path roots. Inputs: a
 ### T-04.12  Define the audit entry
 id: T-04.12
 phase: 4
-status: pending
+status: done
 depends_on: [T-04.04]
 stack: rust
 criteria:
@@ -1830,8 +1830,11 @@ criteria:
 not_doing:
   - No chain append/verify logic here (the next two tasks).
   - No on-disk persistence of entries.
-test_files: []
-criteria_map: {}
+test_files: [tests/audit_entry_type.rs]
+criteria_map:
+  C1: [c1_audit_entry_struct_fields, c1_audit_entry_derives_debug_clone_partialeq, c1_audit_entry_derives_serialize_deserialize]
+  C2: [c2_construct_and_read_fields, c2_serde_json_round_trip]
+  C3: [c3_hash_deterministic, c3_hash_is_nonempty_hex, c3_hash_sensitive_to_skill_name, c3_hash_sensitive_to_action, c3_hash_sensitive_to_prev_hash, c3_hash_sensitive_to_key]
 attempts: 1
 last_failure: ""
 ---
