@@ -41,6 +41,7 @@ all = "deny"
 [dev-dependencies]
 zira-proto = { path = "crates/zira-proto" }
 zira-config = { path = "crates/zira-config" }
+zira-bridge = { path = "crates/zira-bridge" }
 zira-core = { path = "crates/zira-core", features = ["mock"] }
 zira-emotion = { path = "crates/zira-emotion" }
 serde_json = { workspace = true }
