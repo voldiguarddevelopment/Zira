@@ -1061,7 +1061,7 @@ not_doing:
   - No async — embedding is a synchronous CPU call.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The embedding seam that decouples retrieval from the model, mirroring zira-core's stage-trait pattern. Inputs: text. Outputs: a fixed-dimension f32 vector. Invariant: every `embed` result has length `dim()`. Done-check: the length-matches-dim criterion against a test implementor.
