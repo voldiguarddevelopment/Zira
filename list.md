@@ -1344,7 +1344,7 @@ not_doing:
   - No interpolation between weights.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The single scalar guard that keeps every lip-sync weight inside the renderable range. Inputs: a raw `f32`. Outputs: a weight in [0,1]. Edge: `NaN` collapses to the rest weight so a bad amplitude never poisons a frame. Invariant: the result is always a finite value within [0,1]. Done-check: the two criteria.
