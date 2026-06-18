@@ -901,7 +901,7 @@ The episodic write primitive. Inputs: a path and an episode. Outputs: one append
 ### T-02.04  Load the episodes
 id: T-02.04
 phase: 2
-status: pending
+status: done
 depends_on: [T-02.03]
 stack: rust
 criteria:
@@ -910,8 +910,10 @@ criteria:
 not_doing:
   - No filtering, ranking, or dedup — load is a faithful read.
   - No tolerance design for malformed lines beyond surfacing a parse error.
-test_files: []
-criteria_map: {}
+test_files: [tests/load_episodes.rs]
+criteria_map:
+  C1: [c1_missing_file_returns_empty_vec, c1_load_episodes_reads_file_in_order]
+  C2: [c2_append_then_load_three_episodes]
 attempts: 1
 last_failure: ""
 ---
