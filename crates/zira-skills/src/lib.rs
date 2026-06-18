@@ -150,12 +150,20 @@ pub struct AuditEntry {
 /// Compute an HMAC-SHA256 entry hash over `skill_name`, `action`, and `prev_hash`
 /// keyed by `key`.  Returns a 64-character lowercase hex string.
 pub fn compute_entry_hash(
-    _key: &[u8],
-    _skill_name: &str,
-    _action: &str,
-    _prev_hash: &str,
+    key: &[u8],
+    skill_name: &str,
+    action: &str,
+    prev_hash: &str,
 ) -> String {
-    String::new()
+    let mut mac = HmacSha256::new_from_slice(key).expect("HMAC accepts any key length");
+    mac.update(&(skill_name.len() as u64).to_le_bytes());
+    mac.update(skill_name.as_bytes());
+    mac.update(&(action.len() as u64).to_le_bytes());
+    mac.update(action.as_bytes());
+    mac.update(&(prev_hash.len() as u64).to_le_bytes());
+    mac.update(prev_hash.as_bytes());
+    let result = mac.finalize().into_bytes();
+    result.iter().map(|b| format!("{b:02x}")).collect()
 }
 
 use hmac::{Hmac, Mac};
