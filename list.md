@@ -1991,7 +1991,7 @@ not_doing:
 test_files: []
 criteria_map: {}
 attempts: 1
-last_failure: ""
+last_failure: tests pass in the red phase — a correct red must fail (missing implementation), this is vacuous
 ---
 Wires the decision mapping to the real state machine end-to-end. Inputs: `State::PlanReview` plus the `Event` from `review_plan`. Outputs: an Accept lands in `Thinking` and a Reject lands in `Idle`, proving `review_plan`'s event choice is the correct key into `next_state`. Edge: any other base state is out of scope. Invariant: plan-review never invents a transition the table does not already define. Done-check: the two criteria.
 
