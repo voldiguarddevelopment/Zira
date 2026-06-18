@@ -1,6 +1,16 @@
 //! zira-emotion — streaming emotion-tag parser + prosody tables.
 
 use zira_proto::Emotion;
+pub use zira_proto::Segment;
+
+/// Split `s` into ordered `Segment`s at each `[emotion:...]` marker.
+///
+/// The emotion in effect for a span is the tag that opened it (Neutral for
+/// text before the first marker). Empty-text spans are dropped.
+/// Concatenating every segment's text equals `strip_tags(s)`.
+pub fn segment(_s: &str) -> Vec<Segment> {
+    todo!("T-01.03: not yet implemented")
+}
 
 /// Remove every `[emotion:NAME]` marker from `s`, returning the remaining text unchanged.
 pub fn strip_tags(s: &str) -> String {
