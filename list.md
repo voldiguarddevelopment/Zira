@@ -1642,7 +1642,7 @@ The gatekeeper that a manifest is authentic and untampered. Inputs: a key, a man
 ### T-04.07  Scan for injection
 id: T-04.07
 phase: 4
-status: pending
+status: done
 depends_on: [T-04.01]
 stack: rust
 criteria:
@@ -1652,8 +1652,11 @@ criteria:
 not_doing:
   - No ML/embedding-based detection — substring patterns only, like Ratchet's checker.
   - No mutation of the scanned text; the scanner is read-only and reports.
-test_files: []
-criteria_map: {}
+test_files: [tests/scan_injection.rs]
+criteria_map:
+  C1: [test_scan_injection_detects_known_phrase, test_scan_injection_case_insensitive, test_scan_injection_clean_text_returns_empty]
+  C2: [test_scan_injection_detects_known_phrase, test_scan_injection_detects_disregard_constitution, test_scan_injection_detects_reveal_system_prompt]
+  C3: [test_scan_injection_clean_text_returns_empty]
 attempts: 1
 last_failure: ""
 ---
