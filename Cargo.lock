@@ -474,6 +474,7 @@ dependencies = [
  "tracing-subscriber",
  "zira-config",
  "zira-core",
+ "zira-emotion",
  "zira-proto",
 ]
 
@@ -499,6 +500,9 @@ dependencies = [
 [[package]]
 name = "zira-emotion"
 version = "0.0.0"
+dependencies = [
+ "zira-proto",
+]
 
 [[package]]
 name = "zira-memory"
