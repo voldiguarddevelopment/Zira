@@ -859,7 +859,7 @@ The dependency surface Phase-2 builds on. Inputs: the workspace and zira-memory 
 ### T-02.02  Define the episode record
 id: T-02.02
 phase: 2
-status: pending
+status: done
 depends_on: [T-02.01]
 stack: rust
 criteria:
@@ -868,8 +868,10 @@ criteria:
 not_doing:
   - No persistence — the on-disk JSONL append/load is later tasks.
   - No embedding vector field — retrieval stores vectors in the index, not the episode.
-test_files: []
-criteria_map: {}
+test_files: [tests/episode_record.rs]
+criteria_map:
+  C1: [c1_episode_has_required_fields, c1_episode_derives_clone, c1_episode_derives_partial_eq, c1_episode_derives_debug, c1_empty_string_fields_are_valid]
+  C2: [c2_episode_serde_json_round_trip, c2_episode_empty_strings_round_trip]
 attempts: 1
 last_failure: ""
 ---
