@@ -208,7 +208,7 @@ pub fn retrieve(
     k: usize,
 ) -> std::io::Result<Vec<Episode>> {
     let episodes = load_episodes(path)?;
-    if episodes.is_empty() || k == 0 {
+    if episodes.is_empty() {
         return Ok(vec![]);
     }
 
