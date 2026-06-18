@@ -2054,7 +2054,7 @@ not_doing:
   - No fallback-to-Neutral here — this STRICT path rejects unknown tags (unlike `from_tag`).
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 Validates and normalizes a configured tag list against the ten `Emotion` variants. Inputs: a slice of tag strings. Outputs: the resolved `Emotion` vector on success, or `VocabError::UnknownTag` for the first unrecognized tag. Edge: empty input is valid; matching is case-insensitive; unknown is a hard error (distinct from the lenient `from_tag`). Invariant: a returned `Ok` vector contains only in-vocabulary emotions. Done-check: the three criteria.
