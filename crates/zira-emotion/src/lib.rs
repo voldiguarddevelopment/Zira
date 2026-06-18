@@ -3,6 +3,36 @@
 use zira_proto::Emotion;
 pub use zira_proto::Segment;
 
+/// Speech-synthesis prosody multipliers applied to a TTS engine's baseline.
+///
+/// All three fields are dimensionless ratios relative to the engine default.
+/// `rate = 1.0` means normal speed, `pitch = 1.0` means normal pitch, etc.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct Prosody {
+    pub rate: f32,
+    pub pitch: f32,
+    pub volume: f32,
+}
+
+/// Return the prosody multipliers for `e`.
+///
+/// The function is total: every `Emotion` variant maps to a `Prosody`.
+/// Invariant: all three fields lie within `0.5..=2.0`.
+pub fn prosody(e: Emotion) -> Prosody {
+    match e {
+        Emotion::Neutral   => Prosody { rate: 1.00, pitch: 1.00, volume: 1.00 },
+        Emotion::Happy     => Prosody { rate: 1.15, pitch: 1.10, volume: 1.10 },
+        Emotion::Sad       => Prosody { rate: 0.85, pitch: 0.90, volume: 0.85 },
+        Emotion::Angry     => Prosody { rate: 1.20, pitch: 1.15, volume: 1.30 },
+        Emotion::Excited   => Prosody { rate: 1.30, pitch: 1.20, volume: 1.20 },
+        Emotion::Calm      => Prosody { rate: 0.90, pitch: 0.95, volume: 1.00 },
+        Emotion::Curious   => Prosody { rate: 1.05, pitch: 1.05, volume: 1.00 },
+        Emotion::Concerned => Prosody { rate: 0.95, pitch: 0.95, volume: 0.95 },
+        Emotion::Playful   => Prosody { rate: 1.10, pitch: 1.10, volume: 1.05 },
+        Emotion::Tired     => Prosody { rate: 0.75, pitch: 0.85, volume: 0.80 },
+    }
+}
+
 /// Split `s` into ordered `Segment`s at each `[emotion:...]` marker.
 ///
 /// The emotion in effect for a span is the tag that opened it (Neutral for
