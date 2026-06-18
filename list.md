@@ -1173,7 +1173,7 @@ not_doing:
   - No persisted index — vectors are computed per call from the episodes.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The retrieval stage tying episodes, the embedder, and the index together. Inputs: a path, an embedder, a query, and k. Outputs: the top-k most relevant episodes. Edge: no episodes yields an empty vec, not an error. Invariant: an episode identical to the query is its own nearest match. Done-check: the nearest-episode and empty-store criteria.
