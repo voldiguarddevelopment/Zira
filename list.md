@@ -1106,7 +1106,7 @@ not_doing:
   - No SIMD or perf tuning.
 test_files: []
 criteria_map: {}
-attempts: 5
+attempts: 6
 last_failure: attempt timed out after 3600s; the agent did not finish in time. Make smaller, more direct progress so the session completes within the configured ceiling.
 ---
 The vector-math kernel of the index. Inputs: two equal-length f32 slices. Outputs: a similarity in [-1, 1]. Edge: a zero-magnitude vector yields 0.0, never NaN. Invariant: self-similarity is 1.0, opposite is -1.0. Done-check: the identity/orthogonal/opposite and zero-guard criteria.
