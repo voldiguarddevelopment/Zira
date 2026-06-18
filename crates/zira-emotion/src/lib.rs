@@ -8,8 +8,33 @@ pub use zira_proto::Segment;
 /// The emotion in effect for a span is the tag that opened it (Neutral for
 /// text before the first marker). Empty-text spans are dropped.
 /// Concatenating every segment's text equals `strip_tags(s)`.
-pub fn segment(_s: &str) -> Vec<Segment> {
-    todo!("T-01.03: not yet implemented")
+pub fn segment(s: &str) -> Vec<Segment> {
+    const PREFIX: &str = "[emotion:";
+    let mut result = Vec::new();
+    let mut remaining = s;
+    let mut current_emotion = Emotion::Neutral;
+
+    while let Some(marker_start) = remaining.find(PREFIX) {
+        let text_before = &remaining[..marker_start];
+        if !text_before.is_empty() {
+            result.push(Segment { emotion: current_emotion, text: text_before.to_string() });
+        }
+        let after_prefix = &remaining[marker_start + PREFIX.len()..];
+        if let Some(close) = after_prefix.find(']') {
+            current_emotion = Emotion::from_tag(&after_prefix[..close]);
+            remaining = &after_prefix[close + 1..];
+        } else {
+            // Malformed marker with no closing ']' — treat remainder as text.
+            remaining = &remaining[marker_start..];
+            break;
+        }
+    }
+
+    if !remaining.is_empty() {
+        result.push(Segment { emotion: current_emotion, text: remaining.to_string() });
+    }
+
+    result
 }
 
 /// Remove every `[emotion:NAME]` marker from `s`, returning the remaining text unchanged.
