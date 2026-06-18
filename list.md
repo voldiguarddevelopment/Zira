@@ -912,7 +912,7 @@ not_doing:
   - No tolerance design for malformed lines beyond surfacing a parse error.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The episodic read primitive, the inverse of append. Inputs: a path. Outputs: the episodes in order, or an empty vec for a missing file. Edge: a missing file is empty-not-error; a malformed line surfaces an io::Error. Invariant: load after appends returns exactly what was appended, in order. Done-check: the append-then-load round-trip criterion.
