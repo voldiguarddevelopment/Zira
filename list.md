@@ -1946,7 +1946,7 @@ not_doing:
   - No serde derive — the decision is an in-process value, never persisted.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The user's verdict on a narrated plan. Inputs: a caller in PlanReview UX. Outputs: a tiny two-variant `Copy` enum `PlanDecision{Accept,Reject}` in the `zira-core` LIBRARY crate (never a lib.rs on the `zira` binary). Edge: only two outcomes — there is no third 'defer'. Invariant: the decision type is the single vocabulary plan-review logic switches on. Done-check: the two criteria — both variants exist and compare unequal.
