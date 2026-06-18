@@ -1094,7 +1094,7 @@ A deterministic CPU/hash embedder so retrieval is fully gateable without the rea
 ### T-02.13  Compute the cosine similarity
 id: T-02.13
 phase: 2
-status: pending
+status: done
 depends_on: [T-02.01]
 stack: rust
 criteria:
@@ -1104,10 +1104,13 @@ criteria:
 not_doing:
   - No mismatched-length handling beyond a documented precondition; callers pass equal-length vectors.
   - No SIMD or perf tuning.
-test_files: []
-criteria_map: {}
+test_files: [tests/cosine_similarity.rs]
+criteria_map:
+  C1: [test_cosine_similarity_self_is_one, test_cosine_similarity_orthogonal_is_zero]
+  C2: [test_cosine_similarity_self_is_one, test_cosine_similarity_orthogonal_is_zero, test_cosine_similarity_opposite_is_neg_one]
+  C3: [test_cosine_similarity_zero_vector_guard]
 attempts: 6
-last_failure: attempt timed out after 3600s; the agent did not finish in time. Make smaller, more direct progress so the session completes within the configured ceiling.
+last_failure: ""
 ---
 The vector-math kernel of the index. Inputs: two equal-length f32 slices. Outputs: a similarity in [-1, 1]. Edge: a zero-magnitude vector yields 0.0, never NaN. Invariant: self-similarity is 1.0, opposite is -1.0. Done-check: the identity/orthogonal/opposite and zero-guard criteria.
 
