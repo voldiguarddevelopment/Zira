@@ -1,2 +1,2 @@
-8018efb2c5f65179bf7b1bf409ca2cd4a914b311fc8add896b0d9abfbaacbd05  criteria_map:T-01.07
-15c673efc516cba528fd5b4b65dc9fe77ffd4d5352956073564691c35c590ffc  tests/bridge_invoke.rs
+a096b797eb5d5f9c4e4854fb379ded911ef73e865bc8747b6ecce6ccf22bb785  criteria_map:T-01.08
+6452bcead86cf10d63a57cb0f585c7b0b84471b10b8d94f6df3a5e9f6fd513ec  tests/parse_answer.rs
