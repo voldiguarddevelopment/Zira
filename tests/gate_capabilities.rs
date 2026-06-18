@@ -49,7 +49,7 @@ fn c2_deny_forbidden_capability() {
     let m = manifest(vec!["harm"]);
     let result = gate_capabilities(&c, &m);
     match result {
-        GateDecision::Deny { capability } => {
+        GateDecision::Deny { capability, .. } => {
             assert_eq!(
                 capability, "harm",
                 "Deny must name the offending capability"
@@ -74,7 +74,7 @@ fn c3_deny_unknown_capability() {
         "an unknown capability must never return Allow"
     );
     match result {
-        GateDecision::Deny { capability } => {
+        GateDecision::Deny { capability, .. } => {
             assert_eq!(
                 capability, "launch_missiles",
                 "Deny must name the unknown capability"
