@@ -224,33 +224,37 @@ pub fn compute_entry_hash(
 }
 
 /// In-memory catalog of admitted skills, keyed by manifest name.
-pub struct SkillRegistry;
+pub struct SkillRegistry {
+    entries: std::collections::HashMap<String, SkillManifest>,
+}
 
 impl SkillRegistry {
     pub fn new() -> Self {
-        todo!("SkillRegistry::new not implemented")
+        Self {
+            entries: std::collections::HashMap::new(),
+        }
     }
 
-    pub fn register(&mut self, _m: SkillManifest) {
-        todo!("SkillRegistry::register not implemented")
+    pub fn register(&mut self, m: SkillManifest) {
+        self.entries.insert(m.name.clone(), m);
     }
 
-    pub fn lookup(&self, _name: &str) -> Option<&SkillManifest> {
-        todo!("SkillRegistry::lookup not implemented")
+    pub fn lookup(&self, name: &str) -> Option<&SkillManifest> {
+        self.entries.get(name)
     }
 
     pub fn list(&self) -> Vec<&SkillManifest> {
-        todo!("SkillRegistry::list not implemented")
+        self.entries.values().collect()
     }
 
-    pub fn remove(&mut self, _name: &str) -> bool {
-        todo!("SkillRegistry::remove not implemented")
+    pub fn remove(&mut self, name: &str) -> bool {
+        self.entries.remove(name).is_some()
     }
 }
 
 impl Default for SkillRegistry {
     fn default() -> Self {
-        todo!("SkillRegistry::default not implemented")
+        Self::new()
     }
 }
 
