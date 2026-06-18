@@ -274,7 +274,7 @@ The immutable baseline policy compiled into Zira. Inputs: the embedded default t
 ### T-00.13  Validate the config
 id: T-00.13
 phase: 0
-status: pending
+status: done
 depends_on: [T-00.09]
 stack: rust
 criteria:
@@ -283,8 +283,11 @@ criteria:
   - C3: a repo-root integration test `tests/config_validate.rs` asserts a default config validates Ok and that each invalid fixture yields the specific expected `ConfigError`.
 not_doing:
   - No auto-repair — validation reports, it does not silently fix.
-test_files: []
-criteria_map: {}
+test_files: [tests/config_validate.rs]
+criteria_map:
+  C1: [c1_validate_returns_result_unit_config_error, c1_error_names_offending_field_and_reason]
+  C2: [c2_zero_sample_rate_is_invalid_sample_rate, c2_empty_binary_path_is_empty_path, c2_threshold_above_range_is_out_of_range, c2_threshold_below_range_is_out_of_range, c2_three_invalid_fields_yield_distinct_variants]
+  C3: [c3_default_config_validates_ok, c3_valid_custom_config_validates_ok, c2_zero_sample_rate_is_invalid_sample_rate, c2_empty_binary_path_is_empty_path, c2_threshold_above_range_is_out_of_range]
 attempts: 1
 last_failure: ""
 ---
