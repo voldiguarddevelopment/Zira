@@ -711,7 +711,7 @@ The bridge's public entry point, end-to-end against a stub. Inputs: config + con
 ### T-01.12  Implement the claude brain
 id: T-01.12
 phase: 1
-status: pending
+status: done
 depends_on: [T-00.20, T-01.11, T-01.03]
 stack: rust
 criteria:
@@ -720,8 +720,10 @@ criteria:
 not_doing:
   - Streaming `TextDelta` events.
   - The plan-review path.
-test_files: []
-criteria_map: {}
+test_files: [tests/claude_brain.rs]
+criteria_map:
+  C1: [c1_claude_brain_implements_brain, c1_respond_calls_bridge_ask]
+  C2: [c2_respond_emits_segments_then_turn_complete, c2_exactly_one_turn_complete_terminates_turn, c2_turn_complete_carries_bridge_usage]
 attempts: 1
 last_failure: ""
 ---
