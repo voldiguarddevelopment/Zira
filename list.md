@@ -1323,7 +1323,7 @@ not_doing:
   - No weighting — weight assignment belongs to the frame builder.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The character-to-mouth-shape rule the frame builder calls per character. Inputs: one `char`. Outputs: a `Viseme`. Edge: anything that is not a recognised vowel rests at `Sil`. Invariant: total over all `char` values, never panics. Done-check: the two criteria.
