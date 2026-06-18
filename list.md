@@ -1608,7 +1608,7 @@ not_doing:
   - No key management/derivation — the caller supplies the key bytes.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 Produces the authenticity tag over a manifest. Inputs: a key and a manifest. Outputs: a deterministic HMAC-SHA256 `Signature`. Edge: distinct keys and distinct manifest contents must produce distinct signatures so the verify path has signal. Invariant: the byte serialization fed to HMAC is stable across runs. Done-check: same-key determinism, key-sensitivity, and content-sensitivity.
