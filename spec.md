@@ -304,3 +304,240 @@ not_doing:
   - No real audio/brain — every stage is a mock; this proves the wiring, not the devices.
 ---
 The Phase-0 acceptance: the whole loop cycles on mocks. Inputs: the mock stages + injected events. Outputs: a verified Idle->...->Idle path plus a barge-in path. Errors/edges: barge-in re-enters Listening. Invariant: the state machine + bus + traits compose correctly. Done-check: the three criteria.
+
+### T-01.01  Parse the emotion tag
+id: T-01.01
+phase: 1
+depends_on: [T-00.05]
+stack: rust
+criteria:
+  - C1: `zira_emotion::parse_tag(s: &str) -> (Emotion, &str)` returns the `Emotion` named by a leading `[emotion:NAME]` marker (case-insensitive, resolved through `Emotion::from_tag`) and the text following the marker with leading whitespace trimmed.
+  - C2: input with no leading `[emotion:...]` marker returns `(Emotion::Neutral, s)` with the returned slice byte-for-byte equal to the input.
+not_doing:
+  - Markers anywhere but the start of the string.
+  - Handling more than one marker — that is the segmenter.
+---
+The atom the segmenter is built from. Inputs: a text slice. Outputs: the leading emotion + the remaining text. Edge: an unknown name resolves to Neutral via the proto helper. Invariant: never panics. Done-check: the two criteria.
+
+### T-01.02  Strip the emotion tags
+id: T-01.02
+phase: 1
+depends_on: [T-00.05]
+stack: rust
+criteria:
+  - C1: `zira_emotion::strip_tags(s: &str) -> String` returns `s` with every `[emotion:...]` marker removed and all surrounding text preserved.
+  - C2: a string containing no marker returns a `String` equal to the input.
+not_doing:
+  - Trimming or normalising prose beyond marker removal.
+---
+Produces the clean text handed to speech. Inputs: tagged text. Outputs: untagged text. Invariant: only markers are removed. Done-check: the two criteria.
+
+### T-01.03  Segment the tagged reply
+id: T-01.03
+phase: 1
+depends_on: [T-00.07]
+stack: rust
+criteria:
+  - C1: `zira_emotion::segment(s: &str) -> Vec<Segment>` splits `s` at each `[emotion:...]` marker, emitting one `Segment { emotion, text }` per span carrying the emotion in effect for that span.
+  - C2: text preceding the first marker becomes a `Segment` with `Emotion::Neutral`; empty input returns an empty `Vec`.
+  - C3: a marker immediately followed by another marker or end-of-string emits no empty-text `Segment`.
+not_doing:
+  - Sentence/clause segmentation — only emotion boundaries split.
+---
+The main emotion parser. Inputs: a full reply. Outputs: ordered emotion spans. Edge: leading untagged prose is Neutral; empty spans are dropped. Invariant: concatenated span text equals the stripped reply. Done-check: the three criteria.
+
+### T-01.04  Map emotion to prosody
+id: T-01.04
+phase: 1
+depends_on: [T-00.05]
+stack: rust
+criteria:
+  - C1: `zira_emotion::prosody(e: Emotion) -> Prosody` is total over all ten `Emotion` variants and returns a `Prosody { rate: f32, pitch: f32, volume: f32 }`.
+  - C2: `prosody(Emotion::Neutral)` equals the baseline `Prosody { rate: 1.0, pitch: 1.0, volume: 1.0 }`.
+  - C3: for every variant each of `rate`, `pitch`, `volume` lies within the inclusive range `0.5..=2.0`.
+not_doing:
+  - Viseme / lip-sync mapping.
+  - Per-voice or per-TTS-engine tuning.
+---
+The synthesis-facing table. Inputs: an emotion. Outputs: prosody multipliers. Invariant: total and bounded. Done-check: the three criteria.
+
+### T-01.05  Build the claude invocation
+id: T-01.05
+phase: 1
+depends_on: [T-00.10]
+stack: rust
+criteria:
+  - C1: `zira_bridge::build_argv(cfg: &ZiraConfig) -> Vec<String>` returns the argv that launches the `claude` CLI non-interactively with stream-json output.
+  - C2: the model string from the config appears in the argv as the value immediately following the model flag.
+not_doing:
+  - Spawning the process.
+  - Environment or credential handling.
+---
+Pure argv construction. Inputs: the config. Outputs: the command vector. Invariant: deterministic for a given config. Done-check: the two criteria.
+
+### T-01.06  Compose the request prompt
+id: T-01.06
+phase: 1
+depends_on: [T-00.12, T-00.07]
+stack: rust
+criteria:
+  - C1: `zira_bridge::compose_prompt(constitution: &str, transcript: &Transcript) -> String` returns a prompt containing the full constitution text followed by the transcript text, in that order.
+  - C2: an empty transcript (`text` is empty) still yields a prompt containing the complete constitution.
+not_doing:
+  - Memory / context injection (Phase 2).
+  - Tool or skill definitions.
+---
+Pure prompt assembly. Inputs: constitution + transcript. Outputs: the prompt string. Invariant: constitution is always present and first. Done-check: the two criteria.
+
+### T-01.07  Capture the claude output
+id: T-01.07
+phase: 1
+depends_on: [T-00.07]
+stack: rust
+criteria:
+  - C1: `zira_bridge::invoke(argv: &[String], prompt: &str) -> std::io::Result<RawOutput>` spawns the program named by `argv`, writes `prompt` to its stdin, and returns a `RawOutput { stdout: String, status: i32 }`.
+  - C2: a repo-root integration test `tests/bridge_invoke.rs` runs `invoke` against a stub script that echoes a fixed string and asserts `stdout` equals that string and `status` is `0`.
+not_doing:
+  - Parsing the captured output — later tasks own that.
+---
+The subprocess boundary, proven against a stub `claude`. Inputs: argv + prompt. Outputs: raw stdout + exit code. Invariant: stdin is fully written before capture. Done-check: the two criteria.
+
+### T-01.08  Extract the answer text
+id: T-01.08
+phase: 1
+depends_on: [T-01.07]
+stack: rust
+criteria:
+  - C1: `zira_bridge::parse_answer(raw: &RawOutput) -> String` returns the assistant's final text decoded from claude's stream-json stdout (the terminal `result` event's text).
+  - C2: stdout containing no assistant/result text yields an empty `String`.
+not_doing:
+  - Usage or plan parsing.
+---
+Pull the spoken answer from the stream. Inputs: raw output. Outputs: answer text. Edge: missing result yields empty. Done-check: the two criteria.
+
+### T-01.09  Parse the usage totals
+id: T-01.09
+phase: 1
+depends_on: [T-01.07]
+stack: rust
+criteria:
+  - C1: `zira_bridge::parse_usage(raw: &RawOutput) -> Usage` returns the `Usage { input_tokens, output_tokens }` read from claude's terminal result event.
+  - C2: output missing the usage fields yields `Usage { input_tokens: 0, output_tokens: 0 }`.
+not_doing:
+  - Cost computation — tokens only.
+---
+Read token accounting from the stream. Inputs: raw output. Outputs: a Usage. Edge: absent fields default to zero. Done-check: the two criteria.
+
+### T-01.10  Type the bridge errors
+id: T-01.10
+phase: 1
+depends_on: [T-01.07]
+stack: rust
+criteria:
+  - C1: `zira_bridge::BridgeError` is an enum implementing `std::error::Error` and `Display` with distinct variants for a spawn failure, a non-zero exit, and output missing a terminal result event.
+  - C2: a unit test asserts the `Display` text of every variant is non-empty and names its failure — every variant's message is exercised.
+not_doing:
+  - Recovery or retry policy.
+---
+The bridge's typed failure surface. NOTE: C2 deliberately exercises every Display arm so no arm is an unexercised mutation survivor (the T-00.04 lesson). Done-check: the two criteria.
+
+### T-01.11  Ask claude end-to-end
+id: T-01.11
+phase: 1
+depends_on: [T-01.06, T-01.07, T-01.10]
+stack: rust
+criteria:
+  - C1: `zira_bridge::ask(cfg: &ZiraConfig, constitution: &str, transcript: &Transcript) -> Result<Answer, BridgeError>` composes the prompt, invokes claude, and returns `Answer { text: String, usage: Usage }` on success.
+  - C2: a repo-root integration test `tests/bridge_ask.rs` runs `ask` against a stub claude script and asserts the returned `text` and `usage` match the stub output.
+  - C3: a stub that exits non-zero makes `ask` return `Err(BridgeError)`, asserted by the same test.
+not_doing:
+  - Streaming partial deltas to the caller.
+---
+The bridge's public entry point, end-to-end against a stub. Inputs: config + constitution + transcript. Outputs: an Answer or a typed error. Done-check: the three criteria.
+
+### T-01.12  Implement the claude brain
+id: T-01.12
+phase: 1
+depends_on: [T-00.20, T-01.11, T-01.03]
+stack: rust
+criteria:
+  - C1: `ClaudeBrain` implements the `Brain` trait; `respond()` calls `zira_bridge::ask` and returns a `Vec<Event>`.
+  - C2: on success the answer text is run through `zira_emotion::segment` and emitted as one `Event::EmotionSegment(Segment)` per span in order, followed by exactly one `Event::TurnComplete(Usage)`.
+not_doing:
+  - Streaming `TextDelta` events.
+  - The plan-review path.
+---
+The real Thinking stage, replacing MockBrain. Inputs: a transcript turn. Outputs: emotion-segment events + a turn-complete. Invariant: exactly one TurnComplete terminates a successful turn. Done-check: the two criteria.
+
+### T-01.13  Emit the bridge error event
+id: T-01.13
+phase: 1
+depends_on: [T-01.12]
+stack: rust
+criteria:
+  - C1: when `zira_bridge::ask` returns `Err`, `ClaudeBrain::respond()` returns exactly one `Event::Error(String)` carrying the error's `Display` message and never panics.
+not_doing:
+  - Retry or backoff — the orchestrator decides recovery.
+---
+The failure path of the Thinking stage. Inputs: a failing ask. Outputs: a single Error event. Invariant: no panic on bridge failure. Done-check: the one criterion.
+
+### T-01.14  Test the thinking spine
+id: T-01.14
+phase: 1
+depends_on: [T-01.12, T-01.13]
+stack: rust
+criteria:
+  - C1: a repo-root integration test `tests/thinking_spine.rs` (tokio) drives `ClaudeBrain::respond()` against a stub claude script and asserts the emitted `Event` sequence is the expected `EmotionSegment`(s) then `TurnComplete`.
+  - C2: a stub reply carrying multiple `[emotion:...]` spans produces one `Event::EmotionSegment` per span in source order; a stub that fails produces a single `Event::Error`.
+not_doing:
+  - Audio stages — those stay mocked / blocked-on-human.
+---
+Phase-1 acceptance for the gateable half: transcript -> claude -> emotion-segmented events. Done-check: the two criteria.
+
+### T-01.15  Detect the wake word
+id: T-01.15
+phase: 1
+depends_on: [T-00.20, T-00.10]
+stack: rust
+criteria:
+  - C1: a `WakeSource` implementation backed by a real wake-word model emits `Event::WakeDetected` when the configured wake phrase is spoken into the default input device.
+not_doing:
+  - Mock wake source — that already exists from Phase 0.
+---
+Real wake detection. Blocked-on-human: requires microphone hardware + a wake-word model (FFI). Done-check: the one criterion, measured on target hardware.
+
+### T-01.16  Gate the voice activity
+id: T-01.16
+phase: 1
+depends_on: [T-00.20]
+stack: rust
+criteria:
+  - C1: a `VadGate` implementation emits `Event::SpeechStarted` and `Event::SpeechEnded` from live microphone audio using a real voice-activity detector.
+not_doing:
+  - Mock VAD gate — exists from Phase 0.
+---
+Real endpointing. Blocked-on-human: microphone hardware + a VAD model. Done-check: the one criterion on target hardware.
+
+### T-01.17  Transcribe the speech
+id: T-01.17
+phase: 1
+depends_on: [T-00.20]
+stack: rust
+criteria:
+  - C1: an `SttEngine` implementation transcribes captured microphone audio into an `Event::TranscriptReady(Transcript)` via a real speech-to-text model.
+not_doing:
+  - Mock STT engine — exists from Phase 0.
+---
+Real transcription. Blocked-on-human: an STT model/FFI + audio capture. Done-check: the one criterion on target hardware.
+
+### T-01.18  Synthesize the speech
+id: T-01.18
+phase: 1
+depends_on: [T-00.20, T-01.04]
+stack: rust
+criteria:
+  - C1: a `TtsEngine` implementation synthesizes a `Segment`'s text into audible speech on the default output device, modulated by the segment emotion's `Prosody`.
+not_doing:
+  - Mock TTS engine — exists from Phase 0.
+---
+Real emotion-inflected speech. Blocked-on-human: a TTS model + audio output. Done-check: the one criterion on target hardware.
