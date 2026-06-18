@@ -6,9 +6,13 @@
 //! would see from the real engine, so the full Idle→…→Idle cycle can be exercised
 //! offline. Gated behind the `mock` feature so the production library never ships them.
 
-use zira_proto::{Event, Segment, Transcript, VisemeFrame};
+use tokio::sync::{mpsc, watch};
+use zira_proto::{Emotion, Event, Segment, State, Transcript, VisemeFrame};
 
-use crate::{AvatarSink, Brain, MemoryStore, SttEngine, TtsEngine, VadGate, WakeSource};
+use crate::{
+    create_bus, AvatarSink, Brain, BusHandles, MemoryStore, Orchestrator, SttEngine, TtsEngine,
+    VadGate, WakeSource,
+};
 
 /// Scripted [`WakeSource`]: every `next_wake` yields [`Event::WakeDetected`].
 #[derive(Debug, Default)]
@@ -165,5 +169,90 @@ impl MemoryStore for MockMemoryStore {
 
     async fn recall(&mut self) -> Vec<Event> {
         self.stored.clone()
+    }
+}
+
+/// The assembled mock conversation cycle: a real [`Orchestrator`] wired to the seven
+/// scripted stage mocks, ready to be driven through a full turn offline.
+///
+/// `new` constructs the genuine command/event bus, builds an [`Orchestrator`] over it,
+/// and spawns its `run` select-loop on the current Tokio runtime. The seven mocks are
+/// exposed as public fields so a test can pump each through its stage **trait** method
+/// and feed every emitted [`Event`] back across the command bus via [`MockCycle::cmd`],
+/// observing the resulting state path through [`MockCycle::subscribe_state`]. Dropping the
+/// cycle drops the last command sender, which closes the channel and lets `run` exit.
+pub struct MockCycle {
+    /// Wake-word source mock (`Idle -> Listening`).
+    pub wake: MockWakeSource,
+    /// Voice-activity gate mock (`Listening -> Transcribing`).
+    pub vad: MockVadGate,
+    /// Speech-to-text mock (`Transcribing -> Thinking`).
+    pub stt: MockSttEngine,
+    /// Brain mock (`Thinking -> Speaking`).
+    pub brain: MockBrain,
+    /// Text-to-speech mock (viseme side-effects while `Speaking`).
+    pub tts: MockTtsEngine,
+    /// Avatar sink mock (expression side-effect while `Speaking`).
+    pub avatar: MockAvatarSink,
+    /// In-memory store mock (persist/recall side-effects).
+    pub memory: MockMemoryStore,
+    cmd_tx: mpsc::Sender<Event>,
+    state_rx: watch::Receiver<State>,
+}
+
+impl MockCycle {
+    /// Assemble the orchestrator from the seven mock stages and spawn its run-loop.
+    ///
+    /// Must be called from within a Tokio runtime (the run-loop is spawned as a task).
+    #[must_use]
+    pub fn new() -> Self {
+        let BusHandles {
+            cmd_tx,
+            cmd_rx,
+            event_tx,
+        } = create_bus();
+        let mut orchestrator = Orchestrator::new(cmd_rx, event_tx);
+        let state_rx = orchestrator.subscribe_state();
+        tokio::spawn(async move {
+            orchestrator.run().await;
+        });
+
+        Self {
+            wake: MockWakeSource::new(),
+            vad: MockVadGate::new(),
+            stt: MockSttEngine::new("hello zira"),
+            brain: MockBrain::new(Segment {
+                emotion: Emotion::Neutral,
+                text: "hello there".to_string(),
+            }),
+            tts: MockTtsEngine::new(vec![VisemeFrame {
+                viseme: "AA".to_string(),
+                weight: 1.0,
+            }]),
+            avatar: MockAvatarSink::new(),
+            memory: MockMemoryStore::new(),
+            cmd_tx,
+            state_rx,
+        }
+    }
+
+    /// A cloneable sender on the orchestrator's command bus — send each event the mocks
+    /// emit (and the control events they do not) here to drive the state machine.
+    #[must_use]
+    pub fn cmd(&self) -> mpsc::Sender<Event> {
+        self.cmd_tx.clone()
+    }
+
+    /// A receiver that observes the orchestrator's state, seeded with the initial
+    /// [`State::Idle`]; `changed().await` resolves once per state transition.
+    #[must_use]
+    pub fn subscribe_state(&self) -> watch::Receiver<State> {
+        self.state_rx.clone()
+    }
+}
+
+impl Default for MockCycle {
+    fn default() -> Self {
+        Self::new()
     }
 }
