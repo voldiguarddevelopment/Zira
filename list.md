@@ -522,7 +522,7 @@ Produces the clean text handed to speech. Inputs: tagged text. Outputs: untagged
 ### T-01.03  Segment the tagged reply
 id: T-01.03
 phase: 1
-status: pending
+status: done
 depends_on: [T-00.07]
 stack: rust
 criteria:
@@ -531,8 +531,11 @@ criteria:
   - C3: a marker immediately followed by another marker or end-of-string emits no empty-text `Segment`.
 not_doing:
   - Sentence/clause segmentation — only emotion boundaries split.
-test_files: []
-criteria_map: {}
+test_files: [tests/segment_tags.rs]
+criteria_map:
+  C1: [c1_single_marker_splits_into_segments, c1_multiple_markers_emit_ordered_spans, c1_emotion_in_effect_for_each_span, c1_all_known_emotions_segmented, c1_concatenated_text_equals_stripped_reply]
+  C2: [c2_leading_untagged_text_becomes_neutral_segment, c2_empty_input_returns_empty_vec, c2_only_tagged_text_no_leading_prose]
+  C3: [c3_consecutive_markers_emit_no_empty_segment, c3_marker_at_end_emits_no_empty_segment, c3_multiple_consecutive_markers_all_dropped, c3_only_markers_returns_empty_vec]
 attempts: 1
 last_failure: ""
 ---
