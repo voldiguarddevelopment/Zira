@@ -359,3 +359,18 @@ impl Signature {
         Ok(Self(bytes))
     }
 }
+
+/// Produce an `.mcp.json`-shaped `serde_json::Value` from a [`SkillManifest`].
+///
+/// The returned object has a single top-level key `"mcpServers"` whose value is
+/// an object with one entry keyed by `m.name`.  That entry's `"command"` field
+/// is set from `m.entry`.
+pub fn mcp_config_from_manifest(m: &SkillManifest) -> serde_json::Value {
+    serde_json::json!({
+        "mcpServers": {
+            &m.name: {
+                "command": &m.entry
+            }
+        }
+    })
+}
