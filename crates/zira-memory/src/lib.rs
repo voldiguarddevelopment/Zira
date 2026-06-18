@@ -37,8 +37,7 @@ impl Embedder for HashEmbedder {
         (0..self.dim)
             .map(|i| {
                 let h = hash_slot(i as u64, text.as_bytes());
-                // Map the full u64 range to [-1.0, 1.0].
-                (h as f64 / u64::MAX as f64) as f32 * 2.0 - 1.0
+                h as f32
             })
             .collect()
     }
