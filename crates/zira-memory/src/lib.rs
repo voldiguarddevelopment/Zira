@@ -81,8 +81,8 @@ pub struct Episode {
 pub fn load_episodes(path: &std::path::Path) -> std::io::Result<Vec<Episode>> {
     use std::io::BufRead;
     match std::fs::File::open(path) {
-        Err(e) if e.kind() == std::io::ErrorKind::NotFound => return Ok(vec![]),
-        Err(e) => return Err(e),
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(vec![]),
+        Err(e) => Err(e),
         Ok(file) => {
             let reader = std::io::BufReader::new(file);
             reader
@@ -143,6 +143,30 @@ pub fn cosine_similarity(a: &[f32], b: &[f32]) -> f32 {
         0.0
     } else {
         dot.mul_add(denom.recip(), 0.0)
+    }
+}
+
+/// In-memory vector index: stores (id, vector) pairs and reports their count.
+///
+/// Insertion-only; the index is rebuilt from the episode/fact store on each run.
+pub struct VectorIndex;
+
+#[allow(clippy::new_without_default)]
+impl VectorIndex {
+    pub fn new() -> Self {
+        unimplemented!("T-02.14: VectorIndex::new not yet implemented")
+    }
+
+    pub fn add(&mut self, _id: usize, _vector: Vec<f32>) {
+        unimplemented!("T-02.14: VectorIndex::add not yet implemented")
+    }
+
+    pub fn len(&self) -> usize {
+        unimplemented!("T-02.14: VectorIndex::len not yet implemented")
+    }
+
+    pub fn is_empty(&self) -> bool {
+        unimplemented!("T-02.14: VectorIndex::is_empty not yet implemented")
     }
 }
 
