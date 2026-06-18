@@ -966,7 +966,7 @@ The fact store's typed failure surface, declared before the store so its operati
 ### T-02.07  Open the fact store
 id: T-02.07
 phase: 2
-status: pending
+status: done
 depends_on: [T-02.06]
 stack: rust
 criteria:
@@ -975,8 +975,10 @@ criteria:
 not_doing:
   - No put/get/delete — those are T-02.08 through T-02.10.
   - No schema migration handling.
-test_files: []
-criteria_map: {}
+test_files: [tests/fact_store_open.rs]
+criteria_map:
+  C1: [c1_open_creates_database_when_absent]
+  C2: [c2_reopen_same_path_returns_ok]
 attempts: 1
 last_failure: ""
 ---
