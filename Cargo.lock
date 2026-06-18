@@ -528,6 +528,9 @@ dependencies = [
 [[package]]
 name = "zira-avatar"
 version = "0.0.0"
+dependencies = [
+ "zira-proto",
+]
 
 [[package]]
 name = "zira-bridge"

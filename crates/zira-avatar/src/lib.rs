@@ -1,5 +1,7 @@
 //! zira-avatar — VRM avatar renderer.
 
+use zira_proto::Emotion;
+
 /// Blendshape weight preset for a single VRM expression.
 #[derive(Debug, Clone, PartialEq)]
 pub struct ExpressionPreset {
@@ -23,5 +25,24 @@ impl ExpressionPreset {
             surprise: self.surprise.clamp(0.0, 1.0),
             fun: self.fun.clamp(0.0, 1.0),
         }
+    }
+}
+
+/// Map an `Emotion` to its corresponding blendshape `ExpressionPreset`.
+///
+/// Total over all ten `Emotion` variants. Every returned preset is already
+/// within `[0.0, 1.0]` on every weight, so `preset == preset.clamped()`.
+pub fn expression_for(emotion: Emotion) -> ExpressionPreset {
+    match emotion {
+        Emotion::Neutral => ExpressionPreset { joy: 0.0, sorrow: 0.0, anger: 0.0, surprise: 0.0, fun: 0.0 },
+        Emotion::Happy => ExpressionPreset { joy: 0.8, sorrow: 0.0, anger: 0.0, surprise: 0.0, fun: 0.2 },
+        Emotion::Sad => ExpressionPreset { joy: 0.0, sorrow: 0.8, anger: 0.0, surprise: 0.0, fun: 0.0 },
+        Emotion::Angry => ExpressionPreset { joy: 0.0, sorrow: 0.0, anger: 0.9, surprise: 0.0, fun: 0.0 },
+        Emotion::Excited => ExpressionPreset { joy: 0.6, sorrow: 0.0, anger: 0.0, surprise: 0.6, fun: 0.4 },
+        Emotion::Calm => ExpressionPreset { joy: 0.2, sorrow: 0.0, anger: 0.0, surprise: 0.0, fun: 0.0 },
+        Emotion::Curious => ExpressionPreset { joy: 0.1, sorrow: 0.0, anger: 0.0, surprise: 0.5, fun: 0.2 },
+        Emotion::Concerned => ExpressionPreset { joy: 0.0, sorrow: 0.4, anger: 0.1, surprise: 0.2, fun: 0.0 },
+        Emotion::Playful => ExpressionPreset { joy: 0.5, sorrow: 0.0, anger: 0.0, surprise: 0.2, fun: 0.8 },
+        Emotion::Tired => ExpressionPreset { joy: 0.0, sorrow: 0.3, anger: 0.0, surprise: 0.0, fun: 0.0 },
     }
 }
