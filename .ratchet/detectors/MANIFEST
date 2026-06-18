@@ -1,2 +1,2 @@
-d9d1bd554489544748851d2b05a614cbedd77be5bd386d08c6979071ae951658  criteria_map:T-01.06
-5ac27d6b2282369b1f9e9f1e16f6dbdb8e2a83d966e8aa7504ac30aa28979cab  tests/compose_prompt.rs
+8018efb2c5f65179bf7b1bf409ca2cd4a914b311fc8add896b0d9abfbaacbd05  criteria_map:T-01.07
+15c673efc516cba528fd5b4b65dc9fe77ffd4d5352956073564691c35c590ffc  tests/bridge_invoke.rs
