@@ -30,6 +30,10 @@ pub fn load_episodes(path: &std::path::Path) -> std::io::Result<Vec<Episode>> {
     }
 }
 
+pub fn cap_episodes(_path: &std::path::Path, _max_episodes: usize) -> std::io::Result<()> {
+    unimplemented!("cap_episodes is not yet implemented")
+}
+
 pub fn append_episode(path: &std::path::Path, episode: &Episode) -> std::io::Result<()> {
     use std::io::Write;
     let mut file = std::fs::OpenOptions::new()
