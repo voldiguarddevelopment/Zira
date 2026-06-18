@@ -238,6 +238,31 @@ pub fn format_preamble(episodes: &[Episode]) -> String {
     out
 }
 
+/// Stateless consolidation pass: derives deduplicated facts from the episodic log
+/// and writes each into `store` using the episode text as the key.
+///
+/// Returns the count of unique facts written. A missing or empty episode file
+/// writes nothing and returns `Ok(0)`.
+pub fn consolidate(
+    episode_path: &std::path::Path,
+    store: &FactStore,
+) -> Result<usize, FactStoreError> {
+    let episodes = load_episodes(episode_path)
+        .map_err(|e| FactStoreError::OpenFailed(e.to_string()))?;
+
+    let mut seen = std::collections::HashSet::new();
+    let mut count = 0usize;
+
+    for ep in &episodes {
+        if seen.insert(ep.text.clone()) {
+            store.put(&ep.text, &ep.text)?;
+            count += 1;
+        }
+    }
+
+    Ok(count)
+}
+
 const FACTS_TABLE: redb::TableDefinition<&str, &str> = redb::TableDefinition::new("facts");
 
 /// A handle to the redb-backed fact store.
