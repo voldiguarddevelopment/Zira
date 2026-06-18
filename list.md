@@ -649,7 +649,7 @@ Pull the spoken answer from the stream. Inputs: raw output. Outputs: answer text
 ### T-01.09  Parse the usage totals
 id: T-01.09
 phase: 1
-status: pending
+status: done
 depends_on: [T-01.07]
 stack: rust
 criteria:
@@ -657,8 +657,10 @@ criteria:
   - C2: output missing the usage fields yields `Usage { input_tokens: 0, output_tokens: 0 }`.
 not_doing:
   - Cost computation — tokens only.
-test_files: []
-criteria_map: {}
+test_files: [tests/parse_usage.rs]
+criteria_map:
+  C1: [c1_result_event_usage_returned, c1_result_event_usage_in_multiline_stream]
+  C2: [c2_empty_stdout_returns_zero_usage, c2_no_result_type_line_returns_zero_usage, c2_result_event_without_usage_field_returns_zero]
 attempts: 1
 last_failure: ""
 ---
