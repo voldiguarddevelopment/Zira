@@ -1431,7 +1431,7 @@ not_doing:
   - No actual window/render-loop start — that is a blocked task.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The deterministic, GPU-free decision of which renderer the avatar should run: the 3D VRM path when a model is configured, the 2D fallback otherwise. Inputs: the avatar config. Outputs: a renderer kind. Edge: a `Some("")` empty path counts as no model and falls back to 2D. Invariant: a missing or empty `vrm_path` always selects the GPU-less fallback. Done-check: the three criteria.
