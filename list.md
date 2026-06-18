@@ -1205,7 +1205,7 @@ The injection stage that turns retrieved episodes into context the bridge prepen
 ### T-02.18  Consolidate the episodes
 id: T-02.18
 phase: 2
-status: pending
+status: done
 depends_on: [T-02.04, T-02.08]
 stack: rust
 criteria:
@@ -1215,10 +1215,13 @@ criteria:
 not_doing:
   - No LLM-driven summarization — the consolidation rule is deterministic and gateable (no model call).
   - No pruning of the episodic log here — capping is T-02.05.
-test_files: []
-criteria_map: {}
+test_files: [tests/consolidate_episodes.rs]
+criteria_map:
+  C1: [c1_consolidate_signature_and_count]
+  C2: [c2_consolidate_deduplicates_repeated_text]
+  C3: [c3_consolidate_empty_file_returns_zero, c3_consolidate_missing_file_returns_zero]
 attempts: 3
-last_failure: RED phase removed or corrupted list.md — the task's criteria record must survive the red phase
+last_failure: ""
 ---
 The stateless consolidation pass distilling episodic logs into semantic facts, re-derivable from disk on every run. Inputs: the episode path and an open fact store. Outputs: deduplicated facts written to the store plus a written-count. Edge: an empty log writes nothing and returns 0. Invariant: duplicated information collapses to one fact; the pass holds no state between runs. Done-check: the dedup and empty-log criteria.
 
