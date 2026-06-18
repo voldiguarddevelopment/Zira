@@ -75,7 +75,7 @@ The style + lint floor. Inputs: the workspace root. Outputs: toolchain + fmt + c
 ### T-00.04  Initialize structured logging
 id: T-00.04
 phase: 0
-status: pending
+status: done
 depends_on: [T-00.02]
 stack: rust
 criteria:
@@ -85,8 +85,11 @@ criteria:
 not_doing:
   - No log routing to files or external sinks — stdout/stderr only.
   - No per-crate log configuration beyond the global env filter.
-test_files: []
-criteria_map: {}
+test_files: [tests/logging_init.rs]
+criteria_map:
+  C1: [test_build_filter_honors_rust_log_error, test_build_filter_defaults_to_info, test_malformed_rust_log_falls_back_to_info]
+  C2: [test_first_call_is_ok, test_init_returns_typed_result, test_init_is_idempotent]
+  C3: [test_default_level_enables_info, test_default_level_excludes_debug, test_default_level_is_not_silent, test_build_filter_defaults_to_info]
 attempts: 1
 last_failure: ""
 ---
