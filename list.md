@@ -1979,7 +1979,7 @@ Pure plan-review logic over the existing state machine. Inputs: the narrated `Pl
 ### T-05.03  Verify the plan-review transition
 id: T-05.03
 phase: 5
-status: pending
+status: done
 depends_on: [T-05.02]
 stack: rust
 criteria:
@@ -1988,10 +1988,12 @@ criteria:
 not_doing:
   - No new transition rows — this reuses the frozen `next_state` table from Phase 0.
   - No orchestrator run-loop changes.
-test_files: []
-criteria_map: {}
+test_files: [tests/plan_review_transition.rs]
+criteria_map:
+  C1: [test_accept_lands_in_thinking]
+  C2: [test_reject_lands_in_idle]
 attempts: 3
-last_failure: tests pass in the red phase — a correct red must fail (missing implementation), this is vacuous
+last_failure: ""
 ---
 Wires the decision mapping to the real state machine end-to-end. Inputs: `State::PlanReview` plus the `Event` from `review_plan`. Outputs: an Accept lands in `Thinking` and a Reject lands in `Idle`, proving `review_plan`'s event choice is the correct key into `next_state`. Edge: any other base state is out of scope. Invariant: plan-review never invents a transition the table does not already define. Done-check: the two criteria.
 
