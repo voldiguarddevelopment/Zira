@@ -69,3 +69,17 @@ pub fn append_episode(path: &std::path::Path, episode: &Episode) -> std::io::Res
         .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
     writeln!(file, "{}", line)
 }
+
+/// A handle to the redb-backed fact store.
+pub struct FactStore {
+    _db: redb::Database,
+}
+
+impl FactStore {
+    /// Opens (creating if absent) a redb database at `path`.
+    pub fn open(path: &std::path::Path) -> Result<Self, FactStoreError> {
+        let db = redb::Database::create(path)
+            .map_err(|e| FactStoreError::OpenFailed(e.to_string()))?;
+        Ok(Self { _db: db })
+    }
+}
