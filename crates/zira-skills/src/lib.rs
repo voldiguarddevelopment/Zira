@@ -50,11 +50,25 @@ impl Signature {
 
     /// Encode the raw bytes as a lowercase hex string.
     pub fn to_hex(&self) -> String {
-        todo!("implement hex encoding")
+        self.0.iter().map(|b| format!("{b:02x}")).collect()
     }
 
     /// Decode a lowercase hex string into a [`Signature`].
     pub fn from_hex(s: &str) -> Result<Self, ManifestError> {
-        todo!("implement hex decoding")
+        if s.len() % 2 != 0 {
+            return Err(ManifestError::Parse(format!(
+                "odd-length hex string: {} chars",
+                s.len()
+            )));
+        }
+        let bytes = (0..s.len())
+            .step_by(2)
+            .map(|i| {
+                u8::from_str_radix(&s[i..i + 2], 16).map_err(|_| {
+                    ManifestError::Parse(format!("invalid hex at position {i}: {:?}", &s[i..i + 2]))
+                })
+            })
+            .collect::<Result<Vec<u8>, ManifestError>>()?;
+        Ok(Self(bytes))
     }
 }
