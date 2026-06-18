@@ -272,6 +272,11 @@ impl ZiraConfig {
     }
 }
 
+/// Resolve the configured default emotion string to a typed `Emotion`.
+pub fn resolve_default_emotion(_config: &EmotionConfig) -> zira_proto::Emotion {
+    todo!("T-05.04 GREEN: implement via Emotion::from_tag")
+}
+
 /// Range-check a probability threshold, which must lie within `[0.0, 1.0]`.
 fn check_threshold(field: &'static str, value: f32) -> Result<(), ConfigError> {
     if !(0.0..=1.0).contains(&value) {
