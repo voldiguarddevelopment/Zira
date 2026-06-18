@@ -2,6 +2,17 @@
 
 use serde::{Deserialize, Serialize};
 
+/// Typed errors for the fact store.
+#[derive(thiserror::Error, Debug)]
+pub enum FactStoreError {
+    #[error("database open failed: {0}")]
+    OpenFailed(String),
+    #[error("transaction failed: {0}")]
+    TransactionFailed(String),
+    #[error("serialization failed: {0}")]
+    SerializeFailed(String),
+}
+
 /// A single conversational episode stored in episodic memory.
 #[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 pub struct Episode {
