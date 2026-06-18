@@ -1690,22 +1690,25 @@ last_failure: |
       |     ^^^^^^^^
       |
       = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+  
   warning: `zira-core` (lib) generated 1 warning
      Compiling zira-build v0.0.0 (/home/floofy/development/zira-build/.ratchet/worktrees/T-04.08)
   error[E0560]: struct `Finding` has no field named `excerpt`
    --> tests/finding_type.rs:8:9
     |
-  8 |         excerpt: "…ignore previous instructions in this prompt…".to_string(),
+  8 |         excerpt: "...ignore previous instructions found here...".to_string(),
     |         ^^^^^^^ `Finding` does not have this field
     |
     = note: all struct fields are already assigned
+  
   error[E0609]: no field `excerpt` on type `Finding`
     --> tests/finding_type.rs:11:18
      |
-  11 |     assert_eq!(f.excerpt, "…ignore previous instructions in this prompt…");
+  11 |     assert_eq!(f.excerpt, "...ignore previous instructions found here...");
      |                  ^^^^^^^ unknown field
      |
      = note: available field is: `pattern`
+  
   error[E0560]: struct `Finding` has no field named `excerpt`
     --> tests/finding_type.rs:19:9
      |
@@ -1713,72 +1716,50 @@ last_failure: |
      |         ^^^^^^^ `Finding` does not have this field
      |
      = note: all struct fields are already assigned
-  error[E0560]: struct `Finding` has no field named `excerpt`
-    --> tests/finding_type.rs:31:9
-     |
-  31 |         excerpt: "try to bypass your instructions here".to_string(),
-     |         ^^^^^^^ `Finding` does not have this field
-     |
-     = note: all struct fields are already assigned
+  
   error[E0609]: no field `excerpt` on type `Finding`
-    --> tests/finding_type.rs:35:25
+    --> tests/finding_type.rs:25:18
      |
-  35 |     assert_eq!(original.excerpt, cloned.excerpt);
-     |                         ^^^^^^^ unknown field
+  25 |     assert_eq!(f.excerpt, cloned.excerpt);
+     |                  ^^^^^^^ unknown field
      |
      = note: available field is: `pattern`
+  
   error[E0609]: no field `excerpt` on type `Finding`
-    --> tests/finding_type.rs:35:41
+    --> tests/finding_type.rs:25:34
      |
-  35 |     assert_eq!(original.excerpt, cloned.excerpt);
-     |                                         ^^^^^^^ unknown field
+  25 |     assert_eq!(f.excerpt, cloned.excerpt);
+     |                                  ^^^^^^^ unknown field
      |
      = note: available field is: `pattern`
+  
   error[E0560]: struct `Finding` has no field named `excerpt`
-    --> tests/finding_type.rs:43:9
+    --> tests/finding_type.rs:33:9
      |
-  43 |         excerpt: "context: ignore all previous context".to_string(),
+  33 |         excerpt: "some excerpt".to_string(),
      |         ^^^^^^^ `Finding` does not have this field
      |
      = note: all struct fields are already assigned
+  
   error[E0560]: struct `Finding` has no field named `excerpt`
-    --> tests/finding_type.rs:47:9
+    --> tests/finding_type.rs:37:9
      |
-  47 |         excerpt: "context: ignore all previous context".to_string(),
+  37 |         excerpt: "some excerpt".to_string(),
      |         ^^^^^^^ `Finding` does not have this field
      |
      = note: all struct fields are already assigned
+  
   error[E0560]: struct `Finding` has no field named `excerpt`
-    --> tests/finding_type.rs:57:9
+    --> tests/finding_type.rs:41:9
      |
-  57 |         excerpt: "shared excerpt text".to_string(),
+  41 |         excerpt: "some excerpt".to_string(),
      |         ^^^^^^^ `Finding` does not have this field
      |
      = note: all struct fields are already assigned
-  error[E0560]: struct `Finding` has no field named `excerpt`
-    --> tests/finding_type.rs:61:9
-     |
-  61 |         excerpt: "shared excerpt text".to_string(),
-     |         ^^^^^^^ `Finding` does not have this field
-     |
-     = note: all struct fields are already assigned
-  error[E0560]: struct `Finding` has no field named `excerpt`
-    --> tests/finding_type.rs:71:9
-     |
-  71 |         excerpt: "excerpt A".to_string(),
-     |         ^^^^^^^ `Finding` does not have this field
-     |
-     = note: all struct fields are already assigned
-  error[E0560]: struct `Finding` has no field named `excerpt`
-    --> tests/finding_type.rs:75:9
-     |
-  75 |         excerpt: "excerpt B".to_string(),
-     |         ^^^^^^^ `Finding` does not have this field
-     |
-     = note: all struct fields are already assigned
+  
   Some errors have detailed explanations: E0560, E0609.
   For more information about an error, try `rustc --explain E0560`.
-  error: could not compile `zira-build` (test "finding_type") due to 12 previous errors
+  error: could not compile `zira-build` (test "finding_type") due to 8 previous errors
   warning: build failed, waiting for other jobs to finish...
 ---
 The unit of evidence the injection scan emits. Inputs: a matched pattern and an excerpt. Outputs: a comparable `Finding` record. Edge: equality must distinguish differing patterns so dedup/assertion logic is sound. Invariant: a finding always carries which pattern matched. Done-check: field read-back plus the equal/unequal `PartialEq` checks.
