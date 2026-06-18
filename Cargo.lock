@@ -550,6 +550,7 @@ name = "zira-build"
 version = "0.0.0"
 dependencies = [
  "redb",
+ "serde",
  "serde_json",
  "tempfile",
  "tokio",
@@ -563,6 +564,7 @@ dependencies = [
  "zira-emotion",
  "zira-memory",
  "zira-proto",
+ "zira-skills",
 ]
 
 [[package]]
@@ -612,6 +614,10 @@ dependencies = [
 [[package]]
 name = "zira-skills"
 version = "0.0.0"
+dependencies = [
+ "serde",
+ "serde_json",
+]
 
 [[package]]
 name = "zira-voice"
