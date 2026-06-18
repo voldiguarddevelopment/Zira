@@ -139,6 +139,33 @@ fn normalize_lexical(path: &std::path::Path) -> std::path::PathBuf {
 pub const GENESIS_HASH: &str =
     "0000000000000000000000000000000000000000000000000000000000000000";
 
+/// Verify that every entry in `chain` is intact and correctly linked.
+///
+/// Returns `true` iff:
+/// - The first entry's `prev_hash` equals [`GENESIS_HASH`].
+/// - Every subsequent entry's `prev_hash` equals its predecessor's `entry_hash`.
+/// - Every entry's `entry_hash` matches a fresh recomputation via
+///   [`compute_entry_hash`] over the same key, `skill_name`, `action`, and
+///   `prev_hash`.
+///
+/// Returns `false` for any content-tampered entry, any broken link, or an
+/// empty slice (nothing to verify → trivially intact, so returns `true`).
+pub fn verify_chain(key: &[u8], chain: &[AuditEntry]) -> bool {
+    let mut expected_prev = GENESIS_HASH.to_string();
+    for entry in chain {
+        if entry.prev_hash != expected_prev {
+            return false;
+        }
+        let recomputed =
+            compute_entry_hash(key, &entry.skill_name, &entry.action, &entry.prev_hash);
+        if entry.entry_hash != recomputed {
+            return false;
+        }
+        expected_prev = entry.entry_hash.clone();
+    }
+    true
+}
+
 /// Append one HMAC-linked entry to `chain` and return it.
 ///
 /// When `chain` is empty, `prev_hash` is set to [`GENESIS_HASH`].
