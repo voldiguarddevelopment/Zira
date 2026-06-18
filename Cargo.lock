@@ -708,6 +708,7 @@ dependencies = [
  "sha2",
  "thiserror",
  "toml",
+ "zira-config",
 ]
 
 [[package]]

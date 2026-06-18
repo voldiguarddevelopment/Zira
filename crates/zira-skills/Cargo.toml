@@ -11,6 +11,7 @@ thiserror = { workspace = true }
 toml = "0.8"
 hmac = "0.12"
 sha2 = "0.10"
+zira-config = { path = "../zira-config" }
 
 [lints]
 workspace = true

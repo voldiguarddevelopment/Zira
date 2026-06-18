@@ -1,2 +1,2 @@
-d8a6d30a954efc5b214ca78fd5a0edfef9012bd51feb7754e1a9ab2a91e3827d  criteria_map:T-04.07
-88f670589ba5a93153607674b0982444bc825bcf316936d253c74b8b79e4ac55  tests/scan_injection.rs
+1e00f556ffa76edd493a040f323e8fa88198f23fa77accfd274e56fc67578279  criteria_map:T-04.09
+6c5fc3c0d4a0f9789bc49522a04d6f3ab9d20e7ec72cf27f64dae1cec7be9a5d  tests/gate_capabilities.rs
