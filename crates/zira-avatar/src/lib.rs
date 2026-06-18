@@ -107,6 +107,23 @@ pub fn timed_frames(frames: &[VisemeFrame], frame_ms: u32) -> Vec<(u32, VisemeFr
         .collect()
 }
 
+/// Renderer-agnostic avatar state snapshot: the active expression and mouth shape.
+#[derive(Debug, Clone, PartialEq)]
+pub struct AvatarState {
+    pub expression: ExpressionPreset,
+    pub mouth: Viseme,
+}
+
+impl AvatarState {
+    pub fn resting() -> Self {
+        Self { expression: ExpressionPreset::neutral(), mouth: Viseme::Sil }
+    }
+
+    pub fn for_emotion(emotion: Emotion) -> Self {
+        Self { expression: expression_for(emotion), mouth: Viseme::Sil }
+    }
+}
+
 /// Map an `Emotion` to its corresponding blendshape `ExpressionPreset`.
 ///
 /// Total over all ten `Emotion` variants. Every returned preset is already
