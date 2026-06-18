@@ -1442,7 +1442,7 @@ The deterministic, GPU-free decision of which renderer the avatar should run: th
 ### T-03.10  Drive the avatar sink
 id: T-03.10
 phase: 3
-status: pending
+status: done
 depends_on: [T-00.20, T-03.06, T-03.07]
 stack: rust
 criteria:
@@ -1452,8 +1452,11 @@ criteria:
 not_doing:
   - No GPU/window — the driver produces pure STATE + an `ExpressionChange` event; rendering it is a blocked task.
   - No async `AvatarSink` trait impl over hardware — this is the renderer-agnostic logic the mock/real sinks share.
-test_files: []
-criteria_map: {}
+test_files: [tests/avatar_driver.rs]
+criteria_map:
+  C1: [c1_new_driver_starts_resting, c1_apply_emotion_sets_expression, c1_apply_viseme_sets_mouth, c1_state_returns_ref]
+  C2: [c2_on_emotion_returns_expression_change, c2_on_emotion_updates_expression]
+  C3: [c3_emotion_then_viseme_sequence]
 attempts: 1
 last_failure: ""
 ---
