@@ -838,7 +838,7 @@ Real emotion-inflected speech. Blocked-on-human: a TTS model + audio output. Don
 ### T-02.01  Declare the memory dependencies
 id: T-02.01
 phase: 2
-status: pending
+status: done
 depends_on: [T-00.02]
 stack: rust
 criteria:
@@ -847,10 +847,12 @@ criteria:
 not_doing:
   - No memory logic — manifests and dependency wiring only.
   - No FFI / GPU / model-download dependencies; those belong to the blocked embedder task.
-test_files: []
-criteria_map: {}
+test_files: [tests/memory_deps.rs]
+criteria_map:
+  C1: [c1_redb_declared_in_workspace_dependencies, c1_redb_has_pinned_version_in_workspace, c1_zira_memory_inherits_memory_deps, c1_cargo_build_zira_memory_exits_zero]
+  C2: [c2_cargo_metadata_exits_zero, c2_redb_appears_exactly_once_in_workspace_dependencies]
 attempts: 2
-last_failure: "no COVERAGE line found in the red agent reply. Emit, as the FINAL line of your reply, a coverage line of the form: COVERAGE: C1=test_a,test_b; C2=test_c"
+last_failure: ""
 ---
 The dependency surface Phase-2 builds on. Inputs: the workspace and zira-memory manifests. Outputs: redb declared once at the root and inherited into zira-memory alongside the serde/proto wiring, proven by a green build. Edge: a version that fails to resolve fails cargo build. Invariant: redb is declared exactly once at the root. Done-check: the two cargo-observable criteria.
 
