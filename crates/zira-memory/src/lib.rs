@@ -32,12 +32,11 @@ pub fn load_episodes(path: &std::path::Path) -> std::io::Result<Vec<Episode>> {
 
 pub fn cap_episodes(path: &std::path::Path, max_episodes: usize) -> std::io::Result<()> {
     let episodes = load_episodes(path)?;
-    if episodes.len() <= max_episodes {
-        return Ok(());
-    }
-    let retained = &episodes[episodes.len() - max_episodes..];
+    let start = episodes.len().saturating_sub(max_episodes);
+    let retained = &episodes[start..];
     let mut file = std::fs::OpenOptions::new()
         .write(true)
+        .create(true)
         .truncate(true)
         .open(path)?;
     use std::io::Write;
