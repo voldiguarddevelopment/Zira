@@ -30,8 +30,23 @@ pub fn load_episodes(path: &std::path::Path) -> std::io::Result<Vec<Episode>> {
     }
 }
 
-pub fn cap_episodes(_path: &std::path::Path, _max_episodes: usize) -> std::io::Result<()> {
-    unimplemented!("cap_episodes is not yet implemented")
+pub fn cap_episodes(path: &std::path::Path, max_episodes: usize) -> std::io::Result<()> {
+    let episodes = load_episodes(path)?;
+    if episodes.len() <= max_episodes {
+        return Ok(());
+    }
+    let retained = &episodes[episodes.len() - max_episodes..];
+    let mut file = std::fs::OpenOptions::new()
+        .write(true)
+        .truncate(true)
+        .open(path)?;
+    use std::io::Write;
+    for ep in retained {
+        let line = serde_json::to_string(ep)
+            .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
+        writeln!(file, "{}", line)?;
+    }
+    Ok(())
 }
 
 pub fn append_episode(path: &std::path::Path, episode: &Episode) -> std::io::Result<()> {
