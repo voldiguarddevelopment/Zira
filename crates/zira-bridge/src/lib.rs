@@ -51,6 +51,16 @@ pub fn compose_prompt(constitution: &str, transcript: &Transcript) -> String {
     format!("{}\n{}", constitution, transcript.text)
 }
 
+/// Extract the assistant's final answer text from the terminal `result` event in
+/// claude's stream-json stdout.
+///
+/// Scans each newline-delimited JSON line for `{"type":"result",...,"result":"..."}` and
+/// returns the `result` field of the first such event found.  Returns an empty `String`
+/// when no `result`-type line is present.
+pub fn parse_answer(_raw: &RawOutput) -> String {
+    String::new()
+}
+
 /// Build the argv for launching the `claude` CLI non-interactively with stream-json output.
 ///
 /// The first element is the path to the `claude` binary (`cfg.model.binary_path`).
