@@ -2,6 +2,25 @@
 
 use zira_proto::Emotion;
 
+/// Remove every `[emotion:NAME]` marker from `s`, returning the remaining text unchanged.
+pub fn strip_tags(s: &str) -> String {
+    const PREFIX: &str = "[emotion:";
+    let mut result = String::with_capacity(s.len());
+    let mut remaining = s;
+    while let Some(start) = remaining.find(PREFIX) {
+        result.push_str(&remaining[..start]);
+        let after_prefix = &remaining[start + PREFIX.len()..];
+        if let Some(close) = after_prefix.find(']') {
+            remaining = &after_prefix[close + 1..];
+        } else {
+            result.push_str(&remaining[start..]);
+            return result;
+        }
+    }
+    result.push_str(remaining);
+    result
+}
+
 /// Parse a leading `[emotion:NAME]` marker from `s`.
 ///
 /// Returns the resolved `Emotion` and the remaining text with leading
