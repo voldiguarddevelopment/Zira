@@ -22,6 +22,10 @@ pub struct SkillManifest {
 pub enum ManifestError {
     #[error("parse error: {0}")]
     Parse(String),
+    #[error("missing field: {0}")]
+    MissingField(String),
+    #[error("io error: {0}")]
+    Io(String),
 }
 
 /// Parse a TOML-encoded manifest string into a [`SkillManifest`].
