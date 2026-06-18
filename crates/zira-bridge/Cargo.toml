@@ -4,5 +4,8 @@ version = "0.0.0"
 edition = "2021"
 publish = false
 
+[dependencies]
+zira-config = { path = "../zira-config" }
+
 [lints]
 workspace = true

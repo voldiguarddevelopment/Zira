@@ -462,6 +462,9 @@ version = "0.0.0"
 [[package]]
 name = "zira-bridge"
 version = "0.0.0"
+dependencies = [
+ "zira-config",
+]
 
 [[package]]
 name = "zira-build"
@@ -472,6 +475,7 @@ dependencies = [
  "toml",
  "tracing",
  "tracing-subscriber",
+ "zira-bridge",
  "zira-config",
  "zira-core",
  "zira-emotion",
