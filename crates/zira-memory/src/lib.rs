@@ -223,6 +223,14 @@ pub fn retrieve(
     Ok(hits.into_iter().map(|(id, _score)| episodes[id].clone()).collect())
 }
 
+/// Renders a slice of retrieved episodes into a single prompt-preamble string.
+///
+/// An empty slice returns an empty string so no noise is injected when there is
+/// nothing to recall.
+pub fn format_preamble(episodes: &[Episode]) -> String {
+    todo!("T-02.17: implement format_preamble")
+}
+
 const FACTS_TABLE: redb::TableDefinition<&str, &str> = redb::TableDefinition::new("facts");
 
 /// A handle to the redb-backed fact store.
