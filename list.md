@@ -1688,7 +1688,7 @@ BUILD NOTE: `Finding` already exists from T-04.07 (its consumer was authored fir
 ### T-04.09  Gate capabilities against the constitution
 id: T-04.09
 phase: 4
-status: pending
+status: done
 depends_on: [T-00.12, T-04.10]
 stack: rust
 criteria:
@@ -1698,8 +1698,11 @@ criteria:
 not_doing:
   - No mutation of the constitution — it is read-only via `rules()`.
   - No path/sandbox checks here (the capability sandbox is a separate task).
-test_files: []
-criteria_map: {}
+test_files: [tests/gate_capabilities.rs]
+criteria_map:
+  C1: [test_allow_when_all_capabilities_sanctioned]
+  C2: [test_deny_names_forbidden_capability]
+  C3: [test_deny_unknown_capability_default_deny]
 attempts: 1
 last_failure: ""
 ---
