@@ -1302,7 +1302,7 @@ not_doing:
   - No timing — frames are ordered in a later task.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The closed alphabet of mouth shapes the lip-sync drives, mirroring the A/I/U/E/O blendshapes plus silence. Inputs: a variant. Outputs: a comparable enum with a stable label. Edge: silence is the default rest shape. Invariant: these six shapes are the only visemes. Done-check: the two criteria.
