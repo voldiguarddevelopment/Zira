@@ -1465,7 +1465,7 @@ The pure state machine behind the avatar: given an emotion and a viseme stream i
 ### T-03.11  Type the avatar errors
 id: T-03.11
 phase: 3
-status: pending
+status: done
 depends_on: [T-03.09]
 stack: rust
 criteria:
@@ -1474,10 +1474,12 @@ criteria:
 not_doing:
   - No recovery or retry policy — these are reported, not handled.
   - No GPU/device errors here — those belong to the blocked render-loop task.
-test_files: []
-criteria_map: {}
+test_files: [tests/avatar_errors.rs]
+criteria_map:
+  C1: [c1_avatar_error_missing_vrm_path_variant_exists, c1_avatar_error_model_unreadable_variant_exists, c1_avatar_error_unsupported_viseme_variant_exists, c1_avatar_error_implements_error_trait, c1_avatar_error_implements_display]
+  C2: [c2_display_missing_vrm_path_nonempty_names_failure, c2_display_model_unreadable_nonempty_names_failure, c2_display_unsupported_viseme_nonempty_names_failure, c2_display_all_variants_produce_distinct_messages]
 attempts: 2
-last_failure: RED phase removed or corrupted list.md — the task's criteria record must survive the red phase
+last_failure: ""
 ---
 The avatar subsystem's typed failure surface for the gateable path, with every `Display` arm exercised so none survives mutation (the T-01.10 lesson). Inputs: a failed precondition. Outputs: a distinct, named error. Edge: each failure maps to its own variant. Invariant: every variant's message is non-empty and unique. Done-check: the two criteria.
 
