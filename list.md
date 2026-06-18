@@ -1631,7 +1631,7 @@ not_doing:
   - No signature storage format concerns (covered by the Signature type).
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The gatekeeper that a manifest is authentic and untampered. Inputs: a key, a manifest, and a candidate signature. Outputs: a boolean accept/reject. Edge: BOTH the valid-signature accept and the tampered-signature/altered-manifest/wrong-key rejects are pinned so no branch survives mutation. Invariant: verify accepts iff the signature equals a fresh sign over the same key and manifest. Done-check: one positive and three negative criteria.
