@@ -1161,7 +1161,7 @@ The retrieval kernel over the index, built on cosine_similarity. Inputs: a query
 ### T-02.16  Retrieve the relevant episodes
 id: T-02.16
 phase: 2
-status: pending
+status: done
 depends_on: [T-02.04, T-02.12, T-02.15]
 stack: rust
 criteria:
@@ -1171,10 +1171,13 @@ criteria:
 not_doing:
   - No fact-store retrieval here — episodic retrieval only.
   - No persisted index — vectors are computed per call from the episodes.
-test_files: []
-criteria_map: {}
+test_files: [tests/retrieve_episodes.rs]
+criteria_map:
+  C1: [c1_retrieve_returns_top_k_by_similarity]
+  C2: [c2_identical_text_episode_is_nearest]
+  C3: [c3_missing_file_returns_empty_vec, c3_empty_file_returns_empty_vec]
 attempts: 2
-last_failure: surviving mutant at crates/zira-memory/src/lib.rs:211 (bool-or-to-and) — frozen tests do not kill it
+last_failure: ""
 ---
 The retrieval stage tying episodes, the embedder, and the index together. Inputs: a path, an embedder, a query, and k. Outputs: the top-k most relevant episodes. Edge: no episodes yields an empty vec, not an error. Invariant: an episode identical to the query is its own nearest match. Done-check: the nearest-episode and empty-store criteria.
 
