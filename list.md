@@ -2042,7 +2042,7 @@ The typed failure for emotion-vocabulary review. Inputs: an offending tag string
 ### T-05.06  Validate the emotion vocabulary
 id: T-05.06
 phase: 5
-status: pending
+status: done
 depends_on: [T-05.05]
 stack: rust
 criteria:
@@ -2052,8 +2052,11 @@ criteria:
 not_doing:
   - No normalization of casing in the OUTPUT — output is the typed `Emotion`, not a re-cased string.
   - No fallback-to-Neutral here — this STRICT path rejects unknown tags (unlike `from_tag`).
-test_files: []
-criteria_map: {}
+test_files: [tests/validate_vocab.rs]
+criteria_map:
+  C1: [c1_all_ten_variants_resolve, c1_case_insensitive]
+  C2: [c2_first_unknown_tag_rejected, c2_stops_at_first_unknown]
+  C3: [c3_empty_slice_is_ok]
 attempts: 1
 last_failure: ""
 ---
