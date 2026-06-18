@@ -1071,7 +1071,7 @@ The embedding seam that decouples retrieval from the model, mirroring zira-core'
 ### T-02.12  Implement the hash embedder
 id: T-02.12
 phase: 2
-status: pending
+status: done
 depends_on: [T-02.11]
 stack: rust
 criteria:
@@ -1081,13 +1081,13 @@ criteria:
 not_doing:
   - No semantic quality claims — this is a deterministic stand-in for gateable tests, not the real model.
   - No external assets or downloads.
-test_files: []
-criteria_map: {}
+test_files: [tests/hash_embedder.rs]
+criteria_map:
+  C1: [test_hash_embedder_dim_matches_configured, test_hash_embedder_as_trait_object]
+  C2: [test_hash_embedder_deterministic_and_distinct]
+  C3: [test_hash_embedder_dim_matches_configured, test_hash_embedder_embed_len_matches_dim]
 attempts: 2
-last_failure: |
-  surviving mutant at crates/zira-memory/src/lib.rs:41 (arith-div-to-mul) — frozen tests do not kill it
-  surviving mutant at crates/zira-memory/src/lib.rs:41 (arith-mul-to-div) — frozen tests do not kill it
-  surviving mutant at crates/zira-memory/src/lib.rs:41 (arith-sub-to-add) — frozen tests do not kill it
+last_failure: ""
 ---
 A deterministic CPU/hash embedder so retrieval is fully gateable without the real model weights. Inputs: text and a fixed dimension. Outputs: a reproducible f32 vector. Edge: empty text still produces a dim-length vector. Invariant: same input maps to the same vector, distinct inputs differ. Done-check: the determinism, distinctness, and dim-length criteria.
 
