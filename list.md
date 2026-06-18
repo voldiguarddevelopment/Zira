@@ -1019,7 +1019,7 @@ not_doing:
   - No caching layer.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The semantic read primitive. Inputs: a key. Outputs: the stored value or None. Edge: a missing key is `Ok(None)`, never an error variant. Invariant: get reflects the latest put for a key. Done-check: the hit-and-miss criterion.
