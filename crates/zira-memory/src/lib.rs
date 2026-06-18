@@ -127,6 +127,16 @@ pub fn append_episode(path: &std::path::Path, episode: &Episode) -> std::io::Res
     writeln!(file, "{}", line)
 }
 
+/// Computes the cosine similarity of two equal-length `f32` vectors.
+///
+/// **Precondition:** `a.len() == b.len()`. Callers must pass equal-length slices.
+///
+/// Returns a value in `[-1.0, 1.0]`. A zero-magnitude input yields `0.0`
+/// (divide-by-zero guard — never NaN).
+pub fn cosine_similarity(_a: &[f32], _b: &[f32]) -> f32 {
+    todo!("T-02.13: implement cosine_similarity")
+}
+
 const FACTS_TABLE: redb::TableDefinition<&str, &str> = redb::TableDefinition::new("facts");
 
 /// A handle to the redb-backed fact store.
