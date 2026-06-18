@@ -1654,7 +1654,7 @@ not_doing:
   - No mutation of the scanned text; the scanner is read-only and reports.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 Zira's prompt-injection grep over externally-sourced skill text. Inputs: a `&str` of skill prompt/description. Outputs: a `Vec<Finding>`, one per matched danger pattern. Edge: a planted-bad string yields findings; a clean string yields an empty vec. Invariant: the pattern table is the single source of injection signatures and matching is case-insensitive. Done-check: the planted-bad and clean cases both pinned.
