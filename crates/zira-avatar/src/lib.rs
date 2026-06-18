@@ -61,6 +61,21 @@ impl ExpressionPreset {
     }
 }
 
+/// Map one character to its mouth-shape `Viseme`.
+///
+/// Vowels `a/e/i/o/u` (case-insensitive) map to their named shape; everything
+/// else maps to `Sil`.
+pub fn viseme_for_char(c: char) -> Viseme {
+    match c.to_ascii_lowercase() {
+        'a' => Viseme::A,
+        'e' => Viseme::E,
+        'i' => Viseme::I,
+        'o' => Viseme::O,
+        'u' => Viseme::U,
+        _ => Viseme::Sil,
+    }
+}
+
 /// Map an `Emotion` to its corresponding blendshape `ExpressionPreset`.
 ///
 /// Total over all ten `Emotion` variants. Every returned preset is already
