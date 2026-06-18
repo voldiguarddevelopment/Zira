@@ -229,7 +229,7 @@ Turning a file into config. Inputs: a filesystem path. Outputs: a `ZiraConfig` w
 ### T-00.11  Resolve the data paths
 id: T-00.11
 phase: 0
-status: pending
+status: done
 depends_on: [T-00.02]
 stack: rust
 criteria:
@@ -238,8 +238,11 @@ criteria:
   - C3: a repo-root integration test `tests/config_paths.rs` points the XDG env vars at a temp dir, calls the helpers, and asserts the four directories resolve under it and are created.
 not_doing:
   - No file content management — directory resolution + creation only.
-test_files: []
-criteria_map: {}
+test_files: [tests/config_paths.rs]
+criteria_map:
+  C1: [c1_config_dir_under_xdg_config_home, c1_data_dir_under_xdg_data_home, c1_memory_dir_under_data_dir, c1_skills_dir_under_data_dir]
+  C2: [c2_ensure_dirs_creates_missing_directories, c2_ensure_dirs_is_idempotent]
+  C3: [c3_xdg_env_temp_dir_resolves_and_creates_four_dirs]
 attempts: 1
 last_failure: ""
 ---
