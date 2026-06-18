@@ -998,7 +998,7 @@ not_doing:
   - No value typing beyond `&str` — facts are stored as text.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The semantic write primitive. Inputs: a key and value. Outputs: a durably committed entry. Edge: putting an existing key overwrites it. Invariant: a put that returns `Ok` is persisted past the transaction. Done-check: the persisted-after-commit criterion.
