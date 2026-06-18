@@ -1,2 +1,2 @@
-3656f6e92aa14cae32ad8f02119df91cac659bd37f2caa3dbaeaa1b818f73921  criteria_map:T-01.12
-35873efab2ba607ba7d7d64ab47792adbbfc5e517e500e6fa091e74eba7975af  tests/claude_brain.rs
+4cc7507eda002d3a718abc2cb94dd3c0548f2f68378457d981ccc8563c607938  criteria_map:T-01.13
+f12d545b077592277c22f776b2f24f170e4c70f3e304ed1baa3deee1b65afcca  tests/bridge_error_event.rs
