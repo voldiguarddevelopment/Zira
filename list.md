@@ -544,7 +544,7 @@ The main emotion parser. Inputs: a full reply. Outputs: ordered emotion spans. E
 ### T-01.04  Map emotion to prosody
 id: T-01.04
 phase: 1
-status: pending
+status: done
 depends_on: [T-00.05]
 stack: rust
 criteria:
@@ -554,8 +554,11 @@ criteria:
 not_doing:
   - Viseme / lip-sync mapping.
   - Per-voice or per-TTS-engine tuning.
-test_files: []
-criteria_map: {}
+test_files: [tests/prosody.rs]
+criteria_map:
+  C1: [c1_prosody_neutral, c1_prosody_happy, c1_prosody_sad, c1_prosody_angry, c1_prosody_excited, c1_prosody_calm, c1_prosody_curious, c1_prosody_concerned, c1_prosody_playful, c1_prosody_tired, c1_all_ten_variants_return_prosody]
+  C2: [c2_neutral_is_baseline]
+  C3: [c3_all_variants_in_bounds]
 attempts: 1
 last_failure: ""
 ---
