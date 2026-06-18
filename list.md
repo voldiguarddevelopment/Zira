@@ -1703,7 +1703,7 @@ BUILD NOTE: `GateDecision` is the canonical TWO-field type from T-04.10 (`Deny {
 ### T-04.10  Define the GateDecision type
 id: T-04.10
 phase: 4
-status: done
+status: pending
 depends_on: [T-04.01]
 stack: rust
 criteria:
@@ -1713,12 +1713,9 @@ criteria:
 not_doing:
   - No multi-finding aggregation — a decision reports the first denial.
   - No serde derive required on the decision.
-test_files: [tests/gate_capabilities.rs, tests/gate_decision_type.rs]
-criteria_map:
-  C1: [c1_is_allowed_true_for_allow, c1_is_allowed_false_for_deny, c1_derives_debug_clone_partialeq]
-  C2: [c2_allow_is_allowed_returns_true, c2_deny_is_allowed_returns_false, c2_deny_carries_capability_and_reason]
-  C3: [c3_display_allow_is_nonempty, c3_display_deny_is_nonempty, c3_display_allow_and_deny_are_distinct]
-attempts: 2
+test_files: []
+criteria_map: {}
+attempts: 0
 last_failure: ""
 ---
 The verdict type the constitution gate returns. Inputs: a constructed variant. Outputs: an `is_allowed` boolean plus a distinct `Display` per variant. Edge: every variant's `Display` is exercised so no format operator survives mutation. Invariant: `is_allowed` is true iff `Allow`. Done-check: the boolean per-variant plus the distinct-Display check.

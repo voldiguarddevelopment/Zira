@@ -1,32 +1,5 @@
 //! zira-skills — skill/MCP staging, signing, audit log.
 
-/// The verdict of gating a skill manifest's capabilities against the constitution.
-///
-/// `Allow` means every declared capability passed the constitution gate.
-/// `Deny` carries the first offending capability name and the denial reason.
-#[derive(Debug, Clone, PartialEq)]
-pub enum GateDecision {
-    Allow,
-    Deny { capability: String, reason: String },
-}
-
-impl GateDecision {
-    pub fn is_allowed(&self) -> bool {
-        matches!(self, GateDecision::Allow)
-    }
-}
-
-impl std::fmt::Display for GateDecision {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            GateDecision::Allow => write!(f, "allowed"),
-            GateDecision::Deny { capability, reason } => {
-                write!(f, "denied capability `{capability}`: {reason}")
-            }
-        }
-    }
-}
-
 /// A single match reported by [`scan_injection`].
 #[derive(Debug, Clone, PartialEq)]
 pub struct Finding {
