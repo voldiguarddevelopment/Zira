@@ -2021,7 +2021,7 @@ Turns the configured `EmotionConfig.default_emotion` string into a typed `Emotio
 ### T-05.05  Define the vocabulary error
 id: T-05.05
 phase: 5
-status: pending
+status: done
 depends_on: [T-00.05]
 stack: rust
 criteria:
@@ -2030,8 +2030,10 @@ criteria:
 not_doing:
   - No validation logic here — that is the next task; this defines only the error type its failures use.
   - No `panic!`-based reporting — failures are typed `Result` errors.
-test_files: []
-criteria_map: {}
+test_files: [tests/vocab_error.rs]
+criteria_map:
+  C1: [c1_unknown_tag_variant_exists_and_derives_debug]
+  C2: [c2_display_contains_offending_tag]
 attempts: 1
 last_failure: ""
 ---
