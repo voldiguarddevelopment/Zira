@@ -2183,7 +2183,7 @@ not_doing:
   - No package-format coupling — the manifest is plain text, not tied to one distro packager.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 Produces a release/install manifest for packaging. Inputs: none (reads `build_version` and the owned app dir). Outputs: a `String` manifest naming the version and the `zira` install directory, in the `zira-config` library crate. Edge: the manifest is deterministic for a given build — same version in, same text out. Invariant: the manifest always reflects the real `build_version()`. Done-check: the two criteria.
