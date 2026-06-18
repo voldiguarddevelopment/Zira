@@ -1968,7 +1968,7 @@ not_doing:
   - No re-implementation of the transition table — that lives in `next_state`.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 Pure plan-review logic over the existing state machine. Inputs: the narrated `PlanSummary` and a `PlanDecision`. Outputs: `Accept -> Event::TurnStarted` (which drives PlanReview->Thinking) and `Reject -> Event::Error(..)` (which drives PlanReview->Idle), in the `zira-core` library crate. Edge: the plan body never changes the mapping — only the decision does. Invariant: `review_plan` is side-effect-free and total over the two decisions. Done-check: the three criteria.
