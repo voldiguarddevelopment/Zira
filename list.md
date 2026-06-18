@@ -1184,7 +1184,7 @@ The retrieval stage tying episodes, the embedder, and the index together. Inputs
 ### T-02.17  Format the context preamble
 id: T-02.17
 phase: 2
-status: pending
+status: done
 depends_on: [T-02.02]
 stack: rust
 criteria:
@@ -1193,8 +1193,10 @@ criteria:
 not_doing:
   - No truncation to a token budget.
   - No fact-store entries in the preamble — episodes only.
-test_files: []
-criteria_map: {}
+test_files: [tests/format_preamble.rs]
+criteria_map:
+  C1: [c1_empty_slice_returns_empty_string, c1_nonempty_slice_returns_nonempty_string]
+  C2: [c2_preamble_contains_both_episode_texts, c2_empty_slice_yields_exact_empty_string]
 attempts: 1
 last_failure: ""
 ---
