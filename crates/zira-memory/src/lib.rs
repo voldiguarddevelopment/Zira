@@ -81,7 +81,7 @@ pub struct Episode {
 pub fn load_episodes(path: &std::path::Path) -> std::io::Result<Vec<Episode>> {
     use std::io::BufRead;
     match std::fs::File::open(path) {
-        Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(vec![]),
+        Err(e) if matches!(e.kind(), std::io::ErrorKind::NotFound) => Ok(vec![]),
         Err(e) => Err(e),
         Ok(file) => {
             let reader = std::io::BufReader::new(file);
