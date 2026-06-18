@@ -9,3 +9,14 @@ pub struct Episode {
     pub text: String,
     pub timestamp: u64,
 }
+
+pub fn append_episode(path: &std::path::Path, episode: &Episode) -> std::io::Result<()> {
+    use std::io::Write;
+    let mut file = std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(path)?;
+    let line = serde_json::to_string(episode)
+        .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
+    writeln!(file, "{}", line)
+}
