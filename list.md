@@ -1677,10 +1677,11 @@ not_doing:
   - No change to the `scan_injection` danger table or its return type.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 BUILD NOTE: `Finding` already exists from T-04.07 (its consumer was authored first — an ordering inversion), so this task does NOT redefine the struct; it ADDS the ergonomic `Finding::new` constructor and a `Display` impl that `tests/finding_type.rs` exercises. RED therefore fails cleanly on the missing `new`/`Display` symbols, not on a struct field. Inputs: a matched pattern. Outputs: a constructed, printable finding. Invariant: Display always names the pattern (C2 pins it so no format arm survives mutation). Done-check: the three criteria.
+
 ### T-04.09  Gate capabilities against the constitution
 id: T-04.09
 phase: 4
@@ -1700,6 +1701,7 @@ attempts: 0
 last_failure: ""
 ---
 BUILD NOTE: `GateDecision` is the canonical TWO-field type from T-04.10 (`Deny { capability: String, reason: String }`); tests MUST destructure it as `Deny { capability, .. }`. This task was reset because its original frozen test (written before T-04.10 existed) assumed a one-field `Deny` and was edited afterwards — an ordering inversion now corrected by depending on T-04.10. The `gate_capabilities` function was removed so RED fails cleanly on the missing function, not on a struct field. Default-deny: a capability is sanctioned only when a non-prohibitive constitution rule names it. Done-check: one allow + two deny criteria.
+
 ### T-04.10  Define the GateDecision type
 id: T-04.10
 phase: 4
