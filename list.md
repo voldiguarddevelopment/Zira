@@ -1138,7 +1138,7 @@ The pure-Rust vector index's insertion primitive. Inputs: an id and its vector. 
 ### T-02.15  Search the top-k vectors
 id: T-02.15
 phase: 2
-status: pending
+status: done
 depends_on: [T-02.14]
 stack: rust
 criteria:
@@ -1148,8 +1148,11 @@ criteria:
 not_doing:
   - No approximate-NN tuning — exact brute-force search over the stored vectors is sufficient at this scale.
   - No filtering by a score threshold.
-test_files: []
-criteria_map: {}
+test_files: [tests/search_top_k.rs]
+criteria_map:
+  C1: [c1_search_respects_k_limit, c1_search_returns_id_score_pairs]
+  C2: [c2_nearest_id_is_first, c2_results_in_non_increasing_score_order]
+  C3: [c3_k_over_capacity_returns_all, c3_k_zero_returns_empty]
 attempts: 1
 last_failure: ""
 ---
