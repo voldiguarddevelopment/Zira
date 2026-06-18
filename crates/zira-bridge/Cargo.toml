@@ -5,6 +5,7 @@ edition = "2021"
 publish = false
 
 [dependencies]
+serde_json = { workspace = true }
 zira-config = { path = "../zira-config" }
 zira-proto = { path = "../zira-proto" }
 
