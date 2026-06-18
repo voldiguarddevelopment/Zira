@@ -107,6 +107,34 @@ pub fn timed_frames(frames: &[VisemeFrame], frame_ms: u32) -> Vec<(u32, VisemeFr
         .collect()
 }
 
+/// The 2D fallback frame: which sprite and mouth shape to show on a GPU-less box.
+#[derive(Debug, Clone, PartialEq)]
+pub struct FallbackFrame {
+    pub sprite: String,
+    pub mouth: Viseme,
+}
+
+/// Return the 2D fallback projection of `state`: the dominant-weight blendshape
+/// names the sprite (all-zero → "neutral"), and the mouth shape passes through
+/// unchanged.
+pub fn fallback_frame(state: &AvatarState) -> FallbackFrame {
+    let e = &state.expression;
+    let candidates: [(&str, f32); 5] = [
+        ("happy", e.joy),
+        ("sad", e.sorrow),
+        ("angry", e.anger),
+        ("surprised", e.surprise),
+        ("fun", e.fun),
+    ];
+    let sprite = candidates
+        .iter()
+        .max_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(std::cmp::Ordering::Equal))
+        .filter(|&&(_, w)| w > 0.0)
+        .map(|&(name, _)| name)
+        .unwrap_or("neutral");
+    FallbackFrame { sprite: sprite.to_string(), mouth: state.mouth }
+}
+
 /// Renderer-agnostic avatar state snapshot: the active expression and mouth shape.
 #[derive(Debug, Clone, PartialEq)]
 pub struct AvatarState {
