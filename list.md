@@ -88,7 +88,9 @@ not_doing:
 test_files: []
 criteria_map: {}
 attempts: 2
-last_failure: ""
+last_failure: |
+  tests/logging_init.rs:29: stub (todo-macro) — /// RED: `init()` is `todo!()` → panics → test FAILS.
+  tests/logging_init.rs:49: stub (todo-macro) — /// RED: first call panics via `todo!()` → test FAILS.
 ---
 Observability from first boot. Inputs: the `RUST_LOG` env var. Outputs: an installed tracing subscriber + an idempotent init. Errors/edges: a malformed filter falls back to the default level, never a panic. Invariant: logging is safe to initialize once. Done-check: the three criteria.
 
