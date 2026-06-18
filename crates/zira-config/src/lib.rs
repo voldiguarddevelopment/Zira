@@ -310,6 +310,14 @@ pub fn validate_vocab(tags: &[String]) -> Result<Vec<zira_proto::Emotion>, Vocab
         .collect()
 }
 
+/// Return `true` when `path` does not exist (first run), `false` when it does.
+///
+/// Pure read-only: the function never creates, modifies, or deletes anything on disk.
+/// An empty-but-present file counts as existing and therefore returns `false`.
+pub fn is_first_run(path: &std::path::Path) -> bool {
+    !path.exists()
+}
+
 /// Range-check a probability threshold, which must lie within `[0.0, 1.0]`.
 fn check_threshold(field: &'static str, value: f32) -> Result<(), ConfigError> {
     if !(0.0..=1.0).contains(&value) {
