@@ -2118,7 +2118,7 @@ not_doing:
   - No reuse of `ConfigError` — the budget audit owns a distinct typed error.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The typed failure for the resource-budget audit. Inputs: an out-of-bounds budget value. Outputs: a `BudgetError` enum (in `zira-config`) distinguishing 'too high' from 'zero'. Edge: EVERY variant's `Display` is exercised by a test criterion so no message survives mutation. Invariant: a budget violation is a typed error, never a silent clamp. Done-check: the two criteria — both variants exist and both Displays are asserted.
