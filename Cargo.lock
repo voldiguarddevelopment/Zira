@@ -661,6 +661,7 @@ dependencies = [
  "serde",
  "thiserror",
  "toml",
+ "zira-proto",
 ]
 
 [[package]]
