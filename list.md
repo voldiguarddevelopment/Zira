@@ -1150,7 +1150,7 @@ not_doing:
   - No filtering by a score threshold.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The retrieval kernel over the index, built on cosine_similarity. Inputs: a query vector and k. Outputs: the top-k nearest ids with scores, descending. Edge: k over capacity returns all; k of 0 returns empty. Invariant: results are sorted by descending similarity and the true nearest is first. Done-check: the nearest-first, ordering, and k-bounds criteria.
