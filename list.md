@@ -1843,7 +1843,7 @@ The link record of the HMAC audit chain. Inputs: the entry fields, plus key/name
 ### T-04.13  Append an audit entry
 id: T-04.13
 phase: 4
-status: pending
+status: done
 depends_on: [T-04.12]
 stack: rust
 criteria:
@@ -1853,8 +1853,11 @@ criteria:
 not_doing:
   - No tamper detection here (the verify task).
   - No I/O — the chain is an in-memory slice.
-test_files: []
-criteria_map: {}
+test_files: [tests/append_audit.rs]
+criteria_map:
+  C1: [c1_genesis_constant_is_64_lowercase_hex_zeros, c1_append_to_nonempty_chain_links_to_last_entry_hash]
+  C2: [c2_empty_chain_prev_hash_equals_genesis]
+  C3: [c3_two_entries_second_prev_hash_equals_first_entry_hash]
 attempts: 1
 last_failure: ""
 ---
