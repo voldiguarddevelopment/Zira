@@ -87,7 +87,7 @@ not_doing:
   - No per-crate log configuration beyond the global env filter.
 test_files: []
 criteria_map: {}
-attempts: 2
+attempts: 3
 last_failure: |
   surviving mutant at crates/zira-core/src/lib.rs:204 (cmp-eq-to-ne) — frozen tests do not kill it
   surviving mutant at crates/zira-core/src/lib.rs:206 (arith-add-to-sub) — frozen tests do not kill it
