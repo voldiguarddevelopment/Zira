@@ -175,6 +175,25 @@ impl VectorIndex {
     pub fn is_empty(&self) -> bool {
         self.entries.is_empty()
     }
+
+    /// Returns up to `k` `(id, score)` pairs sorted by descending cosine similarity
+    /// to `query`. Returns an empty vec when `k == 0`; saturates at `len()` when
+    /// `k` exceeds the number of stored vectors.
+    pub fn search(&self, query: &[f32], k: usize) -> Vec<(usize, f32)> {
+        if k == 0 {
+            return Vec::new();
+        }
+        let mut scored: Vec<(usize, f32)> = self
+            .entries
+            .iter()
+            .map(|(id, vec)| (*id, cosine_similarity(query, vec)))
+            .collect();
+        scored.sort_unstable_by(|a, b| {
+            b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal)
+        });
+        scored.truncate(k);
+        scored
+    }
 }
 
 const FACTS_TABLE: redb::TableDefinition<&str, &str> = redb::TableDefinition::new("facts");
