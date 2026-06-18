@@ -1354,7 +1354,7 @@ The single scalar guard that keeps every lip-sync weight inside the renderable r
 ### T-03.06  Order the viseme frames
 id: T-03.06
 phase: 3
-status: pending
+status: done
 depends_on: [T-00.07, T-03.05]
 stack: rust
 criteria:
@@ -1364,8 +1364,11 @@ criteria:
 not_doing:
   - No real-clock scheduling — start times are computed, not awaited.
   - No audio alignment — `frame_ms` is the supplied cadence.
-test_files: []
-criteria_map: {}
+test_files: [tests/timed_frames.rs]
+criteria_map:
+  C1: [c1_single_frame_time_is_zero, c1_three_frames_monotonic_times, c1_count_matches_input, c1_viseme_order_preserved]
+  C2: [c2_weight_above_one_clamped, c2_weight_below_zero_clamped, c2_in_range_weight_unchanged, c2_nan_weight_collapsed]
+  C3: [c3_empty_input_returns_empty]
 attempts: 1
 last_failure: ""
 ---
