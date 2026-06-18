@@ -9,3 +9,7 @@ pub struct Episode {
     pub text: String,
     pub timestamp: u64,
 }
+
+pub fn append_episode(_path: &std::path::Path, _episode: &Episode) -> std::io::Result<()> {
+    todo!("T-02.03 green phase")
+}
