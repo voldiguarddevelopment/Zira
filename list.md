@@ -1268,7 +1268,7 @@ The pure data carrier for a VRM expression: a fixed set of named blendshape weig
 ### T-03.02  Map emotion to expression
 id: T-03.02
 phase: 3
-status: pending
+status: done
 depends_on: [T-00.05, T-03.01]
 stack: rust
 criteria:
@@ -1278,8 +1278,11 @@ criteria:
 not_doing:
   - No prosody mapping — that is `zira-emotion`, already done.
   - No blending/interpolation between presets here.
-test_files: []
-criteria_map: {}
+test_files: [tests/emotion_expression.rs]
+criteria_map:
+  C1: [c1_expression_for_total_and_bounded]
+  C2: [c2_neutral_maps_to_neutral_preset]
+  C3: [c3_distinct_emotions_map_to_distinct_presets]
 attempts: 1
 last_failure: ""
 ---
