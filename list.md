@@ -609,7 +609,7 @@ Pure prompt assembly. Inputs: constitution + transcript. Outputs: the prompt str
 ### T-01.07  Capture the claude output
 id: T-01.07
 phase: 1
-status: pending
+status: done
 depends_on: [T-00.07]
 stack: rust
 criteria:
@@ -617,8 +617,10 @@ criteria:
   - C2: a repo-root integration test `tests/bridge_invoke.rs` runs `invoke` against a stub script that echoes a fixed string and asserts `stdout` equals that string and `status` is `0`.
 not_doing:
   - Parsing the captured output — later tasks own that.
-test_files: []
-criteria_map: {}
+test_files: [tests/bridge_invoke.rs]
+criteria_map:
+  C1: [c1_raw_output_struct_has_stdout_and_status, c1_invoke_writes_prompt_to_stdin]
+  C2: [c2_invoke_against_stub_echoes_fixed_string]
 attempts: 1
 last_failure: ""
 ---
