@@ -1,2 +1,2 @@
-93b48e297e9fde249ab4bc2af3298b0dbdb0aba4b184a097935ddb01cfdb07fe  criteria_map:T-02.13
-c0bf7296e7484c7b514a328b1dec735ffcf10a8c026acc6381083c38ccf04cf8  tests/cosine_similarity.rs
+95d0131a35443f573fbc0a58036c75cfc6eb9df46598ea2ab362ac73d59f85c4  criteria_map:T-02.14
+2d0c3ba31e532c81c2cb33054e154f21b108dd2b7bab6517052aaaf30f478496  tests/vector_index.rs
