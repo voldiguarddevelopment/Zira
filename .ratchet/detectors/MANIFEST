@@ -1,2 +1,2 @@
-b999d5318dea0f5fbe48ccadaa3e8b3f60461921765fb8bd9a6b0cf9345d7abc  criteria_map:T-04.06
-6ba871a9f50da90f4a3a7644b016cd8fc1a495c58c7f1d72fead24f25b8187f0  tests/verify_manifest.rs
+d8a6d30a954efc5b214ca78fd5a0edfef9012bd51feb7754e1a9ab2a91e3827d  criteria_map:T-04.07
+88f670589ba5a93153607674b0982444bc825bcf316936d253c74b8b79e4ac55  tests/scan_injection.rs
