@@ -61,6 +61,14 @@ impl ExpressionPreset {
     }
 }
 
+/// Clamp a raw blendshape weight to the renderable range `[0.0, 1.0]`.
+///
+/// Stub: intentionally returns `w` unchanged (no clamping, no NaN guard) so the
+/// frozen RED tests fail until the real implementation lands.
+pub fn clamp_weight(w: f32) -> f32 {
+    w
+}
+
 /// Map one character to its mouth-shape `Viseme`.
 ///
 /// Vowels `a/e/i/o/u` (case-insensitive) map to their named shape; everything
