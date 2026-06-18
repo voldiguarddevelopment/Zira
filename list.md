@@ -1129,7 +1129,7 @@ not_doing:
 test_files: []
 criteria_map: {}
 attempts: 1
-last_failure: ""
+last_failure: surviving mutant at crates/zira-memory/src/lib.rs:84 (cmp-eq-to-ne) — frozen tests do not kill it
 ---
 The pure-Rust vector index's insertion primitive. Inputs: an id and its vector. Outputs: a growing in-memory index. Edge: adding to an empty index yields len 1. Invariant: len equals the number of add calls with distinct ids. Done-check: the add-three-then-len criterion.
 
