@@ -502,7 +502,7 @@ The atom the segmenter is built from. Inputs: a text slice. Outputs: the leading
 ### T-01.02  Strip the emotion tags
 id: T-01.02
 phase: 1
-status: pending
+status: done
 depends_on: [T-00.05]
 stack: rust
 criteria:
@@ -510,8 +510,10 @@ criteria:
   - C2: a string containing no marker returns a `String` equal to the input.
 not_doing:
   - Trimming or normalising prose beyond marker removal.
-test_files: []
-criteria_map: {}
+test_files: [tests/strip_tags.rs]
+criteria_map:
+  C1: [c1_single_marker_removed, c1_surrounding_text_preserved, c1_multiple_markers_all_removed, c1_marker_at_start_removed, c1_marker_at_end_removed, c1_only_marker_becomes_empty, c1_consecutive_markers_all_removed, c1_all_known_variant_markers_removed]
+  C2: [c2_no_marker_returns_equal_string, c2_empty_input_returns_empty_string]
 attempts: 1
 last_failure: ""
 ---
