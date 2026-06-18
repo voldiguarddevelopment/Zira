@@ -1619,7 +1619,7 @@ Produces the authenticity tag over a manifest. Inputs: a key and a manifest. Out
 ### T-04.06  Verify the signature
 id: T-04.06
 phase: 4
-status: pending
+status: done
 depends_on: [T-04.04, T-04.05]
 stack: rust
 criteria:
@@ -1629,8 +1629,11 @@ criteria:
 not_doing:
   - No timing-attack hardening beyond using the `hmac` crate's constant-time `verify`.
   - No signature storage format concerns (covered by the Signature type).
-test_files: []
-criteria_map: {}
+test_files: [tests/verify_manifest.rs]
+criteria_map:
+  C1: [test_verify_manifest_accept]
+  C2: [test_verify_manifest_reject_tampered_sig]
+  C3: [test_verify_manifest_reject_altered_manifest, test_verify_manifest_reject_wrong_key]
 attempts: 1
 last_failure: ""
 ---
