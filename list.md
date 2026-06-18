@@ -1084,7 +1084,10 @@ not_doing:
 test_files: []
 criteria_map: {}
 attempts: 1
-last_failure: ""
+last_failure: |
+  surviving mutant at crates/zira-memory/src/lib.rs:41 (arith-div-to-mul) — frozen tests do not kill it
+  surviving mutant at crates/zira-memory/src/lib.rs:41 (arith-mul-to-div) — frozen tests do not kill it
+  surviving mutant at crates/zira-memory/src/lib.rs:41 (arith-sub-to-add) — frozen tests do not kill it
 ---
 A deterministic CPU/hash embedder so retrieval is fully gateable without the real model weights. Inputs: text and a fixed dimension. Outputs: a reproducible f32 vector. Edge: empty text still produces a dim-length vector. Invariant: same input maps to the same vector, distinct inputs differ. Done-check: the determinism, distinctness, and dim-length criteria.
 
