@@ -134,6 +134,36 @@ fn normalize_lexical(path: &std::path::Path) -> std::path::PathBuf {
     components.iter().collect()
 }
 
+/// The genesis sentinel: a 64-character string of lowercase hex zeros used as
+/// `prev_hash` when appending the first entry to an empty chain.
+pub const GENESIS_HASH: &str =
+    "0000000000000000000000000000000000000000000000000000000000000000";
+
+/// Append one HMAC-linked entry to `chain` and return it.
+///
+/// When `chain` is empty, `prev_hash` is set to [`GENESIS_HASH`].
+/// Otherwise it is set to the last entry's `entry_hash`.
+/// The new `entry_hash` is computed via [`compute_entry_hash`] over
+/// `key`, `skill_name`, `action`, and the resolved `prev_hash`.
+pub fn append_audit(
+    key: &[u8],
+    chain: &[AuditEntry],
+    skill_name: &str,
+    action: &str,
+) -> AuditEntry {
+    let prev_hash = chain
+        .last()
+        .map(|e| e.entry_hash.as_str())
+        .unwrap_or(GENESIS_HASH);
+    let entry_hash = compute_entry_hash(key, skill_name, action, prev_hash);
+    AuditEntry {
+        skill_name: skill_name.to_string(),
+        action: action.to_string(),
+        prev_hash: prev_hash.to_string(),
+        entry_hash,
+    }
+}
+
 /// A single link in the HMAC-SHA256 audit chain.
 ///
 /// Each entry records what happened (`skill_name`, `action`), binds itself
