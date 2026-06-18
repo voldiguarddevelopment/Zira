@@ -61,6 +61,13 @@ impl ExpressionPreset {
     }
 }
 
+/// Map one character to its mouth-shape `Viseme`.
+///
+/// Stub: intentionally unimplemented — replaced by the real body in GREEN.
+pub fn viseme_for_char(_c: char) -> Viseme {
+    todo!("viseme_for_char: implementation not yet written (RED phase)")
+}
+
 /// Map an `Emotion` to its corresponding blendshape `ExpressionPreset`.
 ///
 /// Total over all ten `Emotion` variants. Every returned preset is already
