@@ -2,6 +2,13 @@
 
 pub mod logging;
 
+/// The caller's verdict on a narrated plan (PlanReview UX).
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum PlanDecision {
+    Accept,
+    Reject,
+}
+
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, Ordering};
