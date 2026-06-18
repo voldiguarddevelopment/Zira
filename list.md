@@ -880,7 +880,7 @@ The episodic memory unit. Inputs: constructed in-memory. Outputs: a serde-round-
 ### T-02.03  Append one episode
 id: T-02.03
 phase: 2
-status: pending
+status: done
 depends_on: [T-02.02]
 stack: rust
 criteria:
@@ -889,8 +889,10 @@ criteria:
 not_doing:
   - No cap enforcement — that is T-02.05.
   - No locking or concurrent-writer coordination.
-test_files: []
-criteria_map: {}
+test_files: [tests/append_episode.rs]
+criteria_map:
+  C1: [c1_append_creates_file_when_absent, c1_append_writes_valid_json_line]
+  C2: [c2_append_two_episodes_exact_lines]
 attempts: 1
 last_failure: ""
 ---
