@@ -588,7 +588,7 @@ Pure argv construction. Inputs: the config. Outputs: the command vector. Invaria
 ### T-01.06  Compose the request prompt
 id: T-01.06
 phase: 1
-status: pending
+status: done
 depends_on: [T-00.12, T-00.07]
 stack: rust
 criteria:
@@ -597,8 +597,10 @@ criteria:
 not_doing:
   - Memory / context injection (Phase 2).
   - Tool or skill definitions.
-test_files: []
-criteria_map: {}
+test_files: [tests/compose_prompt.rs]
+criteria_map:
+  C1: [c1_prompt_contains_constitution_then_transcript]
+  C2: [c2_empty_transcript_prompt_contains_constitution]
 attempts: 1
 last_failure: ""
 ---
