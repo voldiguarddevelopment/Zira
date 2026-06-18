@@ -370,6 +370,19 @@ pub fn build_version() -> &'static str {
     env!("CARGO_PKG_VERSION")
 }
 
+/// Generate the install manifest for the current build.
+///
+/// Returns a plain-text string naming the build version and the application directory
+/// (`zira`) that Zira owns under the XDG base directories. The output is deterministic
+/// for a given build — same version in, same text out. No filesystem I/O is performed;
+/// persisting the manifest is the caller's responsibility.
+pub fn install_manifest() -> String {
+    format!(
+        "application: {APP_DIR}\nversion: {}\n",
+        build_version()
+    )
+}
+
 /// Range-check a probability threshold, which must lie within `[0.0, 1.0]`.
 fn check_threshold(field: &'static str, value: f32) -> Result<(), ConfigError> {
     if !(0.0..=1.0).contains(&value) {
