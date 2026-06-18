@@ -1,7 +1,11 @@
 //! zira-skills — skill/MCP staging, signing, audit log.
 
+use hmac::{Hmac, Mac};
 use serde::{Deserialize, Serialize};
+use sha2::Sha256;
 use thiserror::Error;
+
+type HmacSha256 = Hmac<Sha256>;
 
 /// The data record every skill safety check reads.
 ///
@@ -36,6 +40,14 @@ pub fn parse_manifest_toml(text: &str) -> Result<SkillManifest, ManifestError> {
 /// Parse a JSON-encoded manifest string into a [`SkillManifest`].
 pub fn parse_manifest_json(text: &str) -> Result<SkillManifest, ManifestError> {
     serde_json::from_str(text).map_err(|e| ManifestError::Parse(e.to_string()))
+}
+
+/// Compute an HMAC-SHA256 over a deterministic serialization of `m` keyed by `key`.
+pub fn sign_manifest(key: &[u8], m: &SkillManifest) -> Signature {
+    let payload = serde_json::to_vec(m).expect("SkillManifest is always serializable");
+    let mut mac = HmacSha256::new_from_slice(key).expect("HMAC accepts any key length");
+    mac.update(&payload);
+    Signature::new(mac.finalize().into_bytes().to_vec())
 }
 
 /// The serialized form of an HMAC tag — a carrier for raw bytes with hex I/O.
