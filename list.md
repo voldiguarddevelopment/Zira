@@ -1083,7 +1083,7 @@ not_doing:
   - No external assets or downloads.
 test_files: []
 criteria_map: {}
-attempts: 1
+attempts: 2
 last_failure: |
   surviving mutant at crates/zira-memory/src/lib.rs:41 (arith-div-to-mul) — frozen tests do not kill it
   surviving mutant at crates/zira-memory/src/lib.rs:41 (arith-mul-to-div) — frozen tests do not kill it
