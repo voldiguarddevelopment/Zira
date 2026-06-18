@@ -742,7 +742,7 @@ not_doing:
 test_files: [tests/bridge_error_event.rs]
 criteria_map:
   C1: [c1_spawn_failed_emits_single_error_event, c1_non_zero_exit_emits_single_error_event, c1_missing_result_emits_single_error_event, c1_error_carries_display_message]
-attempts: 3
+attempts: 2
 last_failure: ""
 ---
 The failure path of the Thinking stage. Inputs: a failing ask. Outputs: a single Error event. Invariant: no panic on bridge failure. Done-check: the one criterion.
