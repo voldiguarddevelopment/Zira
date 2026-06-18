@@ -2097,7 +2097,7 @@ not_doing:
   - No overwrite of a user-edited config beyond re-emitting the serializable defaults.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 Performs first-run setup by materializing a default config. Inputs: the target config path. Outputs: parent dirs created and a default `config.toml` written such that `load_from` round-trips it to `ZiraConfig::default()`, reusing the existing `ConfigError`. Edge: running twice is safe (idempotent); a path that cannot be created surfaces a typed `ConfigError`. Invariant: after setup, the config path loads to a complete, valid config. Done-check: the two criteria.
