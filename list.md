@@ -1504,7 +1504,7 @@ The real embodied avatar: a Bevy/wgpu render loop that loads the VRM model and a
 ### T-04.01  Define the SkillManifest type
 id: T-04.01
 phase: 4
-status: pending
+status: done
 depends_on: [T-00.02]
 stack: rust
 criteria:
@@ -1514,8 +1514,11 @@ criteria:
 not_doing:
   - No TOML/JSON parsing-from-text helper here (that is the next task).
   - No signing, scanning, or gate logic here — type definition only.
-test_files: []
-criteria_map: {}
+test_files: [tests/skill_manifest_type.rs]
+criteria_map:
+  C1: [c1_skill_manifest_fields_and_derives]
+  C2: [c2_skill_manifest_field_readback, c2_skill_manifest_empty_vecs_are_legal]
+  C3: [c3_skill_manifest_serde_json_round_trip]
 attempts: 2
 last_failure: ""
 ---
