@@ -1866,7 +1866,7 @@ Extends the audit chain by one HMAC-linked entry. Inputs: the key, the existing 
 ### T-04.14  Verify the chain
 id: T-04.14
 phase: 4
-status: pending
+status: done
 depends_on: [T-04.13]
 stack: rust
 criteria:
@@ -1876,8 +1876,11 @@ criteria:
 not_doing:
   - No automatic repair — verify reports a tampered chain, it does not fix it.
   - No I/O; verification runs over an in-memory slice.
-test_files: []
-criteria_map: {}
+test_files: [tests/verify_chain.rs]
+criteria_map:
+  C1: [c1_intact_chain_built_by_append_audit_returns_true]
+  C2: [c2_tampered_action_field_returns_false]
+  C3: [c3_removed_entry_breaks_link_returns_false, c3_reordered_entries_break_link_returns_false]
 attempts: 1
 last_failure: ""
 ---
