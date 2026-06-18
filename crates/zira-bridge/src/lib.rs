@@ -71,6 +71,39 @@ pub fn parse_answer(raw: &RawOutput) -> String {
     String::new()
 }
 
+/// Extract the token usage from the terminal `result` event in claude's stream-json stdout.
+///
+/// Returns `Usage { input_tokens, output_tokens }` read from the `usage` object nested
+/// inside the first `{"type":"result",...}` line.  Missing or unparseable usage fields
+/// default to zero.
+pub fn parse_usage(raw: &RawOutput) -> zira_proto::Usage {
+    for line in raw.stdout.lines() {
+        let Ok(val) = serde_json::from_str::<serde_json::Value>(line) else {
+            continue;
+        };
+        if val.get("type").and_then(|t| t.as_str()) != Some("result") {
+            continue;
+        }
+        let usage = val.get("usage");
+        let input_tokens = usage
+            .and_then(|u| u.get("input_tokens"))
+            .and_then(|v| v.as_u64())
+            .unwrap_or(0);
+        let output_tokens = usage
+            .and_then(|u| u.get("output_tokens"))
+            .and_then(|v| v.as_u64())
+            .unwrap_or(0);
+        return zira_proto::Usage {
+            input_tokens,
+            output_tokens,
+        };
+    }
+    zira_proto::Usage {
+        input_tokens: 0,
+        output_tokens: 0,
+    }
+}
+
 /// Build the argv for launching the `claude` CLI non-interactively with stream-json output.
 ///
 /// The first element is the path to the `claude` binary (`cfg.model.binary_path`).
