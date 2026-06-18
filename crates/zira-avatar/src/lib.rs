@@ -83,6 +83,30 @@ pub fn viseme_for_char(c: char) -> Viseme {
     }
 }
 
+/// A single viseme frame with a viseme shape and its associated blendshape weight.
+#[derive(Debug, Clone, PartialEq)]
+pub struct VisemeFrame {
+    pub viseme: Viseme,
+    pub weight: f32,
+}
+
+/// Build a timed sequence from a viseme-frame slice and a per-frame cadence.
+///
+/// Returns one `(start_ms, frame)` pair per input frame in input order, with
+/// start times `0, frame_ms, 2*frame_ms, ...` and weights clamped via
+/// `clamp_weight`.
+pub fn timed_frames(frames: &[VisemeFrame], frame_ms: u32) -> Vec<(u32, VisemeFrame)> {
+    frames
+        .iter()
+        .enumerate()
+        .map(|(i, f)| {
+            let start_ms = i as u32 * frame_ms;
+            let clamped = VisemeFrame { viseme: f.viseme, weight: clamp_weight(f.weight) };
+            (start_ms, clamped)
+        })
+        .collect()
+}
+
 /// Map an `Emotion` to its corresponding blendshape `ExpressionPreset`.
 ///
 /// Total over all ten `Emotion` variants. Every returned preset is already
