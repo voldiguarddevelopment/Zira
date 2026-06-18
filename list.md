@@ -1763,7 +1763,7 @@ not_doing:
   - No path/sandbox checks here (separate capability-sandbox task).
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The constitution gate that decides if a skill's declared capabilities are admissible. Inputs: the immutable `Constitution` and a manifest. Outputs: an `Allow` or a `Deny` naming the first offending capability. Edge: a fully-sanctioned manifest is allowed; a forbidden capability AND an unknown/unmatched capability are both denied (default-deny). Invariant: a capability is allowed only if affirmatively matched by a constitution rule. Done-check: one allow and two deny criteria covering both forbidden and unknown.
