@@ -1040,7 +1040,7 @@ not_doing:
   - No tombstone or soft-delete semantics.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The semantic removal primitive, completing the fact-store CRUD. Inputs: a key. Outputs: the entry removed. Edge: deleting an absent key is a no-op success. Invariant: after delete, get of that key is None. Done-check: the delete-then-miss and idempotent-delete criteria.
