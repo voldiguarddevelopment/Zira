@@ -1,2 +1,2 @@
-4cc7507eda002d3a718abc2cb94dd3c0548f2f68378457d981ccc8563c607938  criteria_map:T-01.13
-f12d545b077592277c22f776b2f24f170e4c70f3e304ed1baa3deee1b65afcca  tests/bridge_error_event.rs
+4451c8ea9ce3d6e09c3fa305605b68f279086a6c7dad6937e0cd2c97728d8a13  criteria_map:T-01.14
+db267079bfedd43a244d41e53347cd466fdcffb2c292f850ef32a6a1532057bd  tests/thinking_spine.rs
