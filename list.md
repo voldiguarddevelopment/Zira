@@ -1107,7 +1107,7 @@ not_doing:
 test_files: []
 criteria_map: {}
 attempts: 1
-last_failure: ""
+last_failure: RED phase removed or corrupted list.md — the task's criteria record must survive the red phase
 ---
 The vector-math kernel of the index. Inputs: two equal-length f32 slices. Outputs: a similarity in [-1, 1]. Edge: a zero-magnitude vector yields 0.0, never NaN. Invariant: self-similarity is 1.0, opposite is -1.0. Done-check: the identity/orthogonal/opposite and zero-guard criteria.
 
