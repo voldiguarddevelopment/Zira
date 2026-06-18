@@ -26,10 +26,11 @@ pub fn review_plan(_plan: &zira_proto::PlanSummary, decision: PlanDecision) -> z
 ///
 /// Accept → `Some(State::Thinking)`.  Reject → `Some(State::Idle)`.  T-05.03.
 pub fn plan_review_next_state(
-    _plan: &zira_proto::PlanSummary,
-    _decision: PlanDecision,
+    plan: &zira_proto::PlanSummary,
+    decision: PlanDecision,
 ) -> Option<zira_proto::State> {
-    todo!()
+    let event = review_plan(plan, decision);
+    next_state(zira_proto::State::PlanReview, &event)
 }
 
 use std::future::Future;
