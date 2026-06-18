@@ -451,7 +451,7 @@ The seam that lets devices be mocked. Inputs: the orchestrator's needs. Outputs:
 ### T-00.21  Integrate the mock cycle
 id: T-00.21
 phase: 0
-status: pending
+status: done
 depends_on: [T-00.17, T-00.20]
 stack: rust
 criteria:
@@ -460,8 +460,11 @@ criteria:
   - C3: a barge-in event during `Speaking` drives the mocked cycle back to `Listening`, asserted by the same test.
 not_doing:
   - No real audio/brain — every stage is a mock; this proves the wiring, not the devices.
-test_files: []
-criteria_map: {}
+test_files: [tests/mock_cycle.rs]
+criteria_map:
+  C1: [c1_orchestrator_assembled_from_mocks_runs_end_to_end]
+  C2: [c2_happy_path_state_sequence_is_exact]
+  C3: [c3_barge_in_during_speaking_returns_to_listening]
 attempts: 1
 last_failure: ""
 ---
