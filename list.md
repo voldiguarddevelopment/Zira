@@ -1195,7 +1195,7 @@ not_doing:
   - No fact-store entries in the preamble — episodes only.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The injection stage that turns retrieved episodes into context the bridge prepends to a turn. Inputs: the retrieved episodes. Outputs: a preamble string. Edge: an empty slice produces an empty string so no noise is injected. Invariant: every episode's text appears in a non-empty preamble. Done-check: the contains-both and empty-yields-empty criteria.
