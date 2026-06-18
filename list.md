@@ -1419,7 +1419,7 @@ The pure 2D-fallback projection of an `AvatarState`: which static face sprite an
 ### T-03.09  Select the renderer
 id: T-03.09
 phase: 3
-status: pending
+status: done
 depends_on: [T-00.09, T-03.08]
 stack: rust
 criteria:
@@ -1429,8 +1429,11 @@ criteria:
 not_doing:
   - No GPU capability probe here — the choice is config-driven (a VRM path requests the 3D renderer; its absence selects 2D).
   - No actual window/render-loop start — that is a blocked task.
-test_files: []
-criteria_map: {}
+test_files: [tests/select_renderer.rs]
+criteria_map:
+  C1: [c1_renderer_kind_derives_debug, c1_renderer_kind_derives_clone, c1_renderer_kind_derives_copy, c1_renderer_kind_derives_partial_eq, c1_select_renderer_none_gives_fallback2d]
+  C2: [c2_select_renderer_some_nonempty_gives_vrm]
+  C3: [c3_select_renderer_some_empty_gives_fallback2d]
 attempts: 1
 last_failure: ""
 ---
