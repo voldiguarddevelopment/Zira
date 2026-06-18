@@ -1377,7 +1377,7 @@ Turns an unordered-cadence viseme stream into a deterministic timeline of (start
 ### T-03.07  Define the avatar state
 id: T-03.07
 phase: 3
-status: pending
+status: done
 depends_on: [T-03.02, T-03.03]
 stack: rust
 criteria:
@@ -1386,8 +1386,10 @@ criteria:
 not_doing:
   - No GPU/2D rendering — this is the renderer-agnostic state the sink emits.
   - No transition logic — the sink owns advancing this state.
-test_files: []
-criteria_map: {}
+test_files: [tests/avatar_state.rs]
+criteria_map:
+  C1: [c1_struct_fields, c1_derives_debug, c1_derives_clone, c1_derives_partial_eq, c1_resting_expression, c1_resting_mouth, c1_resting_full]
+  C2: [c2_for_emotion_expression_tracks_emotion, c2_for_emotion_mouth_is_sil, c2_for_emotion_neutral, c2_for_emotion_all_variants]
 attempts: 1
 last_failure: ""
 ---
