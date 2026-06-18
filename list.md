@@ -1477,7 +1477,7 @@ not_doing:
 test_files: []
 criteria_map: {}
 attempts: 1
-last_failure: ""
+last_failure: RED phase removed or corrupted list.md — the task's criteria record must survive the red phase
 ---
 The avatar subsystem's typed failure surface for the gateable path, with every `Display` arm exercised so none survives mutation (the T-01.10 lesson). Inputs: a failed precondition. Outputs: a distinct, named error. Edge: each failure maps to its own variant. Invariant: every variant's message is non-empty and unique. Done-check: the two criteria.
 
