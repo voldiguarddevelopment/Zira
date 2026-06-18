@@ -1,2 +1,2 @@
-4af90ffa8558ea07aafd1ba3ad020bccde408d97a60e7f96791f2cf1ee58f6ce  criteria_map:T-02.04
-7bfedc723e86d45374d5ffd6c88a3df460ff8ce85090a589b37b459b5312ef83  tests/load_episodes.rs
+8101a9a7ca07a22864b7f38a3c432265095624ad12baaf36a1d46805799c9998  criteria_map:T-02.05
+06d6cdefca7a997e922f218b92a23e54b7a9ee08d58fc69d0e7be21949c50c5d  tests/cap_episodes.rs
