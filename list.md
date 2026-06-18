@@ -1258,7 +1258,7 @@ not_doing:
   - No GPU/VRM blendshape application — this is a pure data struct only.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The pure data carrier for a VRM expression: a fixed set of named blendshape weights that the emotion map fills and the avatar state holds. Inputs: weight values. Outputs: a clamped, comparable preset with a zeroed neutral baseline. Edge: out-of-range weights are clamped, never rejected. Invariant: weights are always reportable within [0,1] via `clamped`. Done-check: the two criteria.
