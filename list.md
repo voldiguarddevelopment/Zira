@@ -1217,7 +1217,7 @@ not_doing:
   - No pruning of the episodic log here — capping is T-02.05.
 test_files: []
 criteria_map: {}
-attempts: 2
+attempts: 3
 last_failure: RED phase removed or corrupted list.md — the task's criteria record must survive the red phase
 ---
 The stateless consolidation pass distilling episodic logs into semantic facts, re-derivable from disk on every run. Inputs: the episode path and an open fact store. Outputs: deduplicated facts written to the store plus a written-count. Edge: an empty log writes nothing and returns 0. Invariant: duplicated information collapses to one fact; the pass holds no state between runs. Done-check: the dedup and empty-log criteria.
