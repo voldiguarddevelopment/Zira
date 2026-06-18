@@ -134,6 +134,38 @@ fn normalize_lexical(path: &std::path::Path) -> std::path::PathBuf {
     components.iter().collect()
 }
 
+/// A single link in the HMAC-SHA256 audit chain.
+///
+/// Each entry records what happened (`skill_name`, `action`), binds itself
+/// to the previous entry's hash (`prev_hash`), and carries its own
+/// content-hash (`entry_hash`) so the chain can be verified end-to-end.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct AuditEntry {
+    pub skill_name: String,
+    pub action: String,
+    pub prev_hash: String,
+    pub entry_hash: String,
+}
+
+/// Compute an HMAC-SHA256 entry hash over `skill_name`, `action`, and `prev_hash`
+/// keyed by `key`.  Returns a 64-character lowercase hex string.
+pub fn compute_entry_hash(
+    key: &[u8],
+    skill_name: &str,
+    action: &str,
+    prev_hash: &str,
+) -> String {
+    let mut mac = HmacSha256::new_from_slice(key).expect("HMAC accepts any key length");
+    mac.update(&(skill_name.len() as u64).to_le_bytes());
+    mac.update(skill_name.as_bytes());
+    mac.update(&(action.len() as u64).to_le_bytes());
+    mac.update(action.as_bytes());
+    mac.update(&(prev_hash.len() as u64).to_le_bytes());
+    mac.update(prev_hash.as_bytes());
+    let result = mac.finalize().into_bytes();
+    result.iter().map(|b| format!("{b:02x}")).collect()
+}
+
 use hmac::{Hmac, Mac};
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
