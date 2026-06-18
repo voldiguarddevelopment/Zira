@@ -75,7 +75,7 @@ The style + lint floor. Inputs: the workspace root. Outputs: toolchain + fmt + c
 ### T-00.04  Initialize structured logging
 id: T-00.04
 phase: 0
-status: blocked
+status: pending
 depends_on: [T-00.02]
 stack: rust
 criteria:
@@ -87,8 +87,8 @@ not_doing:
   - No per-crate log configuration beyond the global env filter.
 test_files: []
 criteria_map: {}
-attempts: 4
-last_failure: "DEFERRED: mutation-gate edge case. Logging is a thin EnvFilter wrapper with no mutatable operators; inserted at the top of zira-core/src/lib.rs it shifts the state-machine line numbers, so whole-file mutation surfaces pre-existing T-00.16/T-00.19 survivors the logging test cannot kill. Impl is honest; gate limitation. Non-critical (nothing depends on it). Fix: isolate logging into its own file OR make the mutation gate content-diff-scoped."
+attempts: 0
+last_failure: ""
 ---
 Observability from first boot. Inputs: the `RUST_LOG` env var. Outputs: an installed tracing subscriber + an idempotent init. Errors/edges: a malformed filter falls back to the default level, never a panic. Invariant: logging is safe to initialize once. Done-check: the three criteria.
 
