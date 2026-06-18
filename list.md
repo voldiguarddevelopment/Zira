@@ -1665,7 +1665,7 @@ Zira's prompt-injection grep over externally-sourced skill text. Inputs: a `&str
 ### T-04.08  Define the Finding type
 id: T-04.08
 phase: 4
-status: pending
+status: blocked
 depends_on: [T-04.07]
 stack: rust
 criteria:
@@ -1690,7 +1690,6 @@ last_failure: |
       |     ^^^^^^^^
       |
       = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
-  
   warning: `zira-core` (lib) generated 1 warning
      Compiling zira-build v0.0.0 (/home/floofy/development/zira-build/.ratchet/worktrees/T-04.08)
   error[E0560]: struct `Finding` has no field named `excerpt`
@@ -1700,7 +1699,6 @@ last_failure: |
      |         ^^^^^^^ `Finding` does not have this field
      |
      = note: all struct fields are already assigned
-  
   error[E0560]: struct `Finding` has no field named `excerpt`
     --> tests/finding_type.rs:47:9
      |
@@ -1708,7 +1706,6 @@ last_failure: |
      |         ^^^^^^^ `Finding` does not have this field
      |
      = note: all struct fields are already assigned
-  
   error[E0609]: no field `excerpt` on type `Finding`
     --> tests/finding_type.rs:55:11
      |
@@ -1716,7 +1713,6 @@ last_failure: |
      |           ^^^^^^^ unknown field
      |
      = note: available field is: `pattern`
-  
   error[E0560]: struct `Finding` has no field named `excerpt`
     --> tests/finding_type.rs:67:9
      |
@@ -1724,7 +1720,6 @@ last_failure: |
      |         ^^^^^^^ `Finding` does not have this field
      |
      = note: all struct fields are already assigned
-  
   error[E0560]: struct `Finding` has no field named `excerpt`
     --> tests/finding_type.rs:71:9
      |
@@ -1732,7 +1727,6 @@ last_failure: |
      |         ^^^^^^^ `Finding` does not have this field
      |
      = note: all struct fields are already assigned
-  
   error[E0560]: struct `Finding` has no field named `excerpt`
     --> tests/finding_type.rs:82:9
      |
@@ -1740,7 +1734,6 @@ last_failure: |
      |         ^^^^^^^ `Finding` does not have this field
      |
      = note: all struct fields are already assigned
-  
   error[E0560]: struct `Finding` has no field named `excerpt`
     --> tests/finding_type.rs:86:9
      |
@@ -1748,7 +1741,6 @@ last_failure: |
      |         ^^^^^^^ `Finding` does not have this field
      |
      = note: all struct fields are already assigned
-  
   Some errors have detailed explanations: E0560, E0609.
   For more information about an error, try `rustc --explain E0560`.
   error: could not compile `zira-build` (test "finding_type") due to 7 previous errors
