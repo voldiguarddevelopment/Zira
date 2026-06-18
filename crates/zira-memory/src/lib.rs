@@ -10,6 +10,10 @@ pub struct Episode {
     pub timestamp: u64,
 }
 
+pub fn load_episodes(_path: &std::path::Path) -> std::io::Result<Vec<Episode>> {
+    unimplemented!("load_episodes not yet implemented")
+}
+
 pub fn append_episode(path: &std::path::Path, episode: &Episode) -> std::io::Result<()> {
     use std::io::Write;
     let mut file = std::fs::OpenOptions::new()
