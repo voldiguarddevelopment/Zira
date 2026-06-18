@@ -2,6 +2,18 @@
 
 use serde::{Deserialize, Serialize};
 
+/// Seam between retrieval logic and the embedding model.
+///
+/// Every implementation must guarantee that `embed(text).len() == dim()`
+/// for all inputs, including empty strings.
+pub trait Embedder {
+    /// Returns the fixed dimensionality of all vectors produced by this embedder.
+    fn dim(&self) -> usize;
+
+    /// Produces a fixed-length embedding vector for `text`.
+    fn embed(&self, text: &str) -> Vec<f32>;
+}
+
 /// Typed errors for the fact store.
 #[derive(thiserror::Error, Debug)]
 pub enum FactStoreError {
