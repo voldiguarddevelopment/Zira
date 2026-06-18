@@ -2000,7 +2000,7 @@ Wires the decision mapping to the real state machine end-to-end. Inputs: `State:
 ### T-05.04  Resolve the default emotion
 id: T-05.04
 phase: 5
-status: pending
+status: done
 depends_on: [T-00.05, T-00.09]
 stack: rust
 criteria:
@@ -2009,8 +2009,10 @@ criteria:
 not_doing:
   - No new emotion variants — the vocabulary stays the ten in `zira_proto::Emotion`.
   - No mutation of the config — the resolver borrows it read-only.
-test_files: []
-criteria_map: {}
+test_files: [tests/default_emotion.rs]
+criteria_map:
+  C1: [c1_known_tag_maps_to_matching_emotion_variant, c1_known_tag_is_case_insensitive]
+  C2: [c2_empty_string_maps_to_neutral, c2_unknown_tag_maps_to_neutral]
 attempts: 1
 last_failure: ""
 ---
