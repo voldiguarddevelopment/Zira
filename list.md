@@ -2107,7 +2107,7 @@ Performs first-run setup by materializing a default config. Inputs: the target c
 ### T-05.09  Define the budget error
 id: T-05.09
 phase: 5
-status: pending
+status: done
 depends_on: [T-00.09]
 stack: rust
 criteria:
@@ -2116,8 +2116,10 @@ criteria:
 not_doing:
   - No bounds-checking logic here — that is the next task; this defines only the error.
   - No reuse of `ConfigError` — the budget audit owns a distinct typed error.
-test_files: []
-criteria_map: {}
+test_files: [tests/budget_error.rs]
+criteria_map:
+  C1: [c1_episodes_too_high_variant_exists_and_derives_debug, c1_episodes_zero_variant_exists_and_derives_debug]
+  C2: [c2_display_episodes_too_high_contains_value, c2_display_episodes_zero_indicates_zero_condition]
 attempts: 1
 last_failure: ""
 ---
