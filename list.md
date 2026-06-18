@@ -2011,7 +2011,7 @@ not_doing:
   - No mutation of the config — the resolver borrows it read-only.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 Turns the configured `EmotionConfig.default_emotion` string into a typed `Emotion`. Inputs: an `&EmotionConfig`. Outputs: the resolved `Emotion`, delegating to the existing `Emotion::from_tag` case-insensitive mapping, in the `zira-config` library crate. Edge: empty and unknown tags both fall back to `Neutral`, never an error. Invariant: the configured default is always a valid in-vocabulary `Emotion`. Done-check: the two criteria.
