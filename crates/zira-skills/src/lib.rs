@@ -345,6 +345,47 @@ impl std::fmt::Display for GateDecision {
     }
 }
 
+/// Gate a manifest's declared capabilities against the constitution.
+///
+/// A rule is prohibitive if it contains the word "never".  A capability is sanctioned
+/// iff at least one non-prohibitive rule names it (case-insensitive substring match).
+/// Any capability that matches a prohibitive rule or matches no rule at all (default-deny)
+/// causes the gate to return `Deny` naming the offending capability.
+pub fn gate_capabilities(
+    c: &zira_config::Constitution,
+    m: &SkillManifest,
+) -> GateDecision {
+    for cap in &m.capabilities {
+        let cap_lower = cap.to_lowercase();
+        let mut sanctioned = false;
+        let mut prohibited = false;
+
+        for rule in c.rules() {
+            let rule_lower = rule.to_lowercase();
+            if rule_lower.contains(&cap_lower) {
+                if rule_lower.contains("never") {
+                    prohibited = true;
+                } else {
+                    sanctioned = true;
+                }
+            }
+        }
+
+        if prohibited || !sanctioned {
+            let reason = if prohibited {
+                format!("prohibited by a constitution rule")
+            } else {
+                format!("unknown capability: not named by any constitution rule (default-deny)")
+            };
+            return GateDecision::Deny {
+                capability: cap.clone(),
+                reason,
+            };
+        }
+    }
+    GateDecision::Allow
+}
+
 /// Produce an `.mcp.json`-shaped `serde_json::Value` from a [`SkillManifest`].
 ///
 /// The returned object has a single top-level key `"mcpServers"` whose value is
