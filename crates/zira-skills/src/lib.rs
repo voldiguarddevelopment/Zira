@@ -1,5 +1,21 @@
 //! zira-skills — skill/MCP staging, signing, audit log.
 
+/// A single match reported by [`scan_injection`].
+#[derive(Debug, Clone, PartialEq)]
+pub struct Finding {
+    /// The pattern from the danger table that was matched.
+    pub pattern: String,
+}
+
+/// Scan `text` for prompt-injection substrings.
+///
+/// Returns one [`Finding`] per matched danger pattern.  Matching is
+/// case-insensitive. Returns an empty vec when no patterns match.
+pub fn scan_injection(_text: &str) -> Vec<Finding> {
+    // RED-phase stub — implementation intentionally absent.
+    vec![]
+}
+
 use hmac::{Hmac, Mac};
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
