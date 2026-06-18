@@ -70,9 +70,11 @@ pub fn append_episode(path: &std::path::Path, episode: &Episode) -> std::io::Res
     writeln!(file, "{}", line)
 }
 
+const FACTS_TABLE: redb::TableDefinition<&str, &str> = redb::TableDefinition::new("facts");
+
 /// A handle to the redb-backed fact store.
 pub struct FactStore {
-    _db: redb::Database,
+    db: redb::Database,
 }
 
 impl FactStore {
@@ -80,6 +82,27 @@ impl FactStore {
     pub fn open(path: &std::path::Path) -> Result<Self, FactStoreError> {
         let db = redb::Database::create(path)
             .map_err(|e| FactStoreError::OpenFailed(e.to_string()))?;
-        Ok(Self { _db: db })
+        Ok(Self { db })
+    }
+
+    /// Commits a `key -> value` entry to the redb store durably.
+    /// Putting an existing key overwrites the prior value.
+    pub fn put(&self, key: &str, value: &str) -> Result<(), FactStoreError> {
+        let write_txn = self
+            .db
+            .begin_write()
+            .map_err(|e| FactStoreError::TransactionFailed(e.to_string()))?;
+        {
+            let mut table = write_txn
+                .open_table(FACTS_TABLE)
+                .map_err(|e| FactStoreError::TransactionFailed(e.to_string()))?;
+            table
+                .insert(key, value)
+                .map_err(|e| FactStoreError::TransactionFailed(e.to_string()))?;
+        }
+        write_txn
+            .commit()
+            .map_err(|e| FactStoreError::TransactionFailed(e.to_string()))?;
+        Ok(())
     }
 }
