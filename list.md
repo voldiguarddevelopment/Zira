@@ -750,7 +750,7 @@ The failure path of the Thinking stage. Inputs: a failing ask. Outputs: a single
 ### T-01.14  Test the thinking spine
 id: T-01.14
 phase: 1
-status: pending
+status: done
 depends_on: [T-01.12, T-01.13]
 stack: rust
 criteria:
@@ -758,8 +758,10 @@ criteria:
   - C2: a stub reply carrying multiple `[emotion:...]` spans produces one `Event::EmotionSegment` per span in source order; a stub that fails produces a single `Event::Error`.
 not_doing:
   - Audio stages — those stay mocked / blocked-on-human.
-test_files: []
-criteria_map: {}
+test_files: [tests/thinking_spine.rs]
+criteria_map:
+  C1: [c1_thinking_spine_emits_segments_then_turn_complete]
+  C2: [c2_multiple_emotion_spans_produce_segments_in_source_order, c2_bridge_failure_produces_single_error_event]
 attempts: 1
 last_failure: ""
 ---
