@@ -1,2 +1,2 @@
-990ef8101c88e7bb3517722b4113c612cff1f97a66c766b639a17dacf6c05d20  criteria_map:T-05.11
-58babde96e6fa7dbb7df334a2e3c0d5ec68c829d514e8fe2c26645e1dd0fd6f8  tests/build_version.rs
+fd21f8eca80d06dd663da8e61129977e6d88d9527d4cc9da21fa485c6c17b8b5  criteria_map:T-05.12
+212cbec1d7c8651f952b22f15b314700713e561162faaa8c6f1056d81745bcee  tests/install_manifest.rs
