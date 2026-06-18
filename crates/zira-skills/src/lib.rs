@@ -10,6 +10,23 @@ pub enum GateDecision {
     Deny { capability: String, reason: String },
 }
 
+impl GateDecision {
+    pub fn is_allowed(&self) -> bool {
+        matches!(self, GateDecision::Allow)
+    }
+}
+
+impl std::fmt::Display for GateDecision {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            GateDecision::Allow => write!(f, "allowed"),
+            GateDecision::Deny { capability, reason } => {
+                write!(f, "denied capability `{capability}`: {reason}")
+            }
+        }
+    }
+}
+
 /// Gate a skill manifest's declared capabilities against the immutable constitution.
 ///
 /// Returns [`GateDecision::Allow`] when every capability is affirmatively matched by a
