@@ -1366,7 +1366,7 @@ not_doing:
   - No audio alignment — `frame_ms` is the supplied cadence.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 Turns an unordered-cadence viseme stream into a deterministic timeline of (start_ms, frame) pairs with clamped weights, ready for either GPU blendshapes or the 2D fallback. Inputs: a viseme-frame slice + a per-frame duration. Outputs: an ordered, timed, weight-clamped sequence. Edge: an empty stream yields an empty timeline. Invariant: input order and count are preserved; times are strictly increasing. Done-check: the three criteria.
