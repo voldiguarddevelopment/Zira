@@ -37,3 +37,24 @@ pub fn parse_manifest_toml(text: &str) -> Result<SkillManifest, ManifestError> {
 pub fn parse_manifest_json(text: &str) -> Result<SkillManifest, ManifestError> {
     serde_json::from_str(text).map_err(|e| ManifestError::Parse(e.to_string()))
 }
+
+/// The serialized form of an HMAC tag — a carrier for raw bytes with hex I/O.
+#[derive(Debug, Clone, PartialEq)]
+pub struct Signature(Vec<u8>);
+
+impl Signature {
+    /// Construct a [`Signature`] from raw HMAC bytes.
+    pub fn new(bytes: Vec<u8>) -> Self {
+        Self(bytes)
+    }
+
+    /// Encode the raw bytes as a lowercase hex string.
+    pub fn to_hex(&self) -> String {
+        todo!("implement hex encoding")
+    }
+
+    /// Decode a lowercase hex string into a [`Signature`].
+    pub fn from_hex(s: &str) -> Result<Self, ManifestError> {
+        todo!("implement hex decoding")
+    }
+}
