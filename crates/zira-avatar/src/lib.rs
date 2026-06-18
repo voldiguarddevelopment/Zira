@@ -107,6 +107,21 @@ pub fn timed_frames(frames: &[VisemeFrame], frame_ms: u32) -> Vec<(u32, VisemeFr
         .collect()
 }
 
+/// The 2D fallback frame: which sprite and mouth shape to show on a GPU-less box.
+///
+/// Stub: sprite selection is wrong (always empty) and mouth ignores state — the
+/// frozen RED tests fail until the real implementation lands.
+#[derive(Debug, Clone, PartialEq)]
+pub struct FallbackFrame {
+    pub sprite: String,
+    pub mouth: Viseme,
+}
+
+/// Stub implementation — returns an empty sprite and ignores the state's mouth.
+pub fn fallback_frame(_state: &AvatarState) -> FallbackFrame {
+    FallbackFrame { sprite: String::new(), mouth: Viseme::Sil }
+}
+
 /// Renderer-agnostic avatar state snapshot: the active expression and mouth shape.
 #[derive(Debug, Clone, PartialEq)]
 pub struct AvatarState {
