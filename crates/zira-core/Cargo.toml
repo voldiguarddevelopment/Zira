@@ -13,6 +13,7 @@ mock = []
 [dependencies]
 tokio = { workspace = true }
 tracing = { workspace = true }
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
 zira-proto = { path = "../zira-proto" }
 
 [lints]

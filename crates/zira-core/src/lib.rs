@@ -1,5 +1,7 @@
 //! zira-core — conversation state machine.
 
+pub mod logging;
+
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, Ordering};
