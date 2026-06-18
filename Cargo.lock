@@ -493,6 +493,7 @@ dependencies = [
  "zira-config",
  "zira-core",
  "zira-emotion",
+ "zira-memory",
  "zira-proto",
 ]
 
