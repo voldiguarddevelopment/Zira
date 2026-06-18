@@ -223,6 +223,37 @@ pub fn compute_entry_hash(
     result.iter().map(|b| format!("{b:02x}")).collect()
 }
 
+/// In-memory catalog of admitted skills, keyed by manifest name.
+pub struct SkillRegistry;
+
+impl SkillRegistry {
+    pub fn new() -> Self {
+        todo!("SkillRegistry::new not implemented")
+    }
+
+    pub fn register(&mut self, _m: SkillManifest) {
+        todo!("SkillRegistry::register not implemented")
+    }
+
+    pub fn lookup(&self, _name: &str) -> Option<&SkillManifest> {
+        todo!("SkillRegistry::lookup not implemented")
+    }
+
+    pub fn list(&self) -> Vec<&SkillManifest> {
+        todo!("SkillRegistry::list not implemented")
+    }
+
+    pub fn remove(&mut self, _name: &str) -> bool {
+        todo!("SkillRegistry::remove not implemented")
+    }
+}
+
+impl Default for SkillRegistry {
+    fn default() -> Self {
+        todo!("SkillRegistry::default not implemented")
+    }
+}
+
 use hmac::{Hmac, Mac};
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
