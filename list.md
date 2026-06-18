@@ -1312,7 +1312,7 @@ The closed alphabet of mouth shapes the lip-sync drives, mirroring the A/I/U/E/O
 ### T-03.04  Select the viseme
 id: T-03.04
 phase: 3
-status: pending
+status: done
 depends_on: [T-03.03]
 stack: rust
 criteria:
@@ -1321,8 +1321,10 @@ criteria:
 not_doing:
   - No full grapheme/IPA phoneme analysis — a coarse vowel-to-shape pick only.
   - No weighting — weight assignment belongs to the frame builder.
-test_files: []
-criteria_map: {}
+test_files: [tests/viseme_for_char.rs]
+criteria_map:
+  C1: [c1_lowercase_a_maps_to_a, c1_lowercase_e_maps_to_e, c1_lowercase_i_maps_to_i, c1_lowercase_o_maps_to_o, c1_lowercase_u_maps_to_u, c1_uppercase_a_maps_to_a, c1_uppercase_e_maps_to_e, c1_uppercase_i_maps_to_i, c1_uppercase_o_maps_to_o, c1_uppercase_u_maps_to_u]
+  C2: [c2_consonant_maps_to_sil, c2_digit_maps_to_sil, c2_whitespace_maps_to_sil]
 attempts: 1
 last_failure: ""
 ---
