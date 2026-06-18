@@ -2140,7 +2140,7 @@ not_doing:
   - No auto-repair — the audit reports a violation, it does not rewrite the value.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 Checks a configured resource budget against sane bounds. Inputs: a `&MemoryConfig` and a ceiling. Outputs: `Ok(())` within bounds, else the matching `BudgetError`, in the `zira-config` library crate. Edge: zero episodes and over-ceiling are distinct typed failures; the boundary `value == max` is allowed. Invariant: a passing audit guarantees `0 < max_episodes <= ceiling`. Done-check: the three criteria, one per outcome.
