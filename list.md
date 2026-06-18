@@ -689,7 +689,7 @@ The bridge's typed failure surface. NOTE: C2 deliberately exercises every Displa
 ### T-01.11  Ask claude end-to-end
 id: T-01.11
 phase: 1
-status: pending
+status: done
 depends_on: [T-01.06, T-01.07, T-01.10]
 stack: rust
 criteria:
@@ -698,8 +698,11 @@ criteria:
   - C3: a stub that exits non-zero makes `ask` return `Err(BridgeError)`, asserted by the same test.
 not_doing:
   - Streaming partial deltas to the caller.
-test_files: []
-criteria_map: {}
+test_files: [tests/bridge_ask.rs]
+criteria_map:
+  C1: [c1_answer_struct_has_text_and_usage, c2_ask_success_returns_answer_from_stub]
+  C2: [c2_ask_success_returns_answer_from_stub]
+  C3: [c3_ask_non_zero_exit_returns_err]
 attempts: 1
 last_failure: ""
 ---
