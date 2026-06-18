@@ -8,6 +8,8 @@ publish = false
 serde_json = { workspace = true }
 thiserror = { workspace = true }
 zira-config = { path = "../zira-config" }
+zira-core = { path = "../zira-core" }
+zira-emotion = { path = "../zira-emotion" }
 zira-proto = { path = "../zira-proto" }
 
 [lints]

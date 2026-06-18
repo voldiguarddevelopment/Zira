@@ -1,5 +1,8 @@
 //! zira-bridge — Claude Code stream-json driver.
 
+pub mod brain;
+pub use brain::ClaudeBrain;
+
 use std::io::Write;
 use std::process::{Command, Stdio};
 

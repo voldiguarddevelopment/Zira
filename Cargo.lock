@@ -466,6 +466,8 @@ dependencies = [
  "serde_json",
  "thiserror",
  "zira-config",
+ "zira-core",
+ "zira-emotion",
  "zira-proto",
 ]
 
