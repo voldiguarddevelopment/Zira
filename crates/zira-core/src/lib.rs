@@ -10,6 +10,79 @@ use std::time::Duration;
 use tokio::sync::{broadcast, mpsc, watch};
 use zira_proto::{Event, State};
 
+#[cfg(feature = "mock")]
+pub mod mock;
+
+// ── Stage traits ──────────────────────────────────────────────────────────────
+//
+// The seam between the orchestrator and the outside world. Each pipeline stage is
+// expressed as a trait carrying only the minimal async method(s) the orchestrator
+// drives; the real device/FFI/GPU engines (blocked-on-human) and the test-only mocks
+// both implement them. The orchestrator is generic over these traits and so depends on
+// the seam, never on a concrete engine.
+//
+// `async fn` in a public trait is intentional here: the orchestrator owns the engines
+// and drives them through monomorphised generics (no boxing), so the missing auto
+// `Send` bound the lint warns about does not apply.
+
+/// The wake-word source: blocks until the configured wake word is detected, then yields
+/// the `WakeDetected` event that lifts `Idle -> Listening`.
+#[allow(async_fn_in_trait)]
+pub trait WakeSource {
+    /// Await the next wake detection.
+    async fn next_wake(&mut self) -> Event;
+}
+
+/// The voice-activity gate over the captured stream: yields the speech-boundary events
+/// (`SpeechStarted`, then `SpeechEnded`) that frame an utterance.
+#[allow(async_fn_in_trait)]
+pub trait VadGate {
+    /// Await the next speech-activity boundary.
+    async fn next_activity(&mut self) -> Event;
+}
+
+/// The speech-to-text engine: transcribes the captured utterance into a
+/// `TranscriptReady` event carrying the recognised text.
+#[allow(async_fn_in_trait)]
+pub trait SttEngine {
+    /// Await the transcript of the current utterance.
+    async fn transcribe(&mut self) -> Event;
+}
+
+/// The brain (Claude Code bridge): produces the response stream for a turn — emotion
+/// segments followed by a `SpeakRequest` that drives `Thinking -> Speaking`.
+#[allow(async_fn_in_trait)]
+pub trait Brain {
+    /// Await the full response stream for the current turn.
+    async fn respond(&mut self) -> Vec<Event>;
+}
+
+/// The text-to-speech engine: synthesises the reply and yields one `VisemeFrame` event
+/// per lip-sync frame, in order.
+#[allow(async_fn_in_trait)]
+pub trait TtsEngine {
+    /// Await the viseme-frame stream for the current reply.
+    async fn speak(&mut self) -> Vec<Event>;
+}
+
+/// The avatar sink: applies an expression preset and acknowledges with an
+/// `ExpressionChange` event.
+#[allow(async_fn_in_trait)]
+pub trait AvatarSink {
+    /// Await acknowledgement that the requested expression was applied.
+    async fn render(&mut self) -> Event;
+}
+
+/// The memory store: persists an event and, on recall, returns the events it holds.
+#[allow(async_fn_in_trait)]
+pub trait MemoryStore {
+    /// Persist `event` durably.
+    async fn store(&mut self, event: Event);
+
+    /// Return the events recalled from the store.
+    async fn recall(&mut self) -> Vec<Event>;
+}
+
 /// Handles returned by [`create_bus`].
 pub struct BusHandles {
     /// Send a command to the orchestrator's single consumer.
