@@ -1665,7 +1665,7 @@ Zira's prompt-injection grep over externally-sourced skill text. Inputs: a `&str
 ### T-04.08  Construct a finding
 id: T-04.08
 phase: 4
-status: pending
+status: done
 depends_on: [T-04.07]
 stack: rust
 criteria:
@@ -1675,8 +1675,11 @@ criteria:
 not_doing:
   - No severity scoring — a finding stays a flat record keyed by its matched pattern.
   - No change to the `scan_injection` danger table or its return type.
-test_files: []
-criteria_map: {}
+test_files: [tests/finding_type.rs]
+criteria_map:
+  C1: [test_finding_new_stores_pattern, test_finding_new_accepts_owned_string]
+  C2: [test_finding_display_contains_pattern, test_finding_display_names_pattern_exactly]
+  C3: [test_finding_eq_same_pattern, test_finding_neq_different_pattern]
 attempts: 1
 last_failure: ""
 ---
