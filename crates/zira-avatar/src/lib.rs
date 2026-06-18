@@ -1,7 +1,7 @@
 //! zira-avatar — VRM avatar renderer.
 
 use zira_config::AvatarConfig;
-use zira_proto::Emotion;
+use zira_proto::{Emotion, Event};
 
 /// Which renderer the avatar subsystem should use.
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -168,6 +168,34 @@ impl AvatarState {
 
     pub fn for_emotion(emotion: Emotion) -> Self {
         Self { expression: expression_for(emotion), mouth: Viseme::Sil }
+    }
+}
+
+/// Drives the avatar state machine: applies emotions and visemes, emits events.
+pub struct AvatarDriver {
+    inner: AvatarState,
+}
+
+impl AvatarDriver {
+    pub fn new() -> Self {
+        Self { inner: AvatarState::resting() }
+    }
+
+    pub fn state(&self) -> &AvatarState {
+        &self.inner
+    }
+
+    pub fn apply_emotion(&mut self, e: Emotion) {
+        self.inner.expression = expression_for(e);
+    }
+
+    pub fn apply_viseme(&mut self, v: Viseme) {
+        self.inner.mouth = v;
+    }
+
+    pub fn on_emotion(&mut self, e: Emotion) -> Event {
+        self.apply_emotion(e);
+        Event::ExpressionChange
     }
 }
 
