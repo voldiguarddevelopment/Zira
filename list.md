@@ -1280,7 +1280,7 @@ not_doing:
   - No blending/interpolation between presets here.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The avatar-facing twin of the prosody table: the single total function from the fixed emotion vocabulary to a blendshape preset. Inputs: an emotion. Outputs: a bounded `ExpressionPreset`. Edge: unknown emotions cannot occur — the type is closed over ten variants. Invariant: total, bounded, and not collapsed to one constant. Done-check: the three criteria.
