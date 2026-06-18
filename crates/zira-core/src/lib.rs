@@ -213,9 +213,12 @@ impl Orchestrator {
                         let _ = self.state_tx.send(new_state);
                         tracing::info!(from = ?from, to = ?new_state, trigger = ?event);
 
-                        if new_state == State::Listening {
+                        if matches!(new_state, State::Listening) {
                             if let Some(dur) = self.silence_timeout {
-                                sleep.as_mut().reset(tokio::time::Instant::now() + dur);
+                                let deadline = tokio::time::Instant::now()
+                                    .checked_add(dur)
+                                    .expect("silence-timeout deadline overflowed the clock");
+                                sleep.as_mut().reset(deadline);
                                 // Fresh cancel token: the SilenceWaker for this window
                                 // checks this Arc; setting it true later prevents spurious fires.
                                 current_cancel = Arc::new(AtomicBool::new(false));
@@ -264,7 +267,7 @@ impl SilenceWaker {
     fn fire(this: &Arc<Self>) {
         if !this.cancel.load(Ordering::Acquire) {
             let _ = this.state_tx.send_if_modified(|s| {
-                if *s == State::Listening {
+                if matches!(*s, State::Listening) {
                     *s = State::Idle;
                     true
                 } else {
