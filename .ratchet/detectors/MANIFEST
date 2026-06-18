@@ -1,2 +1,2 @@
-13672514fd818fcf4dfd644825d8e92fc7d7550e081fc1da65f1bf5c3d8e6eeb  criteria_map:T-03.05
-8648d2acb85849a49d5a36108ebae6692e1f85ceb5c02544ccdd1eeef5c4b41b  tests/clamp_weight.rs
+781b4d5b453a51cd63eb11a0700232c0c14a24a9b3435d6e01874b42f1a2f109  criteria_map:T-03.06
+939fa96bb2d179640da042f204ad305adabdcb2b7adf1ea899b55ad680e1e263  tests/timed_frames.rs
