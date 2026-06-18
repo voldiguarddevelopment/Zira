@@ -1912,7 +1912,7 @@ The in-memory catalog of admitted skills. Inputs: manifests by name. Outputs: re
 ### T-04.16  Scaffold the MCP config
 id: T-04.16
 phase: 4
-status: pending
+status: done
 depends_on: [T-04.01]
 stack: rust
 criteria:
@@ -1922,8 +1922,11 @@ criteria:
 not_doing:
   - No spawning or running of the MCP server — generation of the config skeleton only.
   - No writing the file to disk; the factory returns the JSON value.
-test_files: []
-criteria_map: {}
+test_files: [tests/mcp_factory.rs]
+criteria_map:
+  C1: [c1_mcpservers_key_and_command_from_manifest]
+  C2: [c2_factory_json_parses_and_keys_match_manifest]
+  C3: [c3_generated_config_round_trips]
 attempts: 1
 last_failure: ""
 ---
