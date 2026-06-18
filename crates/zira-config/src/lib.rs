@@ -177,7 +177,7 @@ pub enum ConfigError {
 #[derive(Debug, Error)]
 pub enum VocabError {
     /// A tag matched no known `Emotion` variant.
-    #[error("unknown emotion tag")]
+    #[error("unknown emotion tag: {tag}")]
     UnknownTag { tag: String },
 }
 
