@@ -2065,7 +2065,7 @@ Validates and normalizes a configured tag list against the ten `Emotion` variant
 ### T-05.07  Detect the first run
 id: T-05.07
 phase: 5
-status: pending
+status: done
 depends_on: [T-00.10]
 stack: rust
 criteria:
@@ -2074,8 +2074,10 @@ criteria:
 not_doing:
   - No directory or file creation here — detection only; creation is the next task.
   - No reliance on the live XDG home — the test passes an explicit temp path.
-test_files: []
-criteria_map: {}
+test_files: [tests/first_run_detect.rs]
+criteria_map:
+  C1: [c1_absent_path_returns_true, c1_present_file_returns_false, c1_present_but_empty_file_returns_false]
+  C2: [c2_detection_does_not_create_missing_path, c2_detection_does_not_modify_existing_file, c2_detection_does_not_delete_existing_file]
 attempts: 1
 last_failure: ""
 ---
