@@ -133,6 +133,7 @@ pub fn append_episode(path: &std::path::Path, episode: &Episode) -> std::io::Res
 ///
 /// Returns a value in `[-1.0, 1.0]`. A zero-magnitude input yields `0.0`
 /// (divide-by-zero guard — never NaN).
+///
 pub fn cosine_similarity(a: &[f32], b: &[f32]) -> f32 {
     let dot: f32 = a.iter().zip(b.iter()).map(|(x, y)| x * y).sum();
     let mag_a: f32 = a.iter().map(|x| x * x).sum::<f32>().sqrt();
