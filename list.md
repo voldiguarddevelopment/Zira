@@ -1901,7 +1901,7 @@ not_doing:
   - No gate invocation inside register; the gate is applied by the caller before registration.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The in-memory catalog of admitted skills. Inputs: manifests by name. Outputs: register/list/lookup/remove over them. Edge: removing an absent name is a benign `false`; re-registering a name replaces rather than duplicates. Invariant: a name maps to at most one manifest. Done-check: register+lookup+list, remove semantics for present and absent names, and the replace-on-duplicate-name check.
