@@ -1008,7 +1008,7 @@ The semantic write primitive. Inputs: a key and value. Outputs: a durably commit
 ### T-02.09  Get a fact
 id: T-02.09
 phase: 2
-status: pending
+status: done
 depends_on: [T-02.08]
 stack: rust
 criteria:
@@ -1017,8 +1017,10 @@ criteria:
 not_doing:
   - No prefix or range scans — single-key lookup only.
   - No caching layer.
-test_files: []
-criteria_map: {}
+test_files: [tests/fact_store_get.rs]
+criteria_map:
+  C1: [test_get_hit_returns_ok_some, test_get_miss_returns_ok_none]
+  C2: [test_get_hit_and_miss]
 attempts: 1
 last_failure: ""
 ---
