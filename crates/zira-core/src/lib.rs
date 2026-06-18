@@ -21,6 +21,18 @@ pub fn review_plan(_plan: &zira_proto::PlanSummary, decision: PlanDecision) -> z
     }
 }
 
+/// End-to-end plan-review transition: feeds the event from `review_plan` into
+/// `next_state` starting from `State::PlanReview` and returns the resulting state.
+///
+/// Accept → `Some(State::Thinking)`.  Reject → `Some(State::Idle)`.  T-05.03.
+pub fn plan_review_next_state(
+    plan: &zira_proto::PlanSummary,
+    decision: PlanDecision,
+) -> Option<zira_proto::State> {
+    let event = review_plan(plan, decision);
+    next_state(zira_proto::State::PlanReview, &event)
+}
+
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, Ordering};
