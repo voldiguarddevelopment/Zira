@@ -2128,7 +2128,7 @@ The typed failure for the resource-budget audit. Inputs: an out-of-bounds budget
 ### T-05.10  Audit the memory budget
 id: T-05.10
 phase: 5
-status: pending
+status: done
 depends_on: [T-05.09]
 stack: rust
 criteria:
@@ -2138,8 +2138,11 @@ criteria:
 not_doing:
   - No I/O — the audit is a pure check over the already-loaded config.
   - No auto-repair — the audit reports a violation, it does not rewrite the value.
-test_files: []
-criteria_map: {}
+test_files: [tests/audit_budget.rs]
+criteria_map:
+  C1: [c1_ok_when_episodes_at_ceiling, c1_ok_when_episodes_below_ceiling]
+  C2: [c2_err_too_high_when_episodes_exceed_ceiling, c2_err_too_high_carries_value_and_max]
+  C3: [c3_err_zero_when_episodes_is_zero]
 attempts: 1
 last_failure: ""
 ---
