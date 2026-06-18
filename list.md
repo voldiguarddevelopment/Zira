@@ -1516,7 +1516,7 @@ not_doing:
   - No signing, scanning, or gate logic here — type definition only.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The data record every later safety check reads. Inputs: the five field values. Outputs: a serde-stable manifest struct. Edge: an empty capabilities or allowed_roots vec is legal here (default-deny is enforced downstream, not at construction). Invariant: the struct is the single source for a skill's declared name, version, entry, capabilities, and path roots. Done-check: the three criteria, including the serde_json round-trip.
