@@ -1,2 +1,2 @@
-e8a64c7b75d87c3d5b558a9ca55cdd49fdf192a4b2741ea35ccb655046e0f0a5  criteria_map:T-02.03
-1151ce85555b4b4f208248f481246f16f066249225e8c0b8fcc03769f7abdabd  tests/append_episode.rs
+4af90ffa8558ea07aafd1ba3ad020bccde408d97a60e7f96791f2cf1ee58f6ce  criteria_map:T-02.04
+7bfedc723e86d45374d5ffd6c88a3df460ff8ce85090a589b37b459b5312ef83  tests/load_episodes.rs
