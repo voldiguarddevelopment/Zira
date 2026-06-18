@@ -9,6 +9,18 @@ pub enum PlanDecision {
     Reject,
 }
 
+/// Map a plan decision to the event the orchestrator should feed to the bus.
+///
+/// Pure and total: `Accept` yields `TurnStarted` (drives PlanReview→Thinking);
+/// `Reject` yields `Error` (drives PlanReview→Idle). The plan body is ignored —
+/// only the decision determines the mapping.
+pub fn review_plan(_plan: &zira_proto::PlanSummary, decision: PlanDecision) -> zira_proto::Event {
+    match decision {
+        PlanDecision::Accept => zira_proto::Event::TurnStarted,
+        PlanDecision::Reject => zira_proto::Event::Error("plan rejected".into()),
+    }
+}
+
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, Ordering};
