@@ -1050,7 +1050,7 @@ The semantic removal primitive, completing the fact-store CRUD. Inputs: a key. O
 ### T-02.11  Define the embedder trait
 id: T-02.11
 phase: 2
-status: pending
+status: done
 depends_on: [T-02.01]
 stack: rust
 criteria:
@@ -1059,8 +1059,10 @@ criteria:
 not_doing:
   - No concrete embedder here — the hash test-embedder is T-02.12 and the real model is the blocked task.
   - No async — embedding is a synchronous CPU call.
-test_files: []
-criteria_map: {}
+test_files: [tests/embedder_trait.rs]
+criteria_map:
+  C1: [test_embed_len_matches_dim, test_embedder_trait_object_safe]
+  C2: [test_embed_len_matches_dim, test_embedder_trait_object_safe]
 attempts: 1
 last_failure: ""
 ---
