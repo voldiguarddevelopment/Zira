@@ -1247,7 +1247,7 @@ The one human-gated task: the real Candle CPU embedder behind the same `Embedder
 ### T-03.01  Define the expression preset
 id: T-03.01
 phase: 3
-status: pending
+status: done
 depends_on: [T-00.02]
 stack: rust
 criteria:
@@ -1256,8 +1256,10 @@ criteria:
 not_doing:
   - No emotion mapping here (that is the next task).
   - No GPU/VRM blendshape application — this is a pure data struct only.
-test_files: []
-criteria_map: {}
+test_files: [tests/expression_preset.rs]
+criteria_map:
+  C1: [c1_struct_fields, c1_neutral_all_zeros, c1_neutral_debug, c1_neutral_clone, c1_neutral_partial_eq]
+  C2: [c2_clamped_in_range_unchanged, c2_clamped_above_one, c2_clamped_below_zero, c2_clamped_mixed, c2_clamped_neutral_is_noop]
 attempts: 1
 last_failure: ""
 ---
