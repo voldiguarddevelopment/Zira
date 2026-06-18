@@ -1550,7 +1550,7 @@ Turns serialized manifest text into the typed record. Inputs: a TOML or JSON `&s
 ### T-04.03  Define the ManifestError type
 id: T-04.03
 phase: 4
-status: pending
+status: done
 depends_on: [T-04.01]
 stack: rust
 criteria:
@@ -1560,8 +1560,11 @@ criteria:
 not_doing:
   - No new error variants beyond the three the manifest paths require.
   - No conversion `From` impls beyond what `thiserror` derives.
-test_files: []
-criteria_map: {}
+test_files: [tests/manifest_error_type.rs]
+criteria_map:
+  C1: [c1_manifest_error_all_three_variants_exist, c1_manifest_error_is_thiserror_derived]
+  C2: [c2_display_messages_are_non_empty, c2_display_messages_are_distinct]
+  C3: [c3_manifest_error_implements_std_error]
 attempts: 1
 last_failure: ""
 ---
