@@ -220,3 +220,19 @@ impl FactStore {
         }
     }
 }
+
+#[cfg(test)]
+mod cosine_tests {
+    use super::cosine_similarity;
+
+    const EPS: f32 = 1e-6;
+
+    #[test]
+    fn non_unit_self_similarity_is_one() {
+        // v has magnitude 5; denom = 5*5 = 25 ≠ 5/5 = 1 (kills arith-mul-to-div)
+        // and 25/25 = 1 ≠ 25*25 = 625 (kills arith-div-to-mul)
+        let v = vec![3.0_f32, 4.0, 0.0];
+        let r = cosine_similarity(&v, &v);
+        assert!((r - 1.0).abs() < EPS, "expected 1.0, got {r}");
+    }
+}
