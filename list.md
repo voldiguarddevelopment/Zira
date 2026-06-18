@@ -2076,7 +2076,7 @@ not_doing:
   - No reliance on the live XDG home — the test passes an explicit temp path.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 Decides whether first-run setup is needed. Inputs: a config-file path. Outputs: a `bool` — `true` exactly when the config file is absent, in the `zira-config` library crate. Edge: a present-but-empty file counts as 'exists' (not first run); detection mutates nothing. Invariant: calling the detector is always safe and side-effect-free. Done-check: the two criteria.
