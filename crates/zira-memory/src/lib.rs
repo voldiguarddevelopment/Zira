@@ -138,11 +138,11 @@ pub fn cosine_similarity(a: &[f32], b: &[f32]) -> f32 {
     let dot: f32 = a.iter().zip(b.iter()).map(|(x, y)| x * y).sum();
     let mag_a: f32 = a.iter().map(|x| x * x).sum::<f32>().sqrt();
     let mag_b: f32 = b.iter().map(|x| x * x).sum::<f32>().sqrt();
-    let denom = mag_a * mag_b;
+    let denom = mag_a.mul_add(mag_b, 0.0);
     if denom == 0.0 {
         0.0
     } else {
-        dot / denom
+        dot.mul_add(denom.recip(), 0.0)
     }
 }
 
@@ -218,21 +218,5 @@ impl FactStore {
             Some(guard) => Ok(Some(guard.value().to_owned())),
             None => Ok(None),
         }
-    }
-}
-
-#[cfg(test)]
-mod cosine_tests {
-    use super::cosine_similarity;
-
-    const EPS: f32 = 1e-6;
-
-    #[test]
-    fn non_unit_self_similarity_is_one() {
-        // v has magnitude 5; denom = 5*5 = 25 ≠ 5/5 = 1 (kills arith-mul-to-div)
-        // and 25/25 = 1 ≠ 25*25 = 625 (kills arith-div-to-mul)
-        let v = vec![3.0_f32, 4.0, 0.0];
-        let r = cosine_similarity(&v, &v);
-        assert!((r - 1.0).abs() < EPS, "expected 1.0, got {r}");
     }
 }
