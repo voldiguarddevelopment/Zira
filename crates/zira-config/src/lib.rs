@@ -348,6 +348,23 @@ pub fn write_default_config(path: &std::path::Path) -> Result<(), ConfigError> {
     Ok(())
 }
 
+/// Audit the memory budget: verify `max_episodes` is non-zero and does not exceed `ceiling`.
+///
+/// Returns `Ok(())` when `0 < max_episodes <= ceiling`, otherwise the matching
+/// [`BudgetError`]. The check is pure — it never modifies the config.
+pub fn audit_memory_budget(config: &MemoryConfig, ceiling: usize) -> Result<(), BudgetError> {
+    if config.max_episodes == 0 {
+        return Err(BudgetError::EpisodesZero);
+    }
+    if config.max_episodes > ceiling {
+        return Err(BudgetError::EpisodesTooHigh {
+            value: config.max_episodes,
+            max: ceiling,
+        });
+    }
+    Ok(())
+}
+
 /// Range-check a probability threshold, which must lie within `[0.0, 1.0]`.
 fn check_threshold(field: &'static str, value: f32) -> Result<(), ConfigError> {
     if !(0.0..=1.0).contains(&value) {
