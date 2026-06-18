@@ -1454,7 +1454,7 @@ not_doing:
   - No async `AvatarSink` trait impl over hardware — this is the renderer-agnostic logic the mock/real sinks share.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 The pure state machine behind the avatar: given an emotion and a viseme stream it advances an `AvatarState` and emits `Event::ExpressionChange`, with no GPU, window, or model. Inputs: emotions + visemes. Outputs: an updated `AvatarState` + an `ExpressionChange` event. Edge: a fresh driver rests neutral and silent. Invariant: state changes only through `apply_emotion`/`apply_viseme`. Done-check: the three criteria.
