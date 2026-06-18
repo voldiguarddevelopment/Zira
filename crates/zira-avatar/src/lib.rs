@@ -108,9 +108,6 @@ pub fn timed_frames(frames: &[VisemeFrame], frame_ms: u32) -> Vec<(u32, VisemeFr
 }
 
 /// Renderer-agnostic avatar state snapshot: the active expression and mouth shape.
-///
-/// Stub: `resting()` returns `Viseme::A` (not `Sil`) and `for_emotion()` ignores
-/// its argument — so the frozen RED tests fail until the real implementation lands.
 #[derive(Debug, Clone, PartialEq)]
 pub struct AvatarState {
     pub expression: ExpressionPreset,
@@ -119,13 +116,11 @@ pub struct AvatarState {
 
 impl AvatarState {
     pub fn resting() -> Self {
-        // intentionally wrong: Viseme::A instead of Viseme::Sil
-        Self { expression: ExpressionPreset::neutral(), mouth: Viseme::A }
+        Self { expression: ExpressionPreset::neutral(), mouth: Viseme::Sil }
     }
 
-    pub fn for_emotion(_emotion: Emotion) -> Self {
-        // intentionally wrong: ignores the emotion
-        Self::resting()
+    pub fn for_emotion(emotion: Emotion) -> Self {
+        Self { expression: expression_for(emotion), mouth: Viseme::Sil }
     }
 }
 
