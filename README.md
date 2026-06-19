@@ -132,15 +132,23 @@ human and real hardware.
 - **Polish** — plan-review logic, emotion-vocabulary review, first-run setup, the
   resource-budget audit, and packaging.
 
-**🟡 Device-bound — needs a human + real hardware/assets (can't be a frozen-test gate):**
+**🧩 Real model inference — built &amp; gate-verified, runs once the model asset is on disk:**
 
-- **Live audio** — wakeword on a real mic, the VAD/STT/TTS engines (whisper / Piper)
-  with audio I/O.
+- **Embeddings** — `CandleEmbedder` loads all-MiniLM-L6-v2 and produces real 384-d vectors
+  (CPU, candle).
+- **STT** — `WhisperStt` transcribes a PCM buffer with Candle whisper-tiny.en (the test
+  transcribes the JFK fixture verbatim).
+- **TTS** — `PiperTts` synthesizes text to 22 kHz PCM via a Piper VITS voice (espeak-ng
+  phonemes → ONNX runtime), plus per-phoneme viseme frames.
+
+> Each is mutation-defended and runs for real on a box that has the model file (whisper /
+> Piper / embedding assets, fetched out-of-band); a model-less CI skips them so it stays green.
+
+**🟡 Device-bound — needs a human + real hardware (can't be a frozen-test gate):**
+
+- **Live audio I/O** — wakeword + VAD on a real microphone, and speaker playback of the
+  synthesized audio.
 - **GPU avatar** — the Bevy/VRM render loop on an integrated GPU with a `.vrm` model.
-- **Voice models** — whisper (STT) and Piper (TTS) weights, loaded once the assets are on
-  disk. *(The CPU embedding model is already done: `CandleEmbedder` loads all-MiniLM-L6-v2
-  and produces real 384-d embeddings, gate-verified — it just needs the model file present
-  at runtime.)*
 - **On-hardware tuning** — barge-in threshold tuning and the long-running soak test.
 
 ---
@@ -153,8 +161,8 @@ human and real hardware.
 | Claude Code bridge | custom, over the `claude` binary | pure harness |
 | Wakeword | rustpotter (custom-trained) | pure |
 | VAD | earshot (pure-Rust WebRTC VAD) | pure |
-| STT | whisper.cpp via `whisper-rs` (CPU) — or Candle whisper-tiny | FFI (or pure, slower) |
-| TTS | Piper via `ort` (CPU) + emotion modulation | FFI |
+| STT | Candle whisper-tiny.en (CPU, pure-Rust) — **built** | pure |
+| TTS | Piper VITS via `ort` (CPU) + espeak-ng phonemes — **built** | FFI (ONNX) |
 | Emotion | `zira-emotion` parser + maps | pure |
 | Embeddings | Candle (all-MiniLM-L6-v2, CPU) | pure |
 | Vector index | cosine brute-force (`zira-memory`) | pure |

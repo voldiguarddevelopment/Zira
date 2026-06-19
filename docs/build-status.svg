@@ -21,7 +21,7 @@
   <text x="76" y="167" font-size="17" fill="#e7e3f6" font-weight="bold">Phase 1 · Spine</text>
   <text x="76" y="186" font-size="13" fill="#8a90ad">Claude-Code bridge (vs stub) · emotion-tag parser + maps · ClaudeBrain wiring</text>
   <text x="940" y="170" font-size="13" fill="#3fc8d4" text-anchor="end">&#10003; built</text>
-  <text x="940" y="187" font-size="11" fill="#c79a4a" text-anchor="end">audio I/O device-bound</text>
+  <text x="940" y="187" font-size="11" fill="#c79a4a" text-anchor="end">STT+TTS built · mic/speaker I/O device-bound</text>
  </g>
  <g>
   <circle cx="52" cy="222" r="8" fill="url(#done)"/>
