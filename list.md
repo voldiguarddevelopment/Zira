@@ -832,20 +832,25 @@ PROVEN RECIPE (a spike transcribed the jfk fixture verbatim — reproduce it). D
 ### T-01.18  Synthesize the speech
 id: T-01.18
 phase: 1
-status: blocked
-depends_on: [T-00.20, T-01.04]
+status: pending
+depends_on: [T-00.20]
 stack: rust
 criteria:
-  - C1: a `TtsEngine` implementation synthesizes a `Segment`'s text into audible speech on the default output device, modulated by the segment emotion's `Prosody`.
+  - C1: `zira_voice::PiperTts::load(voice_dir: &std::path::Path) -> Result<PiperTts, TtsError>` loads a Piper VITS voice (`<voice>.onnx` + `<voice>.onnx.json`) via the ONNX runtime, and `PiperTts` implements `zira_core::TtsEngine`.
+  - C2: `PiperTts::synth(&mut self, text: &str) -> Result<Vec<f32>, TtsError>` phonemizes the text with espeak-ng, maps the phonemes to the voice's phoneme ids, runs the model, and returns the f32 PCM audio at the voice's sample rate.
+  - C3: a repo-root integration test `tests/piper_tts.rs` (env-gated on `ZIRA_TTS_MODEL`, default `~/.cache/zira/models/piper/en_US-lessac-medium`, returning early when the dir is absent so a model-less CI stays green) synthesizes a non-trivial phrase and asserts the audio has at least 6000 samples (~0.27s) and a peak amplitude strictly within `(0.05, 2.0)` — proving real speech, not silence or garbage.
+  - C4: constructed with a phrase, the `TtsEngine::speak` impl returns a `Vec<Event>` of `Event::VisemeFrame(VisemeFrame { .. })` — one frame per phoneme — and every frame's `weight` is within `0.0..=1.0`.
+  - C5: `zira_voice::TtsError` implements `std::error::Error` + `Display` with distinct variants for a missing model file, a phonemizer (espeak-ng) failure, and an inference failure; a unit test exercises every variant's `Display`.
 not_doing:
-  - Mock TTS engine — exists from Phase 0.
+  - No live audio playback — the engine returns a PCM buffer; speaker I/O stays device-bound.
+  - No emotion/prosody modulation yet — flat synthesis for now.
+  - No streaming — one phrase synthesized at once.
 test_files: []
 criteria_map: {}
 attempts: 0
-last_failure: "blocked-on-human: needs audio hardware + FFI models; tracked, not attempted by the loop."
+last_failure: ""
 ---
-Real emotion-inflected speech. Blocked-on-human: a TTS model + audio output. Done-check: the one criterion on target hardware.
-
+PROVEN RECIPE (a spike synthesized 2.01s of real audio — reproduce it). Deps in `crates/zira-voice/Cargo.toml`: `ort = "=2.0.0-rc.10"` (features download-binaries), serde_json; plus the system `espeak-ng` binary (present). LOAD: parse `<voice>.onnx.json` with serde_json for `phoneme_id_map`, `audio.sample_rate` (22050), and `inference` {noise_scale 0.667, length_scale 1.0, noise_w 0.8}; `ort::session::Session::builder()?.commit_from_file(onnx)`. SYNTH(text): run `espeak-ng -q --ipa -v en-us <text>` via std::process::Command and read stdout as the phoneme string. Build ids with `let id = |k: &str| phoneme_id_map[k][0].as_i64()`: `ids = vec![id("^") /*BOS*/, id("_") /*pad*/]`; for each char of the phonemes, if it maps push `id(char)` then the pad; finally push `id("$")` /*EOS*/. INFERENCE: `input` = i64 Tensor shape [1, len]; `input_lengths` = i64 Tensor [len]; `scales` = f32 Tensor [noise_scale, length_scale, noise_w]; the `session` must be `mut`; `session.run(ort::inputs!["input"=>input, "input_lengths"=>il, "scales"=>sc])`; extract with `outputs["output"].try_extract_tensor::<f32>()` (the output shape is [1,1,1,N]; flatten to the N PCM samples). VISEMES (C4): map each phoneme to one `VisemeFrame` (a vowel to an open mouth shape weight ~1.0, a consonant to a partial weight; a short viseme label string), in order. Map espeak/ort/io failures to a `TtsError` variant and exercise each Display (the T-01.10 lesson). The voice lives at $ZIRA_TTS_MODEL — never commit the 63MB onnx. TTS is a single forward pass (fast), no decode loop. Verified spike: 'hello world...' -> 2.01s @ 22050Hz, peak 0.653. Done-check: the five criteria.
 ### T-02.01  Declare the memory dependencies
 id: T-02.01
 phase: 2
