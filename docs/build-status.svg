@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="430" viewBox="0 0 980 430" font-family="'Noto Sans','DejaVu Sans',sans-serif">
+ <defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a0c14"/><stop offset="1" stop-color="#12101d"/></linearGradient>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9d7bff"/><stop offset="0.55" stop-color="#7c5cff"/><stop offset="1" stop-color="#3fc8d4"/></linearGradient>
+  <linearGradient id="done" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3fc8d4"/><stop offset="1" stop-color="#7c5cff"/></linearGradient>
+ </defs>
+ <rect width="980" height="430" rx="16" fill="url(#bg)"/>
+ <text x="40" y="52" font-size="24" fill="#ffffff" font-weight="bold">Build status</text>
+ <text x="40" y="78" font-size="15" fill="#8a90ad">Pure-Rust core built &amp; gate-verified across all five phases · device-bound layers marked</text>
+
+ <!-- rows -->
+ <!-- each: y, phase, title, desc, device-bound? -->
+ <g>
+  <circle cx="52" cy="118" r="8" fill="url(#done)"/>
+  <text x="76" y="115" font-size="17" fill="#e7e3f6" font-weight="bold">Phase 0 · Foundation</text>
+  <text x="76" y="134" font-size="13" fill="#8a90ad">workspace · proto types · config + constitution · conversation state machine</text>
+  <text x="940" y="124" font-size="13" fill="#3fc8d4" text-anchor="end">&#10003; built</text>
+ </g>
+ <g>
+  <circle cx="52" cy="170" r="8" fill="url(#done)"/>
+  <text x="76" y="167" font-size="17" fill="#e7e3f6" font-weight="bold">Phase 1 · Spine</text>
+  <text x="76" y="186" font-size="13" fill="#8a90ad">Claude-Code bridge (vs stub) · emotion-tag parser + maps · ClaudeBrain wiring</text>
+  <text x="940" y="170" font-size="13" fill="#3fc8d4" text-anchor="end">&#10003; built</text>
+  <text x="940" y="187" font-size="11" fill="#c79a4a" text-anchor="end">audio I/O device-bound</text>
+ </g>
+ <g>
+  <circle cx="52" cy="222" r="8" fill="url(#done)"/>
+  <text x="76" y="219" font-size="17" fill="#e7e3f6" font-weight="bold">Phase 2 · Memory</text>
+  <text x="76" y="238" font-size="13" fill="#8a90ad">episodic JSONL · facts store (redb) · CPU embeddings · vector retrieval · consolidation</text>
+  <text x="940" y="228" font-size="13" fill="#3fc8d4" text-anchor="end">&#10003; built</text>
+ </g>
+ <g>
+  <circle cx="52" cy="274" r="8" fill="url(#done)"/>
+  <text x="76" y="271" font-size="17" fill="#e7e3f6" font-weight="bold">Phase 3 · Avatar</text>
+  <text x="76" y="290" font-size="13" fill="#8a90ad">expression presets · viseme timing · avatar driver · 2D fallback · renderer select</text>
+  <text x="940" y="274" font-size="13" fill="#3fc8d4" text-anchor="end">&#10003; built</text>
+  <text x="940" y="291" font-size="11" fill="#c79a4a" text-anchor="end">GPU render device-bound</text>
+ </g>
+ <g>
+  <circle cx="52" cy="326" r="8" fill="url(#done)"/>
+  <text x="76" y="323" font-size="17" fill="#e7e3f6" font-weight="bold">Phase 4 · Self-extension</text>
+  <text x="76" y="342" font-size="13" fill="#8a90ad">manifest sign/verify (HMAC) · injection scan · constitution gate · sandbox · audit chain · MCP factory</text>
+  <text x="940" y="332" font-size="13" fill="#3fc8d4" text-anchor="end">&#10003; built</text>
+ </g>
+ <g>
+  <circle cx="52" cy="378" r="8" fill="url(#done)"/>
+  <text x="76" y="375" font-size="17" fill="#e7e3f6" font-weight="bold">Phase 5 · Polish</text>
+  <text x="76" y="394" font-size="13" fill="#8a90ad">plan-review logic · emotion-vocab review · first-run setup · budget audit · packaging</text>
+  <text x="940" y="378" font-size="13" fill="#3fc8d4" text-anchor="end">&#10003; built</text>
+  <text x="940" y="395" font-size="11" fill="#c79a4a" text-anchor="end">tuning + soak device-bound</text>
+ </g>
+ <rect x="0" y="424" width="980" height="6" rx="3" fill="url(#accent)"/>
+</svg>

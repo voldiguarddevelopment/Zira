@@ -42,43 +42,38 @@ protocol.
 
 ---
 
-## Highlights
-
-- 🦀 **Pure-Rust harness.** The only non-Rust artifact is the official `claude` binary
-  (the universal agent substrate). Everything Zira adds is Rust.
-- 💻 **CPU-first, no GPU required.** Wakeword, VAD, STT, TTS, and memory all run on a
-  CPU in real time (tiny/quantized models). The 3D avatar is the one part with a GPU
-  floor — an *integrated* GPU suffices, and a GPU-less box falls back to a 2D face.
-- 🗣️ **Emotion as a first-class signal.** The model emits inline `[Emotion]` tags; one
-  parser drives **both** TTS prosody and avatar expression from a single stream.
-- ⚡ **Barge-in built in.** A formal conversation state machine lets you interrupt
-  mid-sentence — the avatar stops, listens, and re-engages.
-- 🔒 **Safe self-extension.** New skills/MCP servers pass an immutable constitution +
-  sandbox + prompt-injection scan + signed manifest + HMAC-chained audit before going
-  live.
-- 🛡️ **Token isolation.** The spawned `claude` agent never sees Zira's secrets.
-
----
-
 ## Architecture
 
-```
- voice in                          the brain                         voice + face out
-┌─────────┐   ┌─────┐   ┌─────┐   ┌──────────────┐   ┌─────────┐   ┌─────┐   ┌────────┐
-│ wakeword│──▶│ VAD │──▶│ STT │──▶│ Claude Code   │──▶│ emotion │──▶│ TTS │──▶│ speaker│
-│ "Zira"  │   └─────┘   └─────┘   │ (stream-json) │   │  parser │   └──┬──┘   └────────┘
-└─────────┘                       └──────┬───────┘    └────┬────┘      │ visemes
-                                         │ memory ctx        │ expression │
-                                  ┌──────▼───────┐    ┌──────▼─────────▼─┐
-                                  │ on-disk memory│    │   VRM avatar      │
-                                  │ (retrieval)   │    │ (lip-sync + mood) │
-                                  └───────────────┘    └───────────────────┘
-```
+<div align="center">
+
+<img src="docs/architecture.svg" alt="Zira architecture: voice in → Claude Code → emotion → voice + face out, with an on-disk memory loop" width="100%">
+
+</div>
 
 The orchestrator (`zira-core`) is an explicit **state machine** on a Tokio event bus —
 `Idle → Listening → Transcribing → Thinking → {PlanReview | Speaking} → Idle` — with
 **barge-in** as a first-class transition. In `Idle`, only the cheap wakeword detector is
-hot; heavy models load once at startup and stay resident.
+hot; heavy models load once at startup and stay resident. The model emits inline
+`[Emotion]` tags, and a single parser drives **both** TTS prosody and avatar expression
+from that one stream.
+
+---
+
+## Highlights
+
+- 🦀 **Pure-Rust harness.** The only non-Rust artifact is the official `claude` binary
+  (the universal agent substrate). Everything Zira adds is Rust.
+- 💻 **CPU-first, no GPU required.** Wakeword, VAD, STT, TTS, embeddings, and memory all
+  run on a CPU (tiny/quantized models). The 3D avatar is the one part with a GPU floor —
+  an *integrated* GPU suffices, and a GPU-less box falls back to a 2D face.
+- 🗣️ **Emotion as a first-class signal.** Inline `[Emotion]` tags drive **both** TTS
+  prosody and avatar expression from a single stream.
+- ⚡ **Barge-in built in.** A formal conversation state machine lets you interrupt
+  mid-sentence — the avatar stops, listens, and re-engages.
+- 🔒 **Safe self-extension.** New skills/MCP servers pass an immutable constitution +
+  sandbox + prompt-injection scan + HMAC-signed manifest + HMAC-chained audit before
+  going live.
+- 🛡️ **Token isolation.** The spawned `claude` agent never sees Zira's secrets.
 
 ---
 
@@ -90,13 +85,13 @@ A ten-crate Rust workspace; each crate owns one concern.
 |-------|----------------|
 | [`zira`](crates/zira) | The binary: wires everything together, owns the runtime |
 | [`zira-core`](crates/zira-core) | Event bus + orchestrator + conversation state machine |
-| [`zira-bridge`](crates/zira-bridge) | The Claude Code **stream-json driver** (spawn, session, permission modes, interrupt) |
+| [`zira-bridge`](crates/zira-bridge) | The Claude Code **stream-json driver** (spawn, prompt, parse answer + usage, typed errors) |
 | [`zira-proto`](crates/zira-proto) | Shared types: the `Event`, `State`, and `Emotion` vocabulary + payloads |
 | [`zira-config`](crates/zira-config) | Config, XDG paths, and the immutable constitution |
-| [`zira-emotion`](crates/zira-emotion) | Streaming `[Emotion]`-tag parser + emotion→{prosody, expression} maps |
+| [`zira-emotion`](crates/zira-emotion) | `[Emotion]`-tag parser + emotion→{prosody, expression} maps |
 | [`zira-voice`](crates/zira-voice) | Wakeword / VAD / STT / TTS pipeline (CPU) |
-| [`zira-memory`](crates/zira-memory) | On-disk layered memory: episodic, semantic, vector retrieval |
-| [`zira-avatar`](crates/zira-avatar) | Bevy VRM renderer + viseme/expression driver |
+| [`zira-memory`](crates/zira-memory) | On-disk layered memory: episodic, facts (redb), CPU embeddings, vector retrieval |
+| [`zira-avatar`](crates/zira-avatar) | Viseme/expression driver + 2D fallback + Bevy VRM renderer |
 | [`zira-skills`](crates/zira-skills) | Skill/MCP factory + the self-extension safety gate |
 
 ---
@@ -105,34 +100,46 @@ A ten-crate Rust workspace; each crate owns one concern.
 
 Zira is built **test-first behind deterministic gates** (see
 [How this was built](#how-this-was-built)) — a task is `done` only when its frozen tests
-pass, never by assertion. The work splits cleanly into a **pure-Rust, gateable core**
-(which the harness builds autonomously) and **device-bound layers** (voice hardware,
-FFI model runtimes, the GPU avatar) that need a human + real devices.
+pass and mutation confirms they defend the code, never by assertion. The work splits into
+a **pure-Rust, CPU-gateable core** (which the harness builds and verifies autonomously)
+and **device-bound layers** (live audio, the GPU avatar render, model assets) that need a
+human and real hardware.
 
-**🟢 Building now — the pure-Rust foundation (Phase 0):**
-- The ten-crate workspace + shared dependencies + lint policy.
-- `zira-proto`: the `Emotion` vocabulary, the `State` and `Event` types, and the typed
-  cross-stage payloads.
-- `zira-config`: the config schema, TOML loading, XDG path resolution, the immutable
-  constitution, and validation.
-- `zira-core`: the conversation state machine — transition table, event bus, the
-  select-loop, the silence timeout, the stage traits + mocks, and the full
-  mocked `Idle → … → Idle` cycle.
+<div align="center">
 
-**🟡 Next (gateable, pure-Rust):**
-- `zira-bridge` — the Claude Code stream-json driver, gated against a **stub `claude`**
-  (no real auth/model needed to test the protocol).
-- `zira-emotion` — the streaming tag parser + prosody/expression tables.
-- `zira-memory` — episodic JSONL, the facts store (redb), CPU embeddings (Candle), the
-  vector index, retrieval + injection, and the consolidation pass.
-- `zira-skills` — the staging factories + the constitution/sandbox/injection-scan/
-  signed-manifest/HMAC-audit safety gate.
+<img src="docs/build-status.svg" alt="Build status: all five phases' pure-Rust core built and gate-verified; audio, GPU render, and tuning are device-bound" width="100%">
 
-**🔴 Blocked-on-human (audio hardware / FFI / GPU / trained models):**
-- Wakeword training + mic capture; the real VAD/STT/TTS engines (whisper, Piper-via-ort)
-  + audio I/O; the Bevy/VRM avatar renderer; and any on-device latency measurement.
-  These can't be expressed as a frozen-test gate — the only way to "pass" them without
-  the device is to fake it, which this build refuses to do.
+</div>
+
+**✅ Built &amp; gate-verified — the entire pure-Rust core, all five phases:**
+
+- **Foundation** — the ten-crate workspace, shared deps, lint policy; `zira-proto`
+  (`Emotion`/`State`/`Event` + payloads); `zira-config` (schema, TOML load, XDG paths,
+  the immutable constitution, validation); `zira-core` (transition table, Tokio event
+  bus, select-loop, silence timeout, stage traits + the full mocked `Idle → … → Idle`
+  cycle).
+- **Spine** — `zira-bridge` (drives `claude`, composes the prompt, parses the answer +
+  token usage, typed errors — proven against a **stub `claude`**); `zira-emotion`
+  (tag parse → emotion segments → prosody); the `ClaudeBrain` that turns a transcript
+  into emotion-segmented speech events.
+- **Memory** — episodic JSONL with a cap, the facts store (redb), the `Embedder` trait,
+  a cosine vector index, retrieval, prompt-context injection, and the consolidation pass.
+- **Avatar logic** — emotion→expression presets, viseme vocabulary + timing, the pure
+  `AvatarDriver` state machine, the 2D-fallback frame, and renderer selection.
+- **Self-extension** — manifest parse, HMAC sign/verify, the prompt-injection scan, the
+  constitution capability gate, the path sandbox, the HMAC audit chain, the skill
+  registry, and the MCP-config factory.
+- **Polish** — plan-review logic, emotion-vocabulary review, first-run setup, the
+  resource-budget audit, and packaging.
+
+**🟡 Device-bound — needs a human + real hardware/assets (can't be a frozen-test gate):**
+
+- **Live audio** — wakeword on a real mic, the VAD/STT/TTS engines (whisper / Piper)
+  with audio I/O.
+- **GPU avatar** — the Bevy/VRM render loop on an integrated GPU with a `.vrm` model.
+- **Model assets** — the CPU embedding model (Candle all-MiniLM); the embedder code +
+  test are wired and run for real once the model is on disk.
+- **On-hardware tuning** — barge-in threshold tuning and the long-running soak test.
 
 ---
 
@@ -147,8 +154,8 @@ FFI model runtimes, the GPU avatar) that need a human + real devices.
 | STT | whisper.cpp via `whisper-rs` (CPU) — or Candle whisper-tiny | FFI (or pure, slower) |
 | TTS | Piper via `ort` (CPU) + emotion modulation | FFI |
 | Emotion | `zira-emotion` parser + maps | pure |
-| Embeddings | Candle (small, CPU) | pure |
-| Vector index | `hnsw_rs` / `instant-distance` | pure |
+| Embeddings | Candle (all-MiniLM-L6-v2, CPU) | pure |
+| Vector index | cosine brute-force (`zira-memory`) | pure |
 | Facts store | redb | pure |
 | Avatar | Bevy + `bevy_vrm` (integrated GPU) | pure (GPU floor) |
 
@@ -156,8 +163,10 @@ FFI model runtimes, the GPU avatar) that need a human + real devices.
 
 ## Getting started
 
-> **Heads up:** the pure-Rust foundation builds and tests today; the end-to-end voice
-> loop awaits the device-bound layers above (and a one-time model/wakeword setup).
+> **Heads up:** the entire pure-Rust core builds and tests today across all five phases.
+> The end-to-end voice loop additionally needs the device-bound layers above — audio
+> devices, the voice/embedding models, and (for the 3D avatar) an integrated GPU — plus a
+> one-time model/wakeword setup.
 
 ### Install
 
@@ -184,8 +193,8 @@ cargo run -p zira -- --help
 ```
 
 **Requirements:** a stable Rust toolchain. The full assistant additionally needs a
-microphone + speaker, the quantized voice models, and (for the 3D avatar) an integrated
-GPU.
+microphone + speaker, the quantized voice models, an embedding model, and (for the 3D
+avatar) an integrated GPU.
 
 ---
 
@@ -198,7 +207,9 @@ documents (`plan.md` / `spec.md` / `list.md`) are reconciled against the code on
 pass. The core rule is **no stubs, no simplified implementations, no fake passes**: a
 green that isn't real is rejected by construction. That's exactly why the build status
 above is precise about what is *proven* versus *device-bound* — the harness will not
-mark a task done on belief.
+mark a task done on belief. (It also catches its own mistakes: when one task once edited
+another task's frozen test, the next integrity check refused to build until it was fixed
+honestly.)
 
 ---
 
