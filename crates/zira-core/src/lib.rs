@@ -33,6 +33,24 @@ pub fn plan_review_next_state(
     next_state(zira_proto::State::PlanReview, &event)
 }
 
+/// Default speaking-time barge-in threshold (RMS amplitude). A conservative default;
+/// the precise value is field-tuned against live mic latency on target hardware (T-05.13).
+pub const DEFAULT_BARGE_IN_THRESHOLD: f32 = 0.05;
+
+/// RMS energy of an audio frame (`sqrt(mean(square))`). Returns `0.0` for an empty frame.
+pub fn barge_in_energy(frame: &[f32]) -> f32 {
+    if frame.is_empty() {
+        return 0.0;
+    }
+    (frame.iter().map(|s| s * s).sum::<f32>() / frame.len() as f32).sqrt()
+}
+
+/// Whether an audio frame should trigger a barge-in (emit `Event::BargeIn`) while Speaking:
+/// true iff its RMS energy exceeds `threshold`. T-05.13.
+pub fn should_barge_in(frame: &[f32], threshold: f32) -> bool {
+    barge_in_energy(frame) > threshold
+}
+
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, Ordering};

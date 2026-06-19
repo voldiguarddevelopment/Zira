@@ -780,14 +780,14 @@ not_doing:
 test_files: []
 criteria_map: {}
 attempts: 0
-last_failure: "blocked-on-human: needs audio hardware + FFI models; tracked, not attempted by the loop."
+last_failure: "blocked-on-toolchain: rustpotter 2.x is yanked + 3.x build-broken here (candle-gemm 0.16 / rand SampleUniform) and pulls candle (quota). Wake CODE is written in crates/zira-voice/src/wake.rs, gated behind the `wake` cargo feature; enable it once a working rustpotter (or alt wake lib) is available."
 ---
 Real wake detection. Blocked-on-human: requires microphone hardware + a wake-word model (FFI). Done-check: the one criterion, measured on target hardware.
 
 ### T-01.16  Gate the voice activity
 id: T-01.16
 phase: 1
-status: pending
+status: done
 depends_on: [T-00.20]
 stack: rust
 criteria:
@@ -799,9 +799,13 @@ not_doing:
   - No live microphone capture — the gate processes a supplied 16 kHz PCM buffer; mic I/O stays device-bound.
   - No resampling — input is assumed 16 kHz mono (the wakeword/STT front-end resamples).
   - No model — earshot is a signal-based WebRTC VAD, no asset needed.
-test_files: []
-criteria_map: {}
-attempts: 0
+test_files: [tests/earshot_vad.rs]
+criteria_map:
+  C1: [c1_implements_vad_gate]
+  C2: [c2_scan_emits_speech_boundaries]
+  C3: [c3_speech_starts_silence_does_not]
+  C4: [c4_voiced_ratio_separates_speech_from_silence]
+attempts: 1
 last_failure: ""
 ---
 PROVEN RECIPE (a spike measured speech 257/290 voiced, silence 0/100). Dep in Cargo.toml: `earshot = "0.1"`. `earshot::VoiceActivityDetector::new(earshot::VoiceActivityProfile::AGGRESSIVE)`; for each exactly-160-sample i16 frame call `vad.predict_16khz(frame)` (returns `Result<bool>`; treat Err as not-voiced). scan_16khz: iterate `pcm.chunks(160)` (skip a trailing short chunk), track a `was_voiced` flag, push `Event::SpeechStarted` on the false->true transition and `Event::SpeechEnded` on true->false. Fixtures are COMMITTED at tests/fixtures/vad/ (93KB speech16.wav 16kHz mono + 32KB silence.wav) so the test runs in CI too — no env-gate, no model. Done-check: the four criteria.
@@ -2167,7 +2171,7 @@ Produces a release/install manifest for packaging. Inputs: none (reads `build_ve
 ### T-05.13  Tune the barge-in threshold
 id: T-05.13
 phase: 05
-status: pending
+status: done
 depends_on: [T-00.16]
 stack: rust
 criteria:
@@ -2177,16 +2181,19 @@ criteria:
 not_doing:
   - Field-tuning the exact threshold against live mic latency on target hardware (device-bound) — this ships a sane default + the detection logic.
   - No full VAD here — just the speaking-time interrupt energy cue.
-test_files: []
-criteria_map: {}
-attempts: 0
+test_files: [tests/barge_in.rs]
+criteria_map:
+  C1: [c1_energy_is_rms, c1_empty_frame_is_zero]
+  C2: [c2_should_barge_in_compares_to_threshold]
+  C3: [c3_default_threshold_is_sane, c3_silence_quiet_loud]
+attempts: 1
 last_failure: ""
 ---
 The gateable half of barge-in: the energy cue + a sane default threshold; only the on-hardware tuning of the constant is device-bound. `barge_in_energy` = `(frame.iter().map(|x| x*x).sum::<f32>() / frame.len() as f32).sqrt()` (guard the empty frame → 0.0). `should_barge_in` compares it to the threshold. The state machine already routes Speaking + `Event::BargeIn` → Listening (Phase 0); this decides WHEN to raise that event. Done-check: the three criteria.
 ### T-05.14  Soak-test the runtime
 id: T-05.14
 phase: 05
-status: pending
+status: done
 depends_on: [T-00.21]
 stack: rust
 criteria:
@@ -2195,9 +2202,11 @@ criteria:
 not_doing:
   - The multi-hour soak on target hardware with the real voice stack (device-bound) — this is the pure-logic stress proxy that catches state-machine wedging/leaks in the orchestrator.
   - No real audio/model — every stage is a Phase-0 mock.
-test_files: []
-criteria_map: {}
-attempts: 0
+test_files: [tests/soak_cycle.rs]
+criteria_map:
+  C1: [c1_soak_two_thousand_cycles_return_to_idle]
+  C2: [c2_full_count_completes_and_ends_idle]
+attempts: 1
 last_failure: ""
 ---
 The gateable proxy for the long on-hardware soak: hammer the mocked `Idle->...->Idle` cycle (reuse the T-00.21 mock-cycle wiring) thousands of times and assert it always returns to Idle with no panic/deadlock/wedge. The multi-hour real-stack run stays device-bound. Done-check: the two criteria.

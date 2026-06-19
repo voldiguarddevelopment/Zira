@@ -18,8 +18,14 @@ hound = "3.5"
 byteorder = "1"
 # Phase-1 real VAD (T-01.16) — pure-Rust WebRTC voice-activity detector.
 earshot = "0.1"
+# Phase-1 wake-word (T-01.15) — gated: rustpotter 2.x is yanked + 3.x is build-broken here
+# (candle-gemm/rand). Code is ready; enable `wake` once a working rustpotter is available.
+rustpotter = { version = "3", optional = true }
 # Phase-1 real TTS (T-01.18) — Piper VITS voice via the ONNX runtime.
 ort = { version = "=2.0.0-rc.10", features = ["download-binaries"] }
 
 [lints]
 workspace = true
+
+[features]
+wake = ["dep:rustpotter"]

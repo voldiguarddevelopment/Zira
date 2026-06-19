@@ -10,6 +10,14 @@ use std::path::{Path, PathBuf};
 mod tts;
 pub use tts::{PiperTts, TtsError};
 
+mod vad;
+pub use vad::EarshotVad;
+
+#[cfg(feature = "wake")]
+mod wake;
+#[cfg(feature = "wake")]
+pub use wake::{RustpotterWake, WakeError};
+
 use byteorder::{LittleEndian, ReadBytesExt};
 use candle_core::{Device, Tensor};
 use candle_nn::VarBuilder;
