@@ -48,6 +48,7 @@ zira-emotion = { path = "crates/zira-emotion" }
 zira-memory = { path = "crates/zira-memory" }
 zira-avatar = { path = "crates/zira-avatar" }
 zira-skills = { path = "crates/zira-skills" }
+zira-voice = { path = "crates/zira-voice" }
 serde = { workspace = true }
 serde_json = { workspace = true }
 tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros", "sync", "time", "io-util", "process", "test-util"] }
@@ -60,3 +61,12 @@ redb = { workspace = true }
 # The root test-host package inherits the same gate.
 [lints]
 workspace = true
+
+# Build dev/test code optimized. The CPU model inference (candle whisper STT, the
+# embedder) is unusably slow under the default opt-level 0 — a single whisper
+# transcription took ~18-25 min in debug, stalling the test + mutation gates. candle's
+# numeric glue is generic and compiles at the caller's opt-level, so optimizing only the
+# candle packages is not enough; the whole dev profile must be optimized. With this, one
+# debug transcription runs in ~46s. The cost is a one-time slower compile.
+[profile.dev]
+opt-level = 3
