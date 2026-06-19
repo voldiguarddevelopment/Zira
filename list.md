@@ -1228,7 +1228,7 @@ The stateless consolidation pass distilling episodic logs into semantic facts, r
 ### T-02.19  Load the embedding model
 id: T-02.19
 phase: 2
-status: pending
+status: done
 depends_on: [T-02.11]
 stack: rust
 criteria:
@@ -1241,8 +1241,13 @@ not_doing:
   - No GPU/CUDA path — CPU only.
   - No quantization or model conversion — the safetensors asset is consumed as provided.
   - No in-code network download — the model is placed on disk out-of-band.
-test_files: []
-criteria_map: {}
+test_files: [tests/candle_embedder.rs]
+criteria_map:
+  C1: [c1_c2_c3_c5_real_model_embeds]
+  C2: [c1_c2_c3_c5_real_model_embeds]
+  C3: [c1_c2_c3_c5_real_model_embeds]
+  C4: [c4_embedder_error_display_variants]
+  C5: [c1_c2_c3_c5_real_model_embeds]
 attempts: 1
 last_failure: ""
 ---
