@@ -847,7 +847,7 @@ not_doing:
   - No streaming — one phrase synthesized at once.
 test_files: []
 criteria_map: {}
-attempts: 2
+attempts: 3
 last_failure: |
   surviving mutant at crates/zira-voice/src/tts.rs:235 (bool-and-to-or) — frozen tests do not kill it
   surviving mutant at crates/zira-voice/src/tts.rs:296 (bool-or-to-and) — frozen tests do not kill it
