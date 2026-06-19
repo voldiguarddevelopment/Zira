@@ -59,6 +59,122 @@ fn hash_slot(slot: u64, data: &[u8]) -> u64 {
     h
 }
 
+/// Typed errors raised while loading or running the candle BERT embedder.
+///
+/// Each variant carries a context string (the offending path or the underlying
+/// error text) so a failure points at its cause.
+#[derive(thiserror::Error, Debug)]
+pub enum EmbedderError {
+    /// A required model asset (`config.json`, `tokenizer.json`, or
+    /// `model.safetensors`) was absent from the model directory.
+    #[error("missing model file: {0}")]
+    MissingModelFile(String),
+    /// The tokenizer (`tokenizer.json`) could not be parsed/loaded.
+    #[error("tokenizer load failed: {0}")]
+    TokenizerLoad(String),
+    /// The model weights (`config.json` parse or `model.safetensors`) could not
+    /// be loaded into the BERT model.
+    #[error("model weights load failed: {0}")]
+    ModelLoad(String),
+}
+
+/// A CPU BERT sentence-embedding model loaded from disk via candle-transformers.
+///
+/// Loads `config.json` + `tokenizer.json` + `model.safetensors` from a directory
+/// (placed there out-of-band — never downloaded in-code, never committed) and
+/// produces mean-pooled last-hidden-state embeddings through the [`Embedder`]
+/// trait. CPU-only: no CUDA, no quantization, no conversion.
+pub struct CandleEmbedder {
+    model: candle_transformers::models::bert::BertModel,
+    tokenizer: tokenizers::Tokenizer,
+    dim: usize,
+}
+
+impl CandleEmbedder {
+    /// Loads the BERT sentence-embedding model from `model_dir` on the CPU.
+    ///
+    /// Expects `config.json`, `tokenizer.json`, and `model.safetensors` to be
+    /// present. Returns an [`EmbedderError`] variant naming which stage failed.
+    pub fn load(model_dir: &std::path::Path) -> Result<CandleEmbedder, EmbedderError> {
+        use candle_transformers::models::bert::{BertModel, Config, DTYPE};
+
+        let config_path = model_dir.join("config.json");
+        let tokenizer_path = model_dir.join("tokenizer.json");
+        let weights_path = model_dir.join("model.safetensors");
+
+        for path in [&config_path, &tokenizer_path, &weights_path] {
+            if !path.is_file() {
+                return Err(EmbedderError::MissingModelFile(path.display().to_string()));
+            }
+        }
+
+        let tokenizer = tokenizers::Tokenizer::from_file(&tokenizer_path)
+            .map_err(|e| EmbedderError::TokenizerLoad(e.to_string()))?;
+
+        let config_text = std::fs::read_to_string(&config_path)
+            .map_err(|e| EmbedderError::ModelLoad(e.to_string()))?;
+        let config: Config = serde_json::from_str(&config_text)
+            .map_err(|e| EmbedderError::ModelLoad(e.to_string()))?;
+        let dim = config.hidden_size;
+
+        let vb = unsafe {
+            candle_nn::VarBuilder::from_mmaped_safetensors(
+                &[weights_path],
+                DTYPE,
+                &candle_core::Device::Cpu,
+            )
+            .map_err(|e| EmbedderError::ModelLoad(e.to_string()))?
+        };
+        let model = BertModel::load(vb, &config)
+            .map_err(|e| EmbedderError::ModelLoad(e.to_string()))?;
+
+        Ok(CandleEmbedder {
+            model,
+            tokenizer,
+            dim,
+        })
+    }
+
+    /// Runs the model for `text` and returns the mean-pooled embedding.
+    ///
+    /// Separated from the trait `embed` so candle/tokenizer failures surface as
+    /// errors here; `embed` preserves the `len() == dim()` invariant on failure.
+    fn embed_inner(&self, text: &str) -> candle_core::Result<Vec<f32>> {
+        use candle_core::{Device, Tensor};
+
+        let encoding = self
+            .tokenizer
+            .encode(text, true)
+            .map_err(|e| candle_core::Error::Msg(e.to_string()))?;
+
+        let ids = encoding.get_ids();
+        let seq = ids.len();
+
+        let token_ids = Tensor::new(ids, &Device::Cpu)?.unsqueeze(0)?;
+        let type_ids = token_ids.zeros_like()?;
+        let attn = Tensor::new(encoding.get_attention_mask(), &Device::Cpu)?.unsqueeze(0)?;
+
+        let out = self.model.forward(&token_ids, &type_ids, Some(&attn))?;
+        let pooled = (out.sum(1)? / seq as f64)?;
+        pooled.squeeze(0)?.to_vec1::<f32>()
+    }
+}
+
+impl Embedder for CandleEmbedder {
+    fn dim(&self) -> usize {
+        self.dim
+    }
+
+    fn embed(&self, text: &str) -> Vec<f32> {
+        match self.embed_inner(text) {
+            Ok(v) if v.len() == self.dim => v,
+            // Preserve the trait invariant `embed().len() == dim()` even on the
+            // unexpected path; honest models on real weights take the Ok arm.
+            _ => vec![0.0; self.dim],
+        }
+    }
+}
+
 /// Typed errors for the fact store.
 #[derive(thiserror::Error, Debug)]
 pub enum FactStoreError {
