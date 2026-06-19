@@ -4,5 +4,18 @@ version = "0.0.0"
 edition = "2021"
 publish = false
 
+[dependencies]
+zira-core = { path = "../zira-core" }
+zira-proto = { path = "../zira-proto" }
+thiserror = { workspace = true }
+serde_json = { workspace = true }
+# Phase-1 real STT (T-01.17) — Candle CPU whisper.
+candle-core = "0.8"
+candle-nn = "0.8"
+candle-transformers = "0.8"
+tokenizers = "0.21"
+hound = "3.5"
+byteorder = "1"
+
 [lints]
 workspace = true

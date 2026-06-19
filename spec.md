@@ -524,12 +524,17 @@ phase: 1
 depends_on: [T-00.20]
 stack: rust
 criteria:
-  - C1: an `SttEngine` implementation transcribes captured microphone audio into an `Event::TranscriptReady(Transcript)` via a real speech-to-text model.
+  - C1: `zira_voice::WhisperStt::load(model_dir: &std::path::Path) -> Result<WhisperStt, SttError>` loads a Candle whisper model (config.json + tokenizer.json + model.safetensors + melfilters.bytes) on the CPU, and `WhisperStt` implements `zira_core::SttEngine`.
+  - C2: `WhisperStt::transcribe_pcm(&mut self, pcm: &[f32]) -> Result<String, SttError>` pads/clamps the 16 kHz audio to whisper's 30-second window, computes the log-mel spectrogram, runs the encoder + a greedy decode, and returns the transcript text.
+  - C3: a repo-root integration test `tests/whisper_stt.rs` (env-gated on `ZIRA_STT_MODEL`, default `~/.cache/zira/models/whisper-tiny.en`, returning early when the dir is absent so a model-less CI stays green) loads the model + the 16 kHz `jfk.wav` fixture in that dir and asserts the transcript lowercased contains both `country` and `americans` and is at least 60 characters — proving real ASR, not a stub.
+  - C4: constructed with the fixture audio via `WhisperStt::with_audio(pcm)`, the `SttEngine::transcribe` impl yields `Event::TranscriptReady(Transcript { text })` whose text equals the direct `transcribe_pcm` result; a decode failure yields `Event::Error` rather than a panic.
+  - C5: `zira_voice::SttError` implements `std::error::Error` + `Display` with distinct variants for a missing model file, a model-load failure, and an audio/decode failure; a unit test exercises every variant's `Display`.
 not_doing:
-  - Mock STT engine — exists from Phase 0.
+  - No live microphone capture — the engine transcribes a supplied PCM buffer; mic I/O stays device-bound.
+  - No GPU/CUDA — CPU only.
+  - No streaming/partial transcription — one utterance at a time.
 ---
-Real transcription. Blocked-on-human: an STT model/FFI + audio capture. Done-check: the one criterion on target hardware.
-
+PROVEN RECIPE (a spike transcribed the jfk fixture verbatim — reproduce it). Deps are in `crates/zira-voice/Cargo.toml`: candle-core/nn/transformers 0.8, tokenizers 0.21, hound 3.5, byteorder 1. LOAD: `Config` via serde_json from config.json; `Tokenizer::from_file(tokenizer.json)`; `VarBuilder::from_mmaped_safetensors([model.safetensors], whisper::DTYPE, &Device::Cpu)`; `whisper::model::Whisper::load(&vb, cfg)`; read melfilters.bytes as little-endian f32 (`byteorder` `read_f32_into`) into a Vec<f32> (80*201). TRANSCRIBE_PCM(pcm): call `model.reset_kv_cache()`; pad pcm to `16000*30` with 0.0; `mel = whisper::audio::pcm_to_mel(&cfg, &pcm, &mel_filters)`; `frames = mel.len()/cfg.num_mel_bins`; build a `(1, num_mel_bins, frames)` Tensor and if frames>3000 `narrow(2, 0, 3000)`; `features = model.encoder.forward(&mel, true)`. GREEDY: `tokens = vec![50257u32 /*SOT*/, 50362u32 /*no_timestamps*/]`; loop up to 224: `t = Tensor::new(tokens, dev).unsqueeze(0)`; `ys = model.decoder.forward(&t, &features, true)`; `last = ys.narrow(1, ys.dim(1)-1, 1)`; `logits = model.decoder.final_linear(&last).squeeze(0).squeeze(0)`; `next = logits.argmax(0).to_scalar::<u32>()`; break if next==50256 (EOT) else push. `text = tokenizer.decode(&tokens[2..], true)`. The model needs `&mut self` (kv-cache). The model dir + jfk.wav live at $ZIRA_STT_MODEL — never commit weights. Map every candle/io/tokenizer failure to an `SttError` variant and exercise each Display (the T-01.10 lesson). Verified spike output: the full JFK quote. Done-check: the five criteria.
 ### T-01.18  Synthesize the speech
 id: T-01.18
 phase: 1
