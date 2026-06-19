@@ -808,14 +808,16 @@ phase: 2
 depends_on: [T-02.11]
 stack: rust
 criteria:
-  - C1: `zira_memory::CandleEmbedder::load(model_path: &std::path::Path) -> Result<zira_memory::CandleEmbedder, zira_memory::EmbedderError>` loads the quantized CPU embedding model from `model_path` and the result implements `zira_memory::Embedder`.
-  - C2: an integration test loads the real model from the asset path, embeds a known sentence, and asserts the output vector length equals `dim()` and is non-zero — proving real weights, not the hash stand-in, are in use.
+  - C1: `zira_memory::CandleEmbedder::load(model_dir: &std::path::Path) -> Result<CandleEmbedder, EmbedderError>` loads a BERT sentence-embedding model (`config.json` + `tokenizer.json` + `model.safetensors`) from `model_dir` on the CPU via candle-transformers, and `CandleEmbedder` implements `zira_memory::Embedder`.
+  - C2: `dim()` returns the model hidden size and `embed(text)` tokenizes the text, runs the model, mean-pools the last hidden state over the sequence, and returns a `Vec<f32>` of length `dim()`.
+  - C3: a repo-root integration test `tests/candle_embedder.rs` loads the on-disk model (directory from `ZIRA_EMBED_MODEL`, defaulting to `~/.cache/zira/models/all-MiniLM-L6-v2`; it returns early when that directory is absent so a model-less CI stays green), embeds two distinct sentences, and asserts each vector has length `dim()`, is non-zero, and the two vectors differ — proving real weights, not the hash stand-in.
+  - C4: `zira_memory::EmbedderError` implements `std::error::Error` + `Display` with distinct variants for a missing model file, a tokenizer-load failure, and a model-weights load failure; a unit test exercises every variant's `Display`.
 not_doing:
-  - No GPU path — CPU/Candle only.
-  - No fine-tuning or quantization of the model in this task; the asset is consumed as provided.
+  - No GPU/CUDA path — CPU only.
+  - No quantization or model conversion — the safetensors asset is consumed as provided.
+  - No in-code network download — the model is placed on disk out-of-band.
 ---
-The one human-gated task: the real Candle CPU embedder behind the same `Embedder` trait the hash embedder satisfies, so retrieval/consolidation already pass against the stub and only the model swap is blocked. Inputs: the on-disk model asset path. Outputs: a loaded embedder producing real semantic vectors. Edge: a missing/invalid asset surfaces a typed EmbedderError whose Display arms are exercised by the test. Invariant: a loaded embedder's vectors match its declared dim. Done-check: the real-weights embedding-length criterion, unblocked once the model asset is present.
-
+PROVEN RECIPE (a spike compiled + ran this against the real model; reproduce it). Deps are already in `crates/zira-memory/Cargo.toml`: candle-core/candle-nn/candle-transformers 0.8, tokenizers 0.21, serde_json. LOAD: parse `config.json` into `candle_transformers::models::bert::Config` via serde_json; `tokenizers::Tokenizer::from_file(dir.join("tokenizer.json"))`; `let vb = unsafe { candle_nn::VarBuilder::from_mmaped_safetensors(&[dir.join("model.safetensors")], candle_transformers::models::bert::DTYPE, &candle_core::Device::Cpu)? }`; `BertModel::load(vb, &config)`. EMBED(text): `enc = tok.encode(text, true)`; `token_ids` = a `candle_core::Tensor` of `enc.get_ids()` unsqueezed to shape (1, seq); `type_ids = token_ids.zeros_like()`; `attn` = a Tensor of `enc.get_attention_mask()` unsqueezed; `out = model.forward(&token_ids, &type_ids, Some(&attn))` gives (1, seq, hidden); mean-pool `(out.sum(1)? / seq as f64)?` then `.squeeze(0)?.to_vec1::<f32>()?`. `dim()` = config.hidden_size (384 for this model). Map every candle/tokenizer/io failure to an `EmbedderError` variant and exercise each variant's Display in C4's test (the T-01.10 lesson). The 87MB weights live OUTSIDE the repo at $ZIRA_EMBED_MODEL — never commit them. Verified spike output: dim=384, two distinct sentences cosine ~0.55. Done-check: the four criteria.
 ### T-03.01  Define the expression preset
 id: T-03.01
 phase: 3

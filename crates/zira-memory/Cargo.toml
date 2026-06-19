@@ -10,6 +10,11 @@ serde = { workspace = true }
 serde_json = { workspace = true }
 thiserror = { workspace = true }
 zira-proto = { path = "../zira-proto" }
+# Phase-2 real embedder (T-02.19) — CPU BERT sentence embeddings via candle.
+candle-core = "0.8"
+candle-nn = "0.8"
+candle-transformers = "0.8"
+tokenizers = "0.21"
 
 [lints]
 workspace = true
