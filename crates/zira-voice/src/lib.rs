@@ -24,7 +24,7 @@ const NO_TIMESTAMPS_TOKEN: u32 = 50362;
 const SAMPLE_RATE: usize = 16_000;
 const CHUNK_SECONDS: usize = 30;
 const N_SAMPLES: usize = SAMPLE_RATE * CHUNK_SECONDS;
-/// Encoder frame budget for one 30 s window.
+/// Encoder frame budget: one 30 s window maps to whisper's 3000 audio frames.
 const MAX_FRAMES: usize = 3000;
 /// Greedy-decode token budget for one utterance.
 const MAX_DECODE_STEPS: usize = 224;
@@ -132,14 +132,11 @@ impl WhisperStt {
         let n_mel = self.config.num_mel_bins;
         let frames = mel.len() / n_mel;
 
+        // The fixed 30 s window always yields more frames than the encoder's
+        // 3000-frame budget, so clamp unconditionally to that budget.
         let mel = Tensor::from_vec(mel, (1, n_mel, frames), &Device::Cpu)
+            .and_then(|m| m.narrow(2, 0, MAX_FRAMES))
             .map_err(|e| SttError::Decode(format!("build mel tensor: {e}")))?;
-        let mel = if frames > MAX_FRAMES {
-            mel.narrow(2, 0, MAX_FRAMES)
-                .map_err(|e| SttError::Decode(format!("narrow mel frames: {e}")))?
-        } else {
-            mel
-        };
 
         let features = self
             .model
@@ -148,17 +145,19 @@ impl WhisperStt {
             .map_err(|e| SttError::Decode(format!("encoder forward: {e}")))?;
 
         let mut tokens: Vec<u32> = vec![SOT_TOKEN, NO_TIMESTAMPS_TOKEN];
-        for step in 0..MAX_DECODE_STEPS {
+        // Flush the kv-cache only on the first step so the cache persists;
+        // flushing every step is O(n^2) and far too slow.
+        let mut flush_cache = true;
+        for _ in 0..MAX_DECODE_STEPS {
             let input = Tensor::new(tokens.as_slice(), &Device::Cpu)
                 .and_then(|t| t.unsqueeze(0))
                 .map_err(|e| SttError::Decode(format!("build decoder input: {e}")))?;
-            // Flush the kv-cache only on the first step so the cache persists;
-            // flushing every step is O(n^2) and far too slow.
             let ys = self
                 .model
                 .decoder
-                .forward(&input, &features, step == 0)
+                .forward(&input, &features, flush_cache)
                 .map_err(|e| SttError::Decode(format!("decoder forward: {e}")))?;
+            flush_cache = false;
             let seq_len = ys
                 .dim(1)
                 .map_err(|e| SttError::Decode(format!("decoder output dim: {e}")))?;
