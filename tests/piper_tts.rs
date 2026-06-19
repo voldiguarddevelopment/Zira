@@ -167,10 +167,15 @@ async fn c4_speak_emits_viseme_frames_within_weight_bounds() {
 
     for event in &events {
         match event {
-            Event::VisemeFrame(VisemeFrame { weight, .. }) => assert!(
-                (0.0..=1.0).contains(weight),
-                "every viseme frame weight must be within 0.0..=1.0, got {weight}"
-            ),
+            Event::VisemeFrame(frame @ VisemeFrame { .. }) => {
+                // Field access auto-derefs, so `weight` is `f32` whether `frame`
+                // is owned or borrowed — the bounds check is binding-mode robust.
+                let weight = frame.weight;
+                assert!(
+                    (0.0..=1.0).contains(&weight),
+                    "every viseme frame weight must be within 0.0..=1.0, got {weight}"
+                );
+            }
             other => panic!("speak must emit only Event::VisemeFrame, got {other:?}"),
         }
     }

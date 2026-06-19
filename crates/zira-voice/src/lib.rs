@@ -7,6 +7,9 @@
 
 use std::path::{Path, PathBuf};
 
+mod tts;
+pub use tts::{PiperTts, TtsError};
+
 use byteorder::{LittleEndian, ReadBytesExt};
 use candle_core::{Device, Tensor};
 use candle_nn::VarBuilder;

@@ -1,2 +1,2 @@
-0aeb0c9883c74347339b5cd5685675fde2d5aaa6df0793578077e33546a8171e  criteria_map:T-01.17
-44e56a494b1e0659bfabd92e229754e6effdcf275b74a3871e61a5b81d3ae0cc  tests/whisper_stt.rs
+f476e1c8ed456f3ccd9dc227abb27093796ae30c08c5adcaffefdd5b65bee48e  criteria_map:T-01.18
+354c4805e65b8d9d8b9af4c436fc24fef5845e5ac66b309be73e3be4525151e8  tests/piper_tts.rs
