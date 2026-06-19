@@ -1242,10 +1242,11 @@ not_doing:
   - No in-code network download — the model is placed on disk out-of-band.
 test_files: []
 criteria_map: {}
-attempts: 0
+attempts: 1
 last_failure: ""
 ---
 PROVEN RECIPE (a spike compiled + ran this against the real model; reproduce it). Deps are already in `crates/zira-memory/Cargo.toml`: candle-core/candle-nn/candle-transformers 0.8, tokenizers 0.21, serde_json. LOAD: parse `config.json` into `candle_transformers::models::bert::Config` via serde_json; `tokenizers::Tokenizer::from_file(dir.join("tokenizer.json"))`; `let vb = unsafe { candle_nn::VarBuilder::from_mmaped_safetensors(&[dir.join("model.safetensors")], candle_transformers::models::bert::DTYPE, &candle_core::Device::Cpu)? }`; `BertModel::load(vb, &config)`. EMBED(text): `enc = tok.encode(text, true)`; `token_ids` = a `candle_core::Tensor` of `enc.get_ids()` unsqueezed to shape (1, seq); `type_ids = token_ids.zeros_like()`; `attn` = a Tensor of `enc.get_attention_mask()` unsqueezed; `out = model.forward(&token_ids, &type_ids, Some(&attn))` gives (1, seq, hidden); mean-pool `(out.sum(1)? / seq as f64)?` then `.squeeze(0)?.to_vec1::<f32>()?`. `dim()` = config.hidden_size (384 for this model). Map every candle/tokenizer/io failure to an `EmbedderError` variant and exercise each variant's Display in C4's test (the T-01.10 lesson). The 87MB weights live OUTSIDE the repo at $ZIRA_EMBED_MODEL — never commit them. Verified spike output: dim=384, two distinct sentences cosine ~0.55. Done-check: the four criteria.
+
 ### T-03.01  Define the expression preset
 id: T-03.01
 phase: 3
