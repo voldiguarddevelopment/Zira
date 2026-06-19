@@ -137,8 +137,10 @@ human and real hardware.
 - **Live audio** — wakeword on a real mic, the VAD/STT/TTS engines (whisper / Piper)
   with audio I/O.
 - **GPU avatar** — the Bevy/VRM render loop on an integrated GPU with a `.vrm` model.
-- **Model assets** — the CPU embedding model (Candle all-MiniLM); the embedder code +
-  test are wired and run for real once the model is on disk.
+- **Voice models** — whisper (STT) and Piper (TTS) weights, loaded once the assets are on
+  disk. *(The CPU embedding model is already done: `CandleEmbedder` loads all-MiniLM-L6-v2
+  and produces real 384-d embeddings, gate-verified — it just needs the model file present
+  at runtime.)*
 - **On-hardware tuning** — barge-in threshold tuning and the long-running soak test.
 
 ---
