@@ -832,7 +832,7 @@ PROVEN RECIPE (a spike transcribed the jfk fixture verbatim — reproduce it). D
 ### T-01.18  Synthesize the speech
 id: T-01.18
 phase: 1
-status: pending
+status: done
 depends_on: [T-00.20]
 stack: rust
 criteria:
@@ -845,12 +845,15 @@ not_doing:
   - No live audio playback — the engine returns a PCM buffer; speaker I/O stays device-bound.
   - No emotion/prosody modulation yet — flat synthesis for now.
   - No streaming — one phrase synthesized at once.
-test_files: []
-criteria_map: {}
+test_files: [tests/piper_tts.rs]
+criteria_map:
+  C1: [_c1_c2_api_pins, c1_c2_c3_real_synthesis]
+  C2: [_c1_c2_api_pins, c1_c2_c3_real_synthesis]
+  C3: [c1_c2_c3_real_synthesis]
+  C4: [_c4_api_pin, c4_speak_emits_viseme_frames_within_weight_bounds, c4_speak_frame_count_tracks_phoneme_count]
+  C5: [c5_tts_error_implements_error_and_display, c5_display_exercises_every_variant]
 attempts: 3
-last_failure: |
-  surviving mutant at crates/zira-voice/src/tts.rs:235 (bool-and-to-or) — frozen tests do not kill it
-  surviving mutant at crates/zira-voice/src/tts.rs:296 (bool-or-to-and) — frozen tests do not kill it
+last_failure: ""
 ---
 PROVEN RECIPE (a spike synthesized 2.01s of real audio — reproduce it). Deps in `crates/zira-voice/Cargo.toml`: `ort = "=2.0.0-rc.10"` (features download-binaries), serde_json; plus the system `espeak-ng` binary (present). LOAD: parse `<voice>.onnx.json` with serde_json for `phoneme_id_map`, `audio.sample_rate` (22050), and `inference` {noise_scale 0.667, length_scale 1.0, noise_w 0.8}; `ort::session::Session::builder()?.commit_from_file(onnx)`. SYNTH(text): run `espeak-ng -q --ipa -v en-us <text>` via std::process::Command and read stdout as the phoneme string. Build ids with `let id = |k: &str| phoneme_id_map[k][0].as_i64()`: `ids = vec![id("^") /*BOS*/, id("_") /*pad*/]`; for each char of the phonemes, if it maps push `id(char)` then the pad; finally push `id("$")` /*EOS*/. INFERENCE: `input` = i64 Tensor shape [1, len]; `input_lengths` = i64 Tensor [len]; `scales` = f32 Tensor [noise_scale, length_scale, noise_w]; the `session` must be `mut`; `session.run(ort::inputs!["input"=>input, "input_lengths"=>il, "scales"=>sc])`; extract with `outputs["output"].try_extract_tensor::<f32>()` (the output shape is [1,1,1,N]; flatten to the N PCM samples). VISEMES (C4): map each phoneme to one `VisemeFrame` (a vowel to an open mouth shape weight ~1.0, a consonant to a partial weight; a short viseme label string), in order. Map espeak/ort/io failures to a `TtsError` variant and exercise each Display (the T-01.10 lesson). The voice lives at $ZIRA_TTS_MODEL — never commit the 63MB onnx. TTS is a single forward pass (fast), no decode loop. Verified spike: 'hello world...' -> 2.01s @ 22050Hz, peak 0.653. Done-check: the five criteria.
 
