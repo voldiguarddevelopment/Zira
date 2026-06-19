@@ -2306,6 +2306,7 @@ dependencies = [
  "zira-memory",
  "zira-proto",
  "zira-skills",
+ "zira-voice",
 ]
 
 [[package]]
