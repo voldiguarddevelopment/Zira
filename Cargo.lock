@@ -2290,6 +2290,7 @@ dependencies = [
 name = "zira-build"
 version = "0.0.0"
 dependencies = [
+ "hound",
  "redb",
  "serde",
  "serde_json",

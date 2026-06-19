@@ -57,6 +57,8 @@ tracing-subscriber = "0.3"
 toml = "0.8"
 tempfile = "3"
 redb = { workspace = true }
+# Decodes the 16 kHz jfk.wav fixture into PCM for the whisper STT integration test (T-01.17).
+hound = "3.5"
 
 # The root test-host package inherits the same gate.
 [lints]
