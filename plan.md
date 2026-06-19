@@ -514,12 +514,16 @@ phase: 1
 depends_on: [T-00.20]
 stack: rust
 criteria:
-  - C1: a `VadGate` implementation emits `Event::SpeechStarted` and `Event::SpeechEnded` from live microphone audio using a real voice-activity detector.
+  - C1: `zira_voice::EarshotVad` wraps an `earshot::VoiceActivityDetector` and implements `zira_core::VadGate`.
+  - C2: `EarshotVad::scan_16khz(pcm: &[i16]) -> Vec<Event>` processes 16 kHz mono PCM in 160-sample (10 ms) frames and returns speech-boundary events: an `Event::SpeechStarted` at the onset of voiced frames and an `Event::SpeechEnded` when voicing ends.
+  - C3: a repo-root integration test `tests/earshot_vad.rs` loads the committed `tests/fixtures/vad/speech16.wav` and asserts `scan_16khz` yields at least one `Event::SpeechStarted`, and loads `tests/fixtures/vad/silence.wav` and asserts it yields zero `Event::SpeechStarted`.
+  - C4: at least 60% of the speech fixture's 10 ms frames are detected voiced while 0% of the silence fixture's frames are — proving real signal-based VAD, not a constant.
 not_doing:
-  - Mock VAD gate — exists from Phase 0.
+  - No live microphone capture — the gate processes a supplied 16 kHz PCM buffer; mic I/O stays device-bound.
+  - No resampling — input is assumed 16 kHz mono (the wakeword/STT front-end resamples).
+  - No model — earshot is a signal-based WebRTC VAD, no asset needed.
 ---
-Real endpointing. Blocked-on-human: microphone hardware + a VAD model. Done-check: the one criterion on target hardware.
-
+PROVEN RECIPE (a spike measured speech 257/290 voiced, silence 0/100). Dep in Cargo.toml: `earshot = "0.1"`. `earshot::VoiceActivityDetector::new(earshot::VoiceActivityProfile::AGGRESSIVE)`; for each exactly-160-sample i16 frame call `vad.predict_16khz(frame)` (returns `Result<bool>`; treat Err as not-voiced). scan_16khz: iterate `pcm.chunks(160)` (skip a trailing short chunk), track a `was_voiced` flag, push `Event::SpeechStarted` on the false->true transition and `Event::SpeechEnded` on true->false. Fixtures are COMMITTED at tests/fixtures/vad/ (93KB speech16.wav 16kHz mono + 32KB silence.wav) so the test runs in CI too — no env-gate, no model. Done-check: the four criteria.
 ### T-01.17  Transcribe the speech
 id: T-01.17
 phase: 1
