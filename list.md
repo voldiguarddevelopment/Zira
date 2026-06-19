@@ -819,7 +819,7 @@ not_doing:
   - No streaming/partial transcription — one utterance at a time.
 test_files: []
 criteria_map: {}
-attempts: 1
+attempts: 2
 last_failure: |
   surviving mutant at crates/zira-voice/src/lib.rs:137 (cmp-gt-to-ge) — frozen tests do not kill it
   surviving mutant at crates/zira-voice/src/lib.rs:160 (cmp-eq-to-ne) — frozen tests do not kill it
