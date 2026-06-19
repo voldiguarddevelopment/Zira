@@ -232,7 +232,9 @@ fn find_onnx(voice_dir: &Path) -> Result<PathBuf, TtsError> {
         let path = entry.path();
         let name = entry.file_name();
         let name = name.to_string_lossy();
-        if name.ends_with(".onnx") && !name.ends_with(".onnx.json") {
+        // A `.onnx.json` companion ends in `.json`, never `.onnx`, so this single
+        // suffix test already excludes it — no extra guard needed.
+        if name.ends_with(".onnx") {
             return Ok(path);
         }
     }
@@ -292,8 +294,12 @@ fn phonemize(text: &str) -> Result<String, TtsError> {
 /// mouth shape). Vowels open the mouth (weight 1.0); consonants partially close
 /// it (weight 0.5).
 fn viseme_for_phoneme(c: char) -> Option<(String, f32)> {
-    // Stress (ˈ ˌ), length (ː ˑ), the tie bar, and whitespace carry no mouth shape.
-    if c.is_whitespace() || matches!(c, 'ˈ' | 'ˌ' | 'ː' | 'ˑ' | '\u{0361}') {
+    // Whitespace carries no mouth shape.
+    if c.is_whitespace() {
+        return None;
+    }
+    // Stress (ˈ ˌ), length (ː ˑ), and the tie bar carry no mouth shape either.
+    if matches!(c, 'ˈ' | 'ˌ' | 'ː' | 'ˑ' | '\u{0361}') {
         return None;
     }
     let is_vowel = matches!(
