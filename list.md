@@ -804,7 +804,7 @@ Real endpointing. Blocked-on-human: microphone hardware + a VAD model. Done-chec
 ### T-01.17  Transcribe the speech
 id: T-01.17
 phase: 1
-status: pending
+status: done
 depends_on: [T-00.20]
 stack: rust
 criteria:
@@ -817,12 +817,15 @@ not_doing:
   - No live microphone capture — the engine transcribes a supplied PCM buffer; mic I/O stays device-bound.
   - No GPU/CUDA — CPU only.
   - No streaming/partial transcription — one utterance at a time.
-test_files: []
-criteria_map: {}
+test_files: [tests/whisper_stt.rs]
+criteria_map:
+  C1: [_c1_c2_api_pins, c1_c2_c3_real_asr]
+  C2: [_c1_c2_api_pins, c1_c2_c3_real_asr]
+  C3: [c1_c2_c3_real_asr]
+  C4: [_c4_api_pins, c4_transcribe_impl_emits_transcript_ready_matching_pcm, c4_transcribe_impl_maps_failure_to_error_event]
+  C5: [c5_stt_error_implements_error_and_display, c5_display_exercises_every_variant]
 attempts: 2
-last_failure: |
-  surviving mutant at crates/zira-voice/src/lib.rs:137 (cmp-gt-to-ge) — frozen tests do not kill it
-  surviving mutant at crates/zira-voice/src/lib.rs:160 (cmp-eq-to-ne) — frozen tests do not kill it
+last_failure: ""
 ---
 PROVEN RECIPE (a spike transcribed the jfk fixture verbatim — reproduce it). Deps are in `crates/zira-voice/Cargo.toml`: candle-core/nn/transformers 0.8, tokenizers 0.21, hound 3.5, byteorder 1. LOAD: `Config` via serde_json from config.json; `Tokenizer::from_file(tokenizer.json)`; `VarBuilder::from_mmaped_safetensors([model.safetensors], whisper::DTYPE, &Device::Cpu)`; `whisper::model::Whisper::load(&vb, cfg)`; read melfilters.bytes as little-endian f32 (`byteorder` `read_f32_into`) into a Vec<f32> (80*201). TRANSCRIBE_PCM(pcm): call `model.reset_kv_cache()`; pad pcm to `16000*30` with 0.0; `mel = whisper::audio::pcm_to_mel(&cfg, &pcm, &mel_filters)`; `frames = mel.len()/cfg.num_mel_bins`; build a `(1, num_mel_bins, frames)` Tensor and if frames>3000 `narrow(2, 0, 3000)`; `features = model.encoder.forward(&mel, true)`. GREEDY: `tokens = vec![50257u32 /*SOT*/, 50362u32 /*no_timestamps*/]`; loop up to 224: `t = Tensor::new(tokens, dev).unsqueeze(0)`; `ys = model.decoder.forward(&t, &features, i == 0)` (flush kv-cache ONLY on step 0 so the cache persists; flushing every step is O(n^2) and far too slow in debug); `last = ys.narrow(1, ys.dim(1)-1, 1)`; `logits = model.decoder.final_linear(&last).squeeze(0).squeeze(0)`; `next = logits.argmax(0).to_scalar::<u32>()`; break if next==50256 (EOT) else push. `text = tokenizer.decode(&tokens[2..], true)`. The model needs `&mut self` (kv-cache). The model dir + jfk.wav live at $ZIRA_STT_MODEL — never commit weights. Map every candle/io/tokenizer failure to an `SttError` variant and exercise each Display (the T-01.10 lesson). Verified spike output: the full JFK quote. Done-check: the five criteria.
 
