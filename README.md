@@ -140,16 +140,24 @@ human and real hardware.
   transcribes the JFK fixture verbatim).
 - **TTS** — `PiperTts` synthesizes text to 22 kHz PCM via a Piper VITS voice (espeak-ng
   phonemes → ONNX runtime), plus per-phoneme viseme frames.
+- **VAD** — `EarshotVad` detects speech vs silence on a 16 kHz buffer (pure-Rust WebRTC VAD,
+  CI-portable fixtures — no model needed).
+- **Barge-in & soak** — the speaking-time energy cue + default threshold, and a 2000-cycle
+  mock-orchestrator stress test (both pure-Rust, gate-verified).
 
-> Each is mutation-defended and runs for real on a box that has the model file (whisper /
-> Piper / embedding assets, fetched out-of-band); a model-less CI skips them so it stays green.
+> The model engines are mutation-defended and run for real on any box with the model file
+> (whisper / Piper / embedding assets — `bash scripts/fetch-models.sh`); a model-less CI skips
+> them so it stays green. See **[TESTING.md](TESTING.md)** to run them on your own machine.
 
-**🟡 Device-bound — needs a human + real hardware (can't be a frozen-test gate):**
+**🟡 Still device-bound — needs hardware a frozen test can't stand in for:**
 
-- **Live audio I/O** — wakeword + VAD on a real microphone, and speaker playback of the
-  synthesized audio.
-- **GPU avatar** — the Bevy/VRM render loop on an integrated GPU with a `.vrm` model.
-- **On-hardware tuning** — barge-in threshold tuning and the long-running soak test.
+- **Wake-word** — `RustpotterWake` is written (gated behind the `wake` feature) but the
+  `rustpotter` crate was unbuildable on the build box (2.x yanked, 3.x `candle-gemm`/`rand`
+  conflict); try `cargo test -p zira-voice --features wake` on your toolchain. A real "Zira"
+  model is then trained from recordings.
+- **Live audio I/O** — wakeword + VAD on a real microphone, and speaker playback.
+- **GPU avatar** — the Bevy/VRM render loop (consumes the already-built `AvatarDriver`); needs
+  a working GPU + a `.vrm` model.
 
 ---
 
@@ -205,6 +213,21 @@ cargo run -p zira -- --help
 **Requirements:** a stable Rust toolchain. The full assistant additionally needs a
 microphone + speaker, the quantized voice models, an embedding model, and (for the 3D
 avatar) an integrated GPU.
+
+### Testing the device-bound layers on your machine
+
+The real model engines (embedder, STT, TTS) are **CPU-only** and verified with model assets,
+not by CI. To run them on your own hardware — no powerful GPU needed:
+
+```bash
+# espeak-ng is the one system prerequisite (for Piper TTS); see TESTING.md for your OS.
+bash scripts/fetch-models.sh   # ~310 MB of CPU models into ~/.cache/zira/models
+cargo test --workspace         # model-gated tests now run for real; skip cleanly without models
+```
+
+See **[TESTING.md](TESTING.md)** for the full guide — what each test verifies, how to confirm
+the model-gated tests actually ran, trying the `wake` feature (`--features wake`), and what's
+needed to build + test the GPU avatar renderer on a machine that has a GPU.
 
 ---
 
